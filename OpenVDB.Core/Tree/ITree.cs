@@ -22,7 +22,7 @@ namespace OpenVDB.Core.Tree
     {
         string TreeType { get; } // Name of the specific tree configuration (e.g., "TreeFloatR5")
         string ValueTypeName { get; } // Name of the value type (e.g., "float")
-        
+
         Type ValueType { get; } // Actual System.Type of the value
 
         object BackgroundValue { get; } // Non-generic background access
@@ -37,7 +37,7 @@ namespace OpenVDB.Core.Tree
 
         void Prune(object toleranceValue); // Non-generic tolerance
         void Clip(CoordBBox bbox);
-        
+
         ITree Copy(); // Deep copy of the tree structure
 
         // I/O methods
@@ -47,7 +47,7 @@ namespace OpenVDB.Core.Tree
         // void ReadBuffers(System.IO.BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata, CoordBBox bbox); // Overload for partial read
         void WriteBuffers(System.IO.BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata);
         void ReadNonresidentBuffers(); // If delayed loading is supported
-        
+
         void Print(System.IO.TextWriter writer, int verboseLevel);
 
         // For Grid<TTree> ValueType and Accessor type members
@@ -65,7 +65,7 @@ namespace OpenVDB.Core.Tree
         void Fill(CoordBBox bbox, TValue value, bool activeState);
         void DenseFill(CoordBBox bbox, TValue value, bool activeState);
         void Merge(ITree<TValue> otherTree, MergePolicy policy);
-        
+
         void TopologyUnion<TOtherValue>(ITree<TOtherValue> otherTree);
         void TopologyIntersection<TOtherValue>(ITree<TOtherValue> otherTree);
         void TopologyDifference<TOtherValue>(ITree<TOtherValue> otherTree);

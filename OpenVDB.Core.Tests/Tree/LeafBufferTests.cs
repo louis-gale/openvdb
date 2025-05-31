@@ -87,7 +87,7 @@ namespace OpenVDB.Core.Tests.Tree
         {
             float uniformVal = 5.0f;
             var buffer = new LeafBuffer<float>(1, uniformVal, startAsUniform: true);
-            
+
             // Setting a value transitions it to non-uniform
             float newValue = 10.0f;
             int indexToChange = 2;
@@ -147,7 +147,7 @@ namespace OpenVDB.Core.Tests.Tree
         {
             float uniformVal = 9.9f;
             var buffer = new LeafBuffer<float>(2, uniformVal, startAsUniform: true);
-            
+
             Assert.IsTrue(buffer.IsUniform);
             Assert.IsFalse(buffer.IsAllocated);
 
@@ -166,7 +166,7 @@ namespace OpenVDB.Core.Tests.Tree
         {
             var buffer = new LeafBuffer<int>(1, 0, startAsUniform: false); // Already allocated and non-uniform
             buffer.SetValue(0, 10);
-            
+
             Assert.IsFalse(buffer.IsUniform);
             Assert.IsTrue(buffer.IsAllocated);
 
@@ -208,7 +208,7 @@ namespace OpenVDB.Core.Tests.Tree
         }
 
         // Helper for I/O tests
-        private void TestBufferIO<T>(LeafBuffer<T> originalBuffer, NodeMask mask, T backgroundForRead, 
+        private void TestBufferIO<T>(LeafBuffer<T> originalBuffer, NodeMask mask, T backgroundForRead,
                                     bool saveHalf, bool readHalf, float tolerance = EpsilonF) where T : struct
         {
             Assert.AreEqual(originalBuffer.Size, mask.Count, "Mask size must match buffer size for I/O test.");
@@ -280,16 +280,16 @@ namespace OpenVDB.Core.Tests.Tree
             float backgroundForRead = -1.0f;
             TestBufferIO(buffer, mask, backgroundForRead, false, false);
         }
-        
+
         [Test]
         public void Io_NonUniformBuffer_AllOffMask_ShouldBecomeUniformBackground()
         {
             var buffer = new LeafBuffer<float>(1, 0.0f, startAsUniform: false);
             buffer.SetValue(0, 1.0f); // Some non-uniform data
-            
+
             var mask = new NodeMask(1, false); // All off
             float backgroundForRead = 99.0f;
-            
+
             // Perform IO
             LeafBuffer<float> newBuffer;
             using (var ms = new MemoryStream())
@@ -305,7 +305,7 @@ namespace OpenVDB.Core.Tests.Tree
                     newBuffer.Read(reader, mask, backgroundForRead, false);
                 }
             }
-            
+
             Assert.IsTrue(newBuffer.IsUniform, "Buffer should be uniform if mask was all off.");
             Assert.AreEqual(backgroundForRead, newBuffer.UniformValue, EpsilonF);
         }
@@ -315,7 +315,7 @@ namespace OpenVDB.Core.Tests.Tree
         {
             var buffer = new LeafBuffer<float>(1, 123.456f, startAsUniform: true);
             var mask = new NodeMask(1, true); // All on
-            
+
             // Perform IO with half float
             LeafBuffer<float> newBuffer;
             using (var ms = new MemoryStream())
@@ -336,20 +336,20 @@ namespace OpenVDB.Core.Tests.Tree
             float originalValue = buffer.UniformValue;
             float readValue = newBuffer.UniformValue;
             float expectedHalfPrecisionValue = (float)(Half)originalValue; // Convert to half and back to float
-            
+
             Assert.AreEqual(expectedHalfPrecisionValue, readValue, EpsilonF * 100, // Half precision has larger tolerance
                 $"Half float I/O failed for uniform buffer. Original: {originalValue}, Read: {readValue}, Expected (via Half): {expectedHalfPrecisionValue}");
         }
-        
+
         [Test]
         public void Io_HalfFloat_NonUniformBuffer_ShouldApproximatelyPreserveValues()
         {
             var buffer = new LeafBuffer<float>(1, 0.0f, startAsUniform: false);
             float[] originalValues = { 1.23f, -4.56f, 78.9f, 0.0f, 100.123f, -200.45f, 300.0f, 400.7f };
             for(int i=0; i < originalValues.Length; ++i) buffer.SetValue(i, originalValues[i]);
-            
+
             var mask = new NodeMask(1, true); // All on
-            
+
             LeafBuffer<float> newBuffer;
             using (var ms = new MemoryStream())
             {

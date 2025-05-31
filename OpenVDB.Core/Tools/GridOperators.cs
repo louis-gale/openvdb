@@ -58,7 +58,7 @@ namespace OpenVDB.Core.Tools
 
             // Try to cast/get the map. This is a simplification.
             // C++ GridOperator takes the map explicitly in its constructor.
-            _map = inputGrid.Transform.GetMap() as TMap; 
+            _map = inputGrid.Transform.GetMap() as TMap;
             if (_map == null && !(inputGrid.Transform.GetMap() is GenericMap)) // Allow GenericMap to be passed if TMap is IMap
             {
                  // If TMap is IMap, we can use GetMap() directly.
@@ -86,7 +86,7 @@ namespace OpenVDB.Core.Tools
             _outputAccessor = outputGrid.GetAccessor() as TOutAccessor;
             if (_outputAccessor == null)
                 throw new ArgumentException($"Output grid's accessor is not compatible with TOutAccessor ({typeof(TOutAccessor).Name}).", nameof(outputGrid));
-            
+
             _maskGrid = maskGrid;
             if (_maskGrid != null)
             {
@@ -100,7 +100,7 @@ namespace OpenVDB.Core.Tools
         // This is a conceptual placeholder. Specific Process methods might be needed per operator type.
         public void Process(
             Func<TMap, TInAccessor, Coord, TOutValue> operation, // Simplified delegate
-            bool threaded = true, 
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             // Simplified iteration: C++ uses ValueOnCIter on input grid.
@@ -123,7 +123,7 @@ namespace OpenVDB.Core.Tools
                     // If input is not active, output might get background or a specific value
                     // For many operators, if input is inactive, output is background or no-op.
                     // This behavior is operator-specific. For now, we skip if input not active.
-                    return; 
+                    return;
                 }
 
                 TOutValue result = operation(_map, _inputAccessor, coord);
@@ -164,19 +164,19 @@ namespace OpenVDB.Core.Tools
 
         // --- Gradient ---
         public static Vec3SGrid Gradient(
-            FloatGrid inputGrid, 
-            DScheme scheme = DScheme.CD_2ND, 
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            FloatGrid inputGrid,
+            DScheme scheme = DScheme.CD_2ND,
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             var outputGrid = new Vec3SGrid(Vec3<float>.Zero); // Output grid with zero background
             outputGrid.Transform = inputGrid.Transform.Clone();
             outputGrid.Name = inputGrid.Name + "_grad";
-            
-            var opExecutor = new GridOperator<FloatGrid, Vec3SGrid, 
+
+            var opExecutor = new GridOperator<FloatGrid, Vec3SGrid,
                                 /*TOperator: WSGradient*/ object, // TOperator type is conceptual here
-                                float, Vec3<float>, 
+                                float, Vec3<float>,
                                 IMap, // TMap: use IMap for broader compatibility initially
                                 ITreeValueAccessor<float>, ITreeValueAccessor<Vec3<float>>>(
                 inputGrid, outputGrid, maskGrid);
@@ -184,14 +184,14 @@ namespace OpenVDB.Core.Tools
             opExecutor.Process(
                 (map, accessor, coord) => WSGradient.Result<float, ITreeValueAccessor<float>, IMap>(map, accessor, coord, scheme),
                 threaded, interrupt);
-            
+
             return outputGrid;
         }
 
         // --- Magnitude ---
         // Define Op struct for Magnitude
-        private struct MagnitudeOp<TVec, TValue> 
-            where TVec: struct, IReadOnlyVec<TValue> 
+        private struct MagnitudeOp<TVec, TValue>
+            where TVec: struct, IReadOnlyVec<TValue>
             where TValue: struct, IFloatingPointIeee754<TValue>
         {
             public static TValue Result(IMap map, ITreeValueAccessor<TVec> accessor, Coord ijk)
@@ -204,22 +204,22 @@ namespace OpenVDB.Core.Tools
         }
 
         public static FloatGrid Magnitude(
-            Vec3SGrid inputGrid, 
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            Vec3SGrid inputGrid,
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             var outputGrid = new FloatGrid(0.0f);
             outputGrid.Transform = inputGrid.Transform.Clone();
             outputGrid.Name = inputGrid.Name + "_mag";
 
-            var opExecutor = new GridOperator<Vec3SGrid, FloatGrid, 
+            var opExecutor = new GridOperator<Vec3SGrid, FloatGrid,
                                 /*TOperator: MagnitudeOp*/ object,
-                                Vec3<float>, float, 
+                                Vec3<float>, float,
                                 IMap,
                                 ITreeValueAccessor<Vec3<float>>, ITreeValueAccessor<float>>(
                 inputGrid, outputGrid, maskGrid);
-            
+
             opExecutor.Process(
                 (map, accessor, coord) => MagnitudeOp<Vec3<float>, float>.Result(map, accessor, coord),
                 threaded, interrupt);
@@ -243,9 +243,9 @@ namespace OpenVDB.Core.Tools
             }
         }
         public static Vec3SGrid Normalize(
-            Vec3SGrid inputGrid, 
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            Vec3SGrid inputGrid,
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             var outputGrid = new Vec3SGrid(Vec3<float>.Zero);
@@ -258,7 +258,7 @@ namespace OpenVDB.Core.Tools
                                 IMap,
                                 ITreeValueAccessor<Vec3<float>>, ITreeValueAccessor<Vec3<float>>>(
                 inputGrid, outputGrid, maskGrid);
-            
+
             opExecutor.Process(
                 (map, accessor, coord) => NormalizeOp<Vec3<float>, float>.Result(map, accessor, coord),
                 threaded, interrupt);
@@ -268,10 +268,10 @@ namespace OpenVDB.Core.Tools
 
         // --- Laplacian ---
         public static FloatGrid Laplacian(
-            FloatGrid inputGrid, 
-            DDScheme scheme = DDScheme.CD_SECOND, 
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            FloatGrid inputGrid,
+            DDScheme scheme = DDScheme.CD_SECOND,
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             var outputGrid = new FloatGrid(0.0f);
@@ -284,19 +284,19 @@ namespace OpenVDB.Core.Tools
                                 IMap,
                                 ITreeValueAccessor<float>, ITreeValueAccessor<float>>(
                 inputGrid, outputGrid, maskGrid);
-            
+
             opExecutor.Process(
                 (map, accessor, coord) => WSLaplacian.Result<float, ITreeValueAccessor<float>, IMap>(map, accessor, coord, scheme),
                 threaded, interrupt);
             return outputGrid;
         }
-        
+
         // --- CPT (Closest Point Transform) ---
         public static Vec3SGrid CPT(
-            FloatGrid inputGrid, 
-            DScheme scheme = DScheme.CD_2ND, 
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            FloatGrid inputGrid,
+            DScheme scheme = DScheme.CD_2ND,
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             var outputGrid = new Vec3SGrid(Vec3<float>.Zero);
@@ -309,7 +309,7 @@ namespace OpenVDB.Core.Tools
                                 IMap,
                                 ITreeValueAccessor<float>, ITreeValueAccessor<Vec3<float>>>(
                 inputGrid, outputGrid, maskGrid);
-            
+
             opExecutor.Process(
                 (map, accessor, coord) => WSCPT.Result<float, ITreeValueAccessor<float>, IMap>(map, accessor, coord, scheme),
                 threaded, interrupt);
@@ -319,10 +319,10 @@ namespace OpenVDB.Core.Tools
 
         // --- Divergence (Placeholder) ---
         public static FloatGrid Divergence(
-            Vec3SGrid inputGrid, 
-            DScheme scheme = DScheme.CD_2ND, 
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            Vec3SGrid inputGrid,
+            DScheme scheme = DScheme.CD_2ND,
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             Console.WriteLine("Warning: GridOperators.Divergence uses WSDivergence which might be a placeholder or only support specific maps.");
@@ -336,7 +336,7 @@ namespace OpenVDB.Core.Tools
                                 IMap,
                                 ITreeValueAccessor<Vec3<float>>, ITreeValueAccessor<float>>(
                 inputGrid, outputGrid, maskGrid);
-            
+
             opExecutor.Process(
                 (map, accessor, coord) => WSDivergence.Result<float, Vec3<float>, ITreeValueAccessor<Vec3<float>>, IMap>(map, accessor, coord, scheme),
                 threaded, interrupt);
@@ -346,10 +346,10 @@ namespace OpenVDB.Core.Tools
 
         // --- Curl (Placeholder) ---
          public static Vec3SGrid Curl(
-            Vec3SGrid inputGrid, 
-            DScheme scheme = DScheme.CD_2ND, 
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            Vec3SGrid inputGrid,
+            DScheme scheme = DScheme.CD_2ND,
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             Console.WriteLine("Warning: GridOperators.Curl uses WSCurl which might be a placeholder or only support specific maps.");
@@ -363,7 +363,7 @@ namespace OpenVDB.Core.Tools
                                 IMap,
                                 ITreeValueAccessor<Vec3<float>>, ITreeValueAccessor<Vec3<float>>>(
                 inputGrid, outputGrid, maskGrid);
-            
+
             opExecutor.Process(
                 (map, accessor, coord) => WSCurl.Result<float, Vec3<float>, ITreeValueAccessor<Vec3<float>>, IMap>(map, accessor, coord, scheme),
                 threaded, interrupt);
@@ -373,10 +373,10 @@ namespace OpenVDB.Core.Tools
 
         // --- MeanCurvature (Placeholder) ---
         public static FloatGrid MeanCurvature(
-            FloatGrid inputGrid, 
+            FloatGrid inputGrid,
             DDScheme scheme = DDScheme.CD_SECOND, // MeanCurvature often uses 2nd order stencils
-            BoolGrid maskGrid = null, 
-            bool threaded = true, 
+            BoolGrid maskGrid = null,
+            bool threaded = true,
             IGridOperatorInterrupt interrupt = null)
         {
             throw new NotImplementedException("GridOperators.MeanCurvature is not yet implemented.");

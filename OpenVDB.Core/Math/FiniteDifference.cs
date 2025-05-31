@@ -100,7 +100,7 @@ namespace OpenVDB.Core.Math
                 case DScheme.CD_2NDT: // (G(i+2) - G(i-2))/4  (Central diff over 2*dx, so G(i+2dx)-G(i-2dx) / (4dx) )
                                       // Assuming dx=1, this is (G(i+2) - G(i-2))/4
                     return (Get(accessor, ijk, 2,0,0) - Get(accessor, ijk, -2,0,0)) / TValue.CreateChecked(4.0);
-                
+
                 // WENO5 and HJWENO5 are complex and require helper functions. Placeholder for now.
                 case DScheme.WENO5:
                 case DScheme.HJWENO5:
@@ -165,7 +165,7 @@ namespace OpenVDB.Core.Math
                     throw new ArgumentOutOfRangeException(nameof(scheme), $"Unsupported scheme: {scheme}");
             }
         }
-        
+
         // Gradient (Vec3<TValue>)
         public static Vec3<TValue> Gradient<TValue, TAccessor>(TAccessor accessor, Coord ijk, DScheme scheme)
             where TAccessor : ITreeValueAccessor<TValue>
@@ -186,7 +186,7 @@ namespace OpenVDB.Core.Math
             // Div(F) = dFx/dx + dFy/dy + dFz/dz
             // D1Vec will get component, then apply D1.
             // For now, direct implementation for clarity.
-            
+
             // dFx/dx
             TValue dFx_dx;
             switch (scheme)
@@ -217,7 +217,7 @@ namespace OpenVDB.Core.Math
                 case DScheme.CD_2ND: dFz_dz = (accessor.GetValue(ijk.OffsetBy(0,0,1)).Z - accessor.GetValue(ijk.OffsetBy(0,0,-1)).Z) / TValue.CreateChecked(2.0); break;
                 default: throw new NotImplementedException($"Divergence for scheme {scheme} not fully implemented.");
             }
-            
+
             return dFx_dx + dFy_dy + dFz_dz;
         }
 
@@ -234,7 +234,7 @@ namespace OpenVDB.Core.Math
             throw new NotImplementedException("D1.Curl requires D1Vec or more complex component access.");
         }
     }
-    
+
     // Placeholder for D1Vec, D2 - to be implemented
     // public static class D1Vec { } // Will be implemented below
     // public static class D2 { }    // Will be implemented below
@@ -244,7 +244,7 @@ namespace OpenVDB.Core.Math
     internal static class WenoHelpers
     {
         private const double WENO_EPSILON = 1.0e-6; // Epsilon used in C++ WENO
-        
+
         // Optimal weights for WENO5 (central) and HJWENO5 (biased)
         // For central WENO5 (used in D1::weno5):
         // C++ D1::weno5 uses c0=0.1, c1=0.6, c2=0.3 if v_m2 > v_p2 (backward leaning data)
@@ -308,7 +308,7 @@ namespace OpenVDB.Core.Math
             TValue alpha2 = TValue.CreateChecked(cOpt[2]) / alpha2_den;
 
             TValue sum_alpha = alpha0 + alpha1 + alpha2;
-            
+
             // Normalized weights (omega)
             // Handle sum_alpha == 0 case to avoid NaN, though epsilon should prevent it.
             if (TValue.IsZero(sum_alpha)) sum_alpha = TValue.One; // Or distribute optimal weights directly
@@ -319,7 +319,7 @@ namespace OpenVDB.Core.Math
 
             return w0 * d0 + w1 * d1 + w2 * d2;
         }
-        
+
         // HJWENO5 biased schemes
         // HJWENO5 D- (backward bias, for positive velocity component u+ > 0)
         // Matches C++ hjWENO5Impl(v_m2, v_m1, v_0, v_p1, v_p2, plus=false)
@@ -338,7 +338,7 @@ namespace OpenVDB.Core.Math
             TValue d0 = (three * v_0 - four * v_m1 + v_m2) * half;
             TValue d1 = (v_p1 - v_m1) * half;
             TValue d2 = (v_p2 + two * v_m1 - three * v_0) * -half; // (-v_p2 - 2*v_m1 + 3*v_0)/2
-            
+
             // Smoothness Indicators (beta coefficients) for HJWENO5 D-
             TValue beta0 = thirteen_div_twelve * Sqr(v_0 - two*v_m1 + v_m2) + one_fourth * Sqr(v_0 - four*v_m1 + three*v_m2);
             TValue beta1 = thirteen_div_twelve * Sqr(v_p1 - two*v_0 + v_m1) + one_fourth * Sqr(v_p1 - v_m1);
@@ -360,7 +360,7 @@ namespace OpenVDB.Core.Math
             beta0 = thirteen_div_twelve * Sqr(v_0 - two*v_m1 + v_m2) + one_fourth * Sqr(v_0 - v_m2);
             beta1 = thirteen_div_twelve * Sqr(v_p1 - two*v_0 + v_m1) + one_fourth * Sqr(v_p1 - v_m1);
             beta2 = thirteen_div_twelve * Sqr(v_p2 - two*v_p1 + v_0) + one_fourth * Sqr(v_p2 - v_0);
-            
+
             // Optimal weights for D- (backward bias): {0.3, 0.6, 0.1} for stencils d0, d1, d2 (C++: c_m)
             TValue alpha0 = TValue.CreateChecked(HJWENO5_OptWeights_DMinus[0]) / Sqr(beta0 + epsilon);
             TValue alpha1 = TValue.CreateChecked(HJWENO5_OptWeights_DMinus[1]) / Sqr(beta1 + epsilon);
@@ -368,7 +368,7 @@ namespace OpenVDB.Core.Math
 
             TValue sum_alpha = alpha0 + alpha1 + alpha2;
             if (TValue.IsZero(sum_alpha)) sum_alpha = TValue.One;
-            
+
             return (alpha0 * d0 + alpha1 * d1 + alpha2 * d2) / sum_alpha;
         }
 
@@ -407,7 +407,7 @@ namespace OpenVDB.Core.Math
             beta0 = thirteen_div_twelve * Sqr(v_m2 - two*v_m1 + v_0) + one_fourth * Sqr(three*v_m2 - four*v_m1 + v_0);
             beta1 = thirteen_div_twelve * Sqr(v_m1 - two*v_0 + v_p1) + one_fourth * Sqr(v_m1 - v_p1); // C++ uses (a-c)^2 for this stencil's beta
             beta2 = thirteen_div_twelve * Sqr(v_0 - two*v_p1 + v_p2) + one_fourth * Sqr(v_0 - four*v_p1 + three*v_p2);
-            
+
             // Optimal weights for D+ (forward bias): {0.1, 0.6, 0.3} for stencils d0, d1, d2 (C++: c_p)
             TValue alpha0 = TValue.CreateChecked(HJWENO5_OptWeights_DPlus[0]) / Sqr(beta0 + epsilon);
             TValue alpha1 = TValue.CreateChecked(HJWENO5_OptWeights_DPlus[1]) / Sqr(beta1 + epsilon);
@@ -415,10 +415,10 @@ namespace OpenVDB.Core.Math
 
             TValue sum_alpha = alpha0 + alpha1 + alpha2;
             if (TValue.IsZero(sum_alpha)) sum_alpha = TValue.One;
-            
+
             return (alpha0 * d0 + alpha1 * d1 + alpha2 * d2) / sum_alpha;
         }
-        
+
         private static TValue Sqr<TValue>(TValue x) where TValue : struct, IMultiplyOperators<TValue, TValue, TValue> => x * x;
     }
 }

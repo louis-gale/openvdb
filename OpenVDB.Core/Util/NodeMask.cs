@@ -37,7 +37,7 @@ namespace OpenVDB.Core.Util
             _size = dim * dim * dim; // Total number of values/bits
             _bits = new BitArray(_size, initialValueForAll);
         }
-        
+
         private NodeMask(int log2Dim, BitArray bits) // Internal constructor for cloning/reading
         {
             _log2Dim = log2Dim;
@@ -147,7 +147,7 @@ namespace OpenVDB.Core.Util
         /// Counts the number of bits that are off (false).
         /// </summary>
         public int CountOff() => _size - CountOn();
-        
+
         /// <summary>
         /// Writes the mask to a binary stream.
         /// Format: number of ulongs, then the ulong data.
@@ -159,14 +159,14 @@ namespace OpenVDB.Core.Util
             // For simplicity, let's serialize as a sequence of bools or bytes.
             // C++ NodeMask uses an array of WordType (ulong).
             // BitArray stores bits packed.
-            
+
             // Simplified: write as a block of bytes.
             // Number of bytes needed for BitArray.
             // Each byte in the array represents 8 bits.
             int numBytes = (_size + 7) / 8;
             byte[] bytes = new byte[numBytes];
             _bits.CopyTo(bytes, 0);
-            
+
             writer.Write(numBytes); // Write the number of bytes
             writer.Write(bytes);    // Write the byte array
         }

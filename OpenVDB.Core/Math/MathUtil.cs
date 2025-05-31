@@ -22,7 +22,7 @@ namespace OpenVDB.Math
         {
             return System.Math.Abs(a - b) <= epsilon;
         }
-        
+
         // Relative or absolute approximate equality
         public static bool IsRelOrApproxEqual(double a, double b, double epsilon = DefaultEpsilonD, double relTol = DefaultEpsilonD)
         {
@@ -48,7 +48,7 @@ namespace OpenVDB.Math
         {
             return System.Math.Abs(a) <= epsilon;
         }
-        
+
         public static T Abs<T>(T value) where T : IComparable<T>, ISignedNumber<T>
         {
             return T.IsNegative(value) ? -value : value;
@@ -69,7 +69,7 @@ namespace OpenVDB.Math
         XYZ, XZY, YXZ, YZX, ZXY, ZYX
         // Add other orders if present in the original C++
     }
-    
+
     public enum Axis
     {
         XAxis,

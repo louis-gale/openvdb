@@ -78,7 +78,7 @@ namespace OpenVDB.Math
 
             if (t0 == default) t0 = T.Epsilon; // Smallest positive value
             if (t1 == default) t1 = T.MaxValue; // Effectively infinity
-            
+
             if (t0 < T.Zero || t1 < T.Zero) throw new ArgumentOutOfRangeException("Ray times t0 and t1 must be non-negative.");
             Time = new TimeSpan(t0, t1);
         }
@@ -94,7 +94,7 @@ namespace OpenVDB.Math
                 T.IsZero(dir.Z) ? T.PositiveInfinity : T.One / dir.Z
             );
         }
-        
+
         public void NormalizeDir()
         {
             T len = Dir.Length();
@@ -128,7 +128,7 @@ namespace OpenVDB.Math
             if (t0 < T.Zero || t1 < T.Zero) throw new ArgumentOutOfRangeException("Ray times t0 and t1 must be non-negative.");
             Time = new TimeSpan(t0, t1);
         }
-        
+
         public void ScaleTimes(T scale)
         {
             var tempTime = Time;
@@ -160,10 +160,10 @@ namespace OpenVDB.Math
                 T b = (dimMax - eyeDim) * invDirDim;
 
                 if (a > b) (a, b) = (b, a); // Swap
-                
+
                 if (a > tMin) tMin = a;
                 if (b < tMax) tMax = b;
-                
+
                 if (tMin > tMax) return false;
             }
             return true;
@@ -183,7 +183,7 @@ namespace OpenVDB.Math
             }
             return false;
         }
-        
+
         public bool Intersects(Vec3<T> sphereCenter, T sphereRadius, out T t0, out T t1)
         {
             Vec3<T> origin = Eye - sphereCenter;
@@ -216,10 +216,10 @@ namespace OpenVDB.Math
             // Intersect with ray's valid time span
             if (r0 > t0) t0 = r0;
             if (r1 < t1) t1 = r1;
-            
+
             return t0 <= t1;
         }
-        
+
         public bool Intersects(Vec3<T> sphereCenter, T sphereRadius)
         {
             return Intersects(sphereCenter, sphereRadius, out _, out _);
@@ -240,7 +240,7 @@ namespace OpenVDB.Math
             time = T.Zero;
             T cosAngle = Dir.Dot(planeNormal);
             if (T.Abs(cosAngle) < T.Epsilon) return false; // Parallel
-            
+
             time = (planeDistance - Eye.Dot(planeNormal)) / cosAngle;
             return TestTime(time);
         }

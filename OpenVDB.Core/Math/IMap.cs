@@ -15,7 +15,7 @@ namespace OpenVDB.Math
         // Simplified Jacobian methods (not taking domainPos for now)
         Vec3<double> ApplyJacobian(Vec3<double> sourceVector);
         Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector);
-        
+
         // Simplified Jacobian Transpose methods
         Vec3<double> ApplyJT(Vec3<double> sourceVector, Vec3<double> domainPos); // Jacobian Transpose
         Vec3<double> ApplyIJT(Vec3<double> sourceVector, Vec3<double> domainPos); // Inverse Jacobian Transpose
@@ -23,7 +23,7 @@ namespace OpenVDB.Math
         // Simplified Determinant and VoxelSize (not taking domainPos)
         double Determinant { get; }
         Vec3<double> VoxelSize { get; }
-        
+
         // VoxelSize at a specific point (for non-linear maps)
         Vec3<double> GetVoxelSize(Vec3<double> domainPos);
         // Determinant at a specific point (for non-linear maps)
@@ -59,14 +59,14 @@ namespace OpenVDB.Math
 
         public abstract Vec3<double> ApplyMap(Vec3<double> sourcePoint);
         public abstract Vec3<double> ApplyInverseMap(Vec3<double> sourcePoint);
-        
+
         // Default for linear maps: apply map excluding translation
         // For non-linear, these needs to be overridden to accept domainPos.
         public abstract Vec3<double> ApplyJacobian(Vec3<double> sourceVector, Vec3<double> domainPos);
         public abstract Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector, Vec3<double> domainPos);
         public abstract Vec3<double> ApplyJT(Vec3<double> sourceVector, Vec3<double> domainPos);
         public abstract Vec3<double> ApplyIJT(Vec3<double> sourceVector, Vec3<double> domainPos);
-        
+
         // Simplified versions for convenience, assuming domainPos = Zero if not provided or map is linear
         public virtual Vec3<double> ApplyJacobian(Vec3<double> sourceVector) => ApplyJacobian(sourceVector, Vec3<double>.Zero);
         public virtual Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector) => ApplyInverseJacobian(sourceVector, Vec3<double>.Zero);
@@ -95,7 +95,7 @@ namespace OpenVDB.Math
         public virtual IMap PostTranslate(Vec3<double> t) => ToAffineMap().PostTranslate(t);
         public virtual IMap PostScale(Vec3<double> s) => ToAffineMap().PostScale(s);
         public virtual IMap PostShear(double shear, Axis axis0, Axis axis1) => ToAffineMap().PostShear(shear, axis0, axis1);
-        
+
         public abstract void WriteData(System.IO.BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata);
         public abstract void ReadData(System.IO.BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata);
     }
@@ -125,7 +125,7 @@ namespace OpenVDB.Math
         public virtual IMap PostTranslate(Vec3<double> t) => ToAffineMap().PostTranslate(t);
         public virtual IMap PostScale(Vec3<double> s) => ToAffineMap().PostScale(s);
         public virtual IMap PostShear(double shear, Axis axis0, Axis axis1) => ToAffineMap().PostShear(shear, axis0, axis1);
-        
+
         public abstract void WriteData(System.IO.BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata);
         public abstract void ReadData(System.IO.BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata);
     }

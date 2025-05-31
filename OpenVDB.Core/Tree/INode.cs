@@ -34,7 +34,7 @@ namespace OpenVDB.Core.Tree
         // Properties
         bool IsEmpty(); // True if all voxels/tiles are inactive (or background)
         bool IsDense(); // True if all voxels/tiles are active (not background) - for LeafNode, all bits on in valueMask
-        
+
         // Memory management and statistics
         void Allocate(); // Ensure buffer/table is allocated if applicable
         bool IsAllocated { get; } // Is buffer/table allocated?
@@ -50,8 +50,8 @@ namespace OpenVDB.Core.Tree
         // Other utility methods
         CoordBBox EvalActiveBoundingBox(bool visitVoxels = true); // In global coordinates
         bool IsConstant(out TValue representativeValue, out bool activeState, TValue tolerance = default);
-        
+
         // For type system / polymorphism if needed, though less common with C# generics
-        // string GetNodeType(); 
+        // string GetNodeType();
     }
 }

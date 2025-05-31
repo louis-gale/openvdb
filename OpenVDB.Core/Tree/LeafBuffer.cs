@@ -64,7 +64,7 @@ namespace OpenVDB.Core.Tree
                 }
             }
         }
-        
+
         /// <summary>
         /// Ensures the internal data array is allocated. If the buffer was uniform,
         /// it's filled with the uniform value. The buffer becomes non-uniform after this call.
@@ -82,7 +82,7 @@ namespace OpenVDB.Core.Tree
                 _isUniform = false; // Now it's non-uniform because _data exists
             }
         }
-        
+
         private void EnsureAllocatedAndMakeNonUniform()
         {
             if (_data == null)
@@ -125,7 +125,7 @@ namespace OpenVDB.Core.Tree
         public void SetValue(int index, TValue value)
         {
             if (index < 0 || index >= _size) throw new ArgumentOutOfRangeException(nameof(index));
-            
+
             EnsureAllocatedAndMakeNonUniform();
             _data[index] = value;
         }
@@ -140,7 +140,7 @@ namespace OpenVDB.Core.Tree
             _isUniform = true;
             _data = null; // Release array
         }
-        
+
         public void Write(BinaryWriter writer, NodeMask valueMask, bool saveFloatAsHalf)
         {
             if (valueMask.Count != _size)
@@ -156,7 +156,7 @@ namespace OpenVDB.Core.Tree
             {
                 // Non-uniform: write only active values indicated by the mask
                 if (_data == null) throw new InvalidOperationException("Non-uniform buffer has no allocated data to write.");
-                
+
                 for (int i = 0; i < _size; ++i)
                 {
                     if (valueMask.IsOn(i))
@@ -182,7 +182,7 @@ namespace OpenVDB.Core.Tree
             {
                 // Non-uniform: read active values, fill others with background
                 EnsureAllocatedAndMakeNonUniform(); // Allocates _data and sets _isUniform = false
-                
+
                 if (valueMask.IsAllOff())
                 {
                     if(_size > 0) Array.Fill(_data, backgroundIfAllMaskedOff);
@@ -208,7 +208,7 @@ namespace OpenVDB.Core.Tree
                 }
             }
         }
-        
+
         // Helper for single value I/O with half float consideration
         private void WriteSingleValue(BinaryWriter writer, TValue value, bool useHalf)
         {
@@ -232,7 +232,7 @@ namespace OpenVDB.Core.Tree
             }
             return ReadNonFloatValue(reader);
         }
-        
+
         private void WriteNonFloatValue(BinaryWriter writer, TValue value)
         {
             if (value is bool b) writer.Write(b);

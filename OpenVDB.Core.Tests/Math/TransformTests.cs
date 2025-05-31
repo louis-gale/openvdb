@@ -39,9 +39,9 @@ namespace OpenVDB.Core.Tests.Math
         {
             var t = Transform.CreateTranslationTransform(new Vec3<double>(5,5,5));
             var clonedT = t.Clone();
-            
+
             // Modify original, clone should not change
-            t.PostTranslate(new Vec3<double>(5,5,5)); 
+            t.PostTranslate(new Vec3<double>(5,5,5));
 
             var originalExpectedAfterMod = new Vec3<double>(10,10,10) + TestVec;
             var clonedExpected = new Vec3<double>(5,5,5) + TestVec;
@@ -68,13 +68,13 @@ namespace OpenVDB.Core.Tests.Math
             var indexP = t.WorldToIndex(worldP);
             Assert.IsTrue(TestVec.IsApproxEqual(indexP, Epsilon));
         }
-        
+
         [Test]
         public void IndexToWorld_And_WorldToIndex_ForCoord_ShouldWork()
         {
             var t = Transform.CreateScaleTranslateTransform(new Vec3<double>(2,2,2), new Vec3<double>(0.5,0.5,0.5)); // Use offset to test rounding
             var coord = new Coord(1,2,3);
-            
+
             var worldP = t.IndexToWorld(coord);
             // Expected: (1*2+0.5, 2*2+0.5, 3*2+0.5) = (2.5, 4.5, 6.5)
             Assert.IsTrue(new Vec3<double>(2.5,4.5,6.5).IsApproxEqual(worldP, Epsilon));
@@ -94,7 +94,7 @@ namespace OpenVDB.Core.Tests.Math
         {
             var t = Transform.CreateScaleTransform(new Vec3<double>(2,2,2));
             var indexBox = new CoordBBox(new Coord(1,1,1), new Coord(3,3,3));
-            
+
             var worldBox = t.IndexToWorld(indexBox);
             // Min = (1,1,1)*2 = (2,2,2)
             // Max = (3,3,3)*2 = (6,6,6)
@@ -113,8 +113,8 @@ namespace OpenVDB.Core.Tests.Math
             // (p * S) + T1_vec is not S * T1.
             // S * T1 means: first T1, then S.  p' = (p+T1_vec)*S_mat = p*S_mat + T1_vec*S_mat
             var tPre = t.Clone();
-            tPre.PreMultiply(scaleMatrix); 
-            
+            tPre.PreMultiply(scaleMatrix);
+
             var expectedPre = (TestVec + new Vec3<double>(10,0,0)) * 2; // X component scaled
             expectedPre.Y = TestVec.Y + 0; // Y and Z translation not scaled by this specific S
             expectedPre.Z = TestVec.Z + 0;
@@ -135,12 +135,12 @@ namespace OpenVDB.Core.Tests.Math
             // Result x = px*2 + 10
             var tPost = Transform.CreateTranslationTransform(new Vec3<double>(10,0,0)); // Reset for Post
             tPost.PostMultiply(scaleMatrix);
-            
+
             var pTransformedByPost = tPost.IndexToWorld(TestVec);
             Assert.AreEqual(TestVec.X*2 + 10, pTransformedByPost.X, Epsilon);
             Assert.AreEqual(TestVec.Y*1 + 0,  pTransformedByPost.Y, Epsilon);
         }
-        
+
         [Test]
         public void Composition_ScaleThenTranslate()
         {

@@ -112,7 +112,7 @@ namespace OpenVDB.Core.Tests.Math.Stencils
             Assert.AreEqual(TestGridValueFunction(2, 1, 0), stencil.GetValue(1,1,1));
             // Global: (1-1, 0-1, -1-1) = (0,-1,-2) => 0 - 10 - 200 = -210
             Assert.AreEqual(TestGridValueFunction(0,-1,-2), stencil.GetValue(-1,-1,-1));
-            
+
             // Test point outside stencil (using GetValue which might access outside defined box if accessor allows)
             // This tests StencilBase.GetValue, not specifically if it's "in" the box.
             Assert.AreEqual(TestGridValueFunction(center.X + radius + 1, center.Y, center.Z), stencil.GetValue(radius + 1, 0, 0));
@@ -124,7 +124,7 @@ namespace OpenVDB.Core.Tests.Math.Stencils
             int radius = 1;
             var stencil = new BoxStencil<float>(_accessor, radius); // Center at (0,0,0) by default
             var localCoords = stencil.GetAllLocalCoords().ToList();
-            
+
             int expectedCount = (2 * radius + 1) * (2 * radius + 1) * (2 * radius + 1);
             Assert.AreEqual(expectedCount, localCoords.Count);
 
@@ -133,7 +133,7 @@ namespace OpenVDB.Core.Tests.Math.Stencils
                 for(int j = -radius; j <= radius; j++)
                     for(int k = -radius; k <= radius; k++)
                         expectedSet.Add(new Coord(i,j,k));
-            
+
             foreach(var coord in localCoords)
             {
                 Assert.IsTrue(expectedSet.Contains(coord), $"Unexpected local coord {coord} in BoxStencil iteration.");
@@ -159,7 +159,7 @@ namespace OpenVDB.Core.Tests.Math.Stencils
             Assert.IsTrue(values.Contains(TestGridValueFunction(1,1,1)));
             Assert.IsTrue(values.Contains(TestGridValueFunction(0,0,0)));
             Assert.IsTrue(values.Contains(TestGridValueFunction(2,2,2)));
-            
+
             // Verify all values match direct accessor calls
             int idx = 0;
             for (int k_offset = -radius; k_offset <= radius; ++k_offset)
@@ -174,7 +174,7 @@ namespace OpenVDB.Core.Tests.Math.Stencils
                 }
             }
         }
-        
+
         [Test]
         public void BoxStencil_SetRadius_UpdatesProperties()
         {
@@ -185,7 +185,7 @@ namespace OpenVDB.Core.Tests.Math.Stencils
             stencil.SetRadius(2);
             Assert.AreEqual(2, stencil.GetRadius());
             Assert.AreEqual(5, stencil.GetSize());
-            
+
             Assert.Throws<ArgumentOutOfRangeException>(() => stencil.SetRadius(-1));
         }
     }

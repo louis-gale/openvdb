@@ -47,7 +47,7 @@ namespace OpenVDB.Core.Tests.Tree
             Assert.AreEqual(TestInternalNodeLog2Dim, node.Log2Dim);
             Assert.AreEqual(1 << TestInternalNodeLog2Dim, node.Dim);
             Assert.AreEqual((1 << TestInternalNodeLog2Dim) * (1 << TestInternalNodeLog2Dim) * (1 << TestInternalNodeLog2Dim), node.NumValues);
-            
+
             var defaultLeaf = new LeafNode<float>(Coord.Zero, TestLeafNodeLog2Dim, 0.0f, false);
             Assert.AreEqual(defaultLeaf.Level + 1, node.Level);
 
@@ -86,7 +86,7 @@ namespace OpenVDB.Core.Tests.Tree
             float testValue = 25.0f;
 
             node.SetTileValue(localCoord, testValue, true);
-            
+
             Assert.IsFalse(node.HasChild(localCoord));
             Assert.IsTrue(node.IsTileValueOn(localCoord));
             Assert.AreEqual(testValue, node.GetLocalTileValue(localCoord), Epsilon);
@@ -147,19 +147,19 @@ namespace OpenVDB.Core.Tests.Tree
         {
             var nodeOrigin = new Coord(0,0,0);
             var node = CreateTestInternalNode(nodeOrigin); // Default tiles (0, inactive)
-            
+
             var childLocalCoordInInternal = new Coord(1,1,1); // Child is at (1,1,1) in internal node's space
             var childGlobalOrigin = nodeOrigin + childLocalCoordInInternal; // Child's global origin
-            
+
             var childLeaf = CreateTestLeafNode(childGlobalOrigin, 0.0f, false); // Leaf, all inactive background
             var voxelLocalCoordInLeaf = new Coord(2,2,2);
             float voxelValue = 88.0f;
             childLeaf.SetValue(voxelLocalCoordInLeaf, voxelValue); // Sets active and value
-            
+
             node.SetChildNode(childLocalCoordInInternal, childLeaf);
 
             var globalTargetCoord = childGlobalOrigin + voxelLocalCoordInLeaf;
-            
+
             Assert.AreEqual(voxelValue, node.GetValue(globalTargetCoord), Epsilon);
             Assert.IsTrue(node.IsValueOn(globalTargetCoord));
         }
@@ -208,20 +208,20 @@ namespace OpenVDB.Core.Tests.Tree
             float newValue = 123.0f;
 
             node.SetValue(globalTargetCoord, newValue); // Should path to leaf and set value
-            
+
             Assert.IsTrue(leaf.IsValueOn(voxelLocalCoordInLeaf));
             Assert.AreEqual(newValue, leaf.GetValue(voxelLocalCoordInLeaf), Epsilon);
             Assert.IsTrue(node.IsValueOn(globalTargetCoord));
             Assert.AreEqual(newValue, node.GetValue(globalTargetCoord), Epsilon);
         }
-        
+
         [Test]
         public void SetValue_CreatesActiveTile_IfNoChildAtPathAndPathCreationIsPlaceholder()
         {
             var nodeOrigin = new Coord(0,0,0);
             var initialTileValue = 0.0f;
             var node = CreateTestInternalNode(nodeOrigin, initialTileValue, false); // All tiles are 0.0f, inactive
-            
+
             var localCoordToBecomeTile = new Coord(2,2,2);
             var globalCoord = nodeOrigin + localCoordToBecomeTile;
             float newValue = 77.0f;

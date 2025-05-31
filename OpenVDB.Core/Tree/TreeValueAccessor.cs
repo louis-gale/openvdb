@@ -23,13 +23,13 @@ namespace OpenVDB.Core.Tree
         {
             _tree = tree ?? throw new ArgumentNullException(nameof(tree));
         }
-        
+
         public bool TryGetGrid(out GridBase grid) // Helper for SimplifiedNodeInfo
         {
             // This accessor is tied to a Tree, not directly a Grid.
             // However, a Tree is usually owned by a Grid.
             // For now, this concept doesn't fit well here unless Tree holds a ref to its Grid.
-            grid = null; 
+            grid = null;
             return false;
         }
 
@@ -41,7 +41,7 @@ namespace OpenVDB.Core.Tree
         public bool IsValueOn(Coord xyz) => _tree.IsValueOn(xyz);
 
         public void SetActiveState(Coord xyz, bool on) => _tree.SetActiveState(xyz, on);
-        
+
         public void SetValueOn(Coord xyz, TValue value) => _tree.SetValueOn(xyz, value);
 
         public void SetValueOff(Coord xyz) => _tree.SetValueOff(xyz, _tree.BackgroundValue); // Set to background and off

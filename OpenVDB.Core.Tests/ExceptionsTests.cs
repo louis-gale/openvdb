@@ -68,7 +68,7 @@ namespace OpenVDB.Core.Tests
             Assert.Throws<IoErrorException>(() => throw new IoErrorException("Test IoError"));
             Assert.Throws<System.IO.IOException>(() => throw new IoErrorException("Test System.IO.IOException"));
         }
-        
+
         [Test]
         public void KeyErrorException_CanBeThrownAndCaught()
         {
@@ -84,7 +84,7 @@ namespace OpenVDB.Core.Tests
             Assert.Throws<NotImplementedErrorException>(() => throw new NotImplementedErrorException("Test NotImplementedError"));
             Assert.Throws<System.NotImplementedException>(() => throw new NotImplementedErrorException("Test System.NotImplementedException"));
         }
-        
+
         [Test]
         public void ValueErrorException_CanBeThrownAndCaught()
         {
@@ -92,7 +92,7 @@ namespace OpenVDB.Core.Tests
             Assert.Throws<ValueErrorException>(() => throw new ValueErrorException("Test ValueError"));
             Assert.Throws<System.ArgumentException>(() => throw new ValueErrorException("Test System.ArgumentException"));
         }
-        
+
         [Test]
         public void ValueErrorException_WithParamName_StoresParamName()
         {

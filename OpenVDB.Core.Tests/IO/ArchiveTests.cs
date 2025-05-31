@@ -96,7 +96,7 @@ namespace OpenVDB.Core.Tests.IO
                 // Read header
                 var archiveRead = new Archive();
                 archiveRead.ReadHeader(ms);
-                
+
                 Assert.AreEqual(IoConstants.CurrentFileVersion, archiveRead.FileVersion);
                 Assert.AreEqual(OpenVDB.Version.MajorVersion, archiveRead.LibraryVersionMajor);
                 Assert.AreEqual(OpenVDB.Version.MinorVersion, archiveRead.LibraryVersionMinor);
@@ -106,7 +106,7 @@ namespace OpenVDB.Core.Tests.IO
                 // For now, just ensure ReadHeader doesn't throw and reads expected length.
             }
         }
-        
+
         [Test]
         public void WriteHeader_CorrectMagicNumberAndVersions()
         {
@@ -145,7 +145,7 @@ namespace OpenVDB.Core.Tests.IO
                 Assert.Throws<IOException>(() => archive.ReadHeader(ms));
             }
         }
-        
+
         [Test]
         public void VersionString_FormatsCorrectly()
         {
@@ -171,7 +171,7 @@ namespace OpenVDB.Core.Tests.IO
             var desc1 = CreateTestGridDescriptor("Grid1", "FloatGrid", 1000, 2000);
             var desc2 = CreateTestGridDescriptor("Grid2", "DoubleGrid", 3000, 4000);
             var descriptors = new List<GridDescriptor> { desc1, desc2 };
-            
+
             var streamMetaWrite = new StreamMetadata { FileVersion = IoConstants.CurrentFileVersion };
 
             using (var ms = new MemoryStream())
@@ -187,13 +187,13 @@ namespace OpenVDB.Core.Tests.IO
 
                 // Write descriptors sequentially
                 archiveWrite.WriteGridDescriptors(ms, descriptors, streamMetaWrite);
-                
+
                 ms.Seek(0, SeekOrigin.Begin);
 
                 var archiveRead = new Archive();
                 // ReadHeader will read the main header, then if hasGridOffsets is true,
                 // it reads gridCount and calls its internal ReadGridDescriptors.
-                archiveRead.ReadHeader(ms); 
+                archiveRead.ReadHeader(ms);
 
                 Assert.IsNotNull(archiveRead.GridDescriptors);
                 Assert.AreEqual(descriptors.Count, archiveRead.GridDescriptors.Count);
@@ -215,7 +215,7 @@ namespace OpenVDB.Core.Tests.IO
             var desc1 = CreateTestGridDescriptor("GridA", "Int32Grid", 500, 1500);
             var desc2 = CreateTestGridDescriptor("GridB", "Vec3SGrid", 2500, 3500);
             var descriptorsToWrite = new List<GridDescriptor> { desc1, desc2 };
-            
+
             var streamMetaWrite = new StreamMetadata { FileVersion = IoConstants.CurrentFileVersion };
 
             using (var ms = new MemoryStream())
@@ -226,7 +226,7 @@ namespace OpenVDB.Core.Tests.IO
 
                 // 2. Write Grid Descriptors
                 archiveWrite.WriteGridDescriptors(ms, descriptorsToWrite, streamMetaWrite);
-                
+
                 ms.Seek(0, SeekOrigin.Begin);
 
                 // 3. Read back using a new Archive instance
@@ -256,7 +256,7 @@ namespace OpenVDB.Core.Tests.IO
             grid1.GridClass = GridClass.FogVolume;
             var grid2 = new DoubleGrid { Name = "Density" }; // Assuming DoubleGrid exists and is registered
             grid2.GridClass = GridClass.LevelSet;
-            
+
             // Ensure DoubleGrid is registered for this test if GridBase.CreateGrid is used by Archive.Write internally
             // For now, Archive.Write mainly prepares descriptors from the passed grids.
             // It doesn't yet write full grid data.
@@ -273,7 +273,7 @@ namespace OpenVDB.Core.Tests.IO
                 archiveRead.ReadHeader(ms); // Reads header and descriptors
 
                 Assert.AreEqual(grids.Count, archiveRead.GridDescriptors.Count);
-                
+
                 var desc1 = archiveRead.GridDescriptors.FirstOrDefault(d => d.Name == "Temperature");
                 Assert.IsNotNull(desc1);
                 Assert.AreEqual(grid1.GridTypeName, desc1.GridType); // GridTypeName is from tree usually
@@ -283,9 +283,9 @@ namespace OpenVDB.Core.Tests.IO
                 Assert.IsNotNull(desc2);
                 Assert.AreEqual(grid2.GridTypeName, desc2.GridType);
                 Assert.AreEqual(grid2.GridClass, desc2.GridClass);
-                
+
                 // Offsets in descriptors will be placeholders (likely 0) as grid data writing is not implemented
-                Assert.AreEqual(0, desc1.MetaDataOffset); 
+                Assert.AreEqual(0, desc1.MetaDataOffset);
             }
         }
     }

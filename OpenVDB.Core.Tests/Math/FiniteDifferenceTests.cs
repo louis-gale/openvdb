@@ -58,7 +58,7 @@ namespace OpenVDB.Core.Tests.Math
         // Quadratic: f(x,y,z) = x^2 + 2y^2 + 3z^2
         private float QuadFunc(double x, double y, double z) => (float)(x * x + 2 * y * y + 3 * z * z);
         private Vec3<float> GradQuadFunc(double x, double y, double z) => new Vec3<float>((float)(2 * x), (float)(4 * y), (float)(6 * z));
-        
+
         // Cubic: f(x,y,z) = x^3 - 2y^3 + z^3
         private float CubicFunc(double x, double y, double z) => (float)(x*x*x - 2*y*y*y + z*z*z);
         private Vec3<float> GradCubicFunc(double x, double y, double z) => new Vec3<float>((float)(3*x*x), (float)(-6*y*y), (float)(3*z*z));
@@ -96,7 +96,7 @@ namespace OpenVDB.Core.Tests.Math
             float derivative = D1.InX<float, ITreeValueAccessor<float>>(accessor, TestCoord, scheme);
             Assert.AreEqual(expectedDerivative, derivative, EpsilonF, $"Scheme {scheme} failed for linear function.");
         }
-        
+
         // Test D1.InY and D1.InZ for Linear function similarly
         [TestCase(DScheme.FD_1ST, 3f)]
         [TestCase(DScheme.BD_1ST, 3f)]
@@ -145,9 +145,9 @@ namespace OpenVDB.Core.Tests.Math
             var grid = CreateScalarGrid(QuadFunc, TestDomain);
             var accessor = grid.GetAccessor();
             float expectedDerivative = GradQuadFunc(TestCoordOffset.X, TestCoordOffset.Y, TestCoordOffset.Z).X; // 2*1 = 2
-            
+
             float derivFD = D1.InX<float, ITreeValueAccessor<float>>(accessor, TestCoordOffset, DScheme.FD_1ST); // ( (1+1)^2 - 1^2 ) / 1 = 4-1=3
-            Assert.AreNotEqual(expectedDerivative, derivFD, EpsilonF); 
+            Assert.AreNotEqual(expectedDerivative, derivFD, EpsilonF);
             Assert.AreEqual(3.0f, derivFD, EpsilonF);
 
 
@@ -155,7 +155,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreNotEqual(expectedDerivative, derivBD, EpsilonF);
             Assert.AreEqual(1.0f, derivBD, EpsilonF);
         }
-        
+
         [TestCase(DScheme.CD_4TH, TestCoordOffset)] // 4*x^3 at (1,1,1) = 4
         [TestCase(DScheme.CD_6TH, TestCoordOffset)]
         public void D1_InX_QuarticFunc_ShouldBeExactForFourthOrderAndHigher(DScheme scheme, Coord coord)
@@ -166,7 +166,7 @@ namespace OpenVDB.Core.Tests.Math
             float derivative = D1.InX<float, ITreeValueAccessor<float>>(accessor, coord, scheme);
             Assert.AreEqual(expectedDerivative, derivative, EpsilonF, $"Scheme {scheme} failed for quartic function.");
         }
-        
+
         [TestCase(DScheme.CD_2ND, TestCoordOffset)] // CD_2ND should have error for quartic
         public void D1_InX_QuarticFunc_LowerOrderSchemes_ShouldHaveError(DScheme scheme, Coord coord)
         {
@@ -196,7 +196,7 @@ namespace OpenVDB.Core.Tests.Math
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
             var expectedGrad = GradLinearFunc(TestCoord.X, TestCoord.Y, TestCoord.Z);
-            
+
             // Test with CD_2ND as representative
             var grad = D1.Gradient<float, ITreeValueAccessor<float>>(accessor, TestCoord, DScheme.CD_2ND);
             Assert.IsTrue(expectedGrad.IsApproxEqual(grad, EpsilonF));
@@ -208,7 +208,7 @@ namespace OpenVDB.Core.Tests.Math
             var grid = CreateScalarGrid(QuadFunc, TestDomain);
             var accessor = grid.GetAccessor();
             var expectedGrad = GradQuadFunc(TestCoordOffset.X, TestCoordOffset.Y, TestCoordOffset.Z); // At (1,1,1) -> (2,4,6)
-            
+
             var grad = D1.Gradient<float, ITreeValueAccessor<float>>(accessor, TestCoordOffset, DScheme.CD_2ND);
             Assert.IsTrue(expectedGrad.IsApproxEqual(grad, EpsilonF));
         }
@@ -229,29 +229,29 @@ namespace OpenVDB.Core.Tests.Math
             var grid = CreateVectorGrid(VectorFuncLinear, TestDomain);
             var accessor = grid.GetAccessor();
             float expectedDiv = DivVectorFuncLinear(TestCoord.X, TestCoord.Y, TestCoord.Z); // At (0,0,0) -> 9
-            
+
             float divergence = D1.Divergence<float, ITreeValueAccessor<Vec3<float>>>(accessor, TestCoord, scheme);
             Assert.AreEqual(expectedDiv, divergence, EpsilonF, $"Scheme {scheme} failed for linear vector field divergence.");
         }
-        
+
         [TestCase(DScheme.CD_2ND, TestCoordOffset)] // At (1,1,1) -> 2*1 + 2*1 + 2*1 = 6
         public void D1_Divergence_QuadraticVectorFunc_ShouldBeExactForCD2(DScheme scheme, Coord coord)
         {
             var grid = CreateVectorGrid(VectorFuncQuad, TestDomain);
             var accessor = grid.GetAccessor();
             float expectedDiv = DivVectorFuncQuad(coord.X, coord.Y, coord.Z);
-            
+
             float divergence = D1.Divergence<float, ITreeValueAccessor<Vec3<float>>>(accessor, coord, scheme);
             Assert.AreEqual(expectedDiv, divergence, EpsilonF, $"Scheme {scheme} failed for quadratic vector field divergence.");
         }
-        
+
         [Test]
         public void D1_WENO5_And_HJWENO5_Placeholders_ShouldThrowNotImplemented()
         {
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
             Assert.Throws<NotImplementedException>(() => D1.InX<float, ITreeValueAccessor<float>>(accessor, TestCoord, DScheme.WENO5));
-            Assert.Throws<ArgumentException>(() => D1.InX<float, ITreeValueAccessor<float>>(accessor, TestCoord, DScheme.HJWENO5)); 
+            Assert.Throws<ArgumentException>(() => D1.InX<float, ITreeValueAccessor<float>>(accessor, TestCoord, DScheme.HJWENO5));
             // Current D1.InX throws ArgumentException for HJWENO5 if velocity is not provided.
             // A specific HjWeno5InX method would be called instead if velocity was available.
         }

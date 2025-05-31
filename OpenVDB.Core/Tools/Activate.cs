@@ -22,7 +22,7 @@ namespace OpenVDB.Core.Tools
             {
                 _targetValue = targetValue;
                 _tolerance = tolerance;
-                
+
                 if (tolerance is IFloatingPointIeee754<TValue> tolFloat)
                 {
                     _exactMatch = TValue.IsZero(tolFloat);
@@ -43,7 +43,7 @@ namespace OpenVDB.Core.Tools
                 {
                     return EqualityComparer<TValue>.Default.Equals(inputValue, _targetValue);
                 }
-                else if (_targetValue is IFloatingPointIeee754<TValue> targetFloat && 
+                else if (_targetValue is IFloatingPointIeee754<TValue> targetFloat &&
                          inputValue is IFloatingPointIeee754<TValue> inputFloat &&
                          _tolerance is IFloatingPointIeee754<TValue> tolFloat)
                 {
@@ -77,7 +77,7 @@ namespace OpenVDB.Core.Tools
 
         internal class ActivateOperation<TValue> : ValueMatcherOperation<TValue> where TValue : struct
         {
-            public ActivateOperation(TValue targetValue, TValue tolerance) 
+            public ActivateOperation(TValue targetValue, TValue tolerance)
                 : base(targetValue, tolerance) { }
 
             public override void ProcessNodeValues(ITreeValueAccessor<TValue> accessor, IEnumerable<Coord> coordsToProcess)
@@ -100,7 +100,7 @@ namespace OpenVDB.Core.Tools
         {
             public DeactivateOperation(TValue targetValue, TValue tolerance)
                 : base(targetValue, tolerance) { }
-            
+
             public override void ProcessNodeValues(ITreeValueAccessor<TValue> accessor, IEnumerable<Coord> coordsToProcess)
             {
                 foreach (var coord in coordsToProcess)
@@ -148,11 +148,11 @@ namespace OpenVDB.Core.Tools
                      // For now, if bbox is empty, this loop won't run.
                  }
             }
-            
+
             if (bbox.IsEmpty && !(op is ActivateInternal.ActivateOperation<TValue> && op.IsMatch(grid.Background)))
             {
                 // If not activating a matching background on an empty grid, there's nothing to do.
-                return; 
+                return;
             }
 
             // Create a list of coordinates to process. In a real scenario, this would
@@ -171,7 +171,7 @@ namespace OpenVDB.Core.Tools
             // For now, if bbox is empty, coordsToConsider will be empty.
 
             op.ProcessNodeValues(accessor, coordsToConsider);
-            
+
             Console.WriteLine($"Warning: Activate/Deactivate used simplified BBox iteration. True tree traversal not yet implemented.");
         }
 

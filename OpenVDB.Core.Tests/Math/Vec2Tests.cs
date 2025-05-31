@@ -41,7 +41,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(3f, v.X);
             Assert.AreEqual(4f, v.Y);
         }
-        
+
         [Test]
         public void Indexer_Get_ShouldReturnCorrectValues()
         {
@@ -116,7 +116,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(4f, result.X);
             Assert.AreEqual(6f, result.Y);
         }
-        
+
         [Test]
         public void Multiply_Vector_ShouldReturnComponentWiseProduct()
         {
@@ -135,7 +135,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(2f, result.X);
             Assert.AreEqual(3f, result.Y);
         }
-        
+
         [Test]
         public void Divide_Vector_ShouldReturnComponentWiseQuotient()
         {
@@ -179,7 +179,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(3.0 / 5.0, v.X, 1e-9);
             Assert.AreEqual(4.0 / 5.0, v.Y, 1e-9);
         }
-        
+
         [Test]
         public void Normalized_ShouldReturnUnitVector()
         {
@@ -189,7 +189,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(3.0/5.0, normalizedV.X, 1e-9);
             Assert.AreEqual(4.0/5.0, normalizedV.Y, 1e-9);
             // Original vector should be unchanged
-            Assert.AreEqual(3.0, v.X); 
+            Assert.AreEqual(3.0, v.X);
             Assert.AreEqual(4.0, v.Y);
         }
 
@@ -203,7 +203,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.IsTrue(v1 == v2);
             Assert.IsFalse(v1 == v3);
         }
-        
+
         [Test]
         public void IsApproxEqual_ShouldCompareCorrectly()
         {

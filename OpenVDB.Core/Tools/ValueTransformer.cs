@@ -19,12 +19,12 @@ namespace OpenVDB.Core.Tools
         Coord Coord { get; }
         TValue Value { get; } // For read-only access during iteration
         // Or an accessor for read/write access if the iterator supports it.
-        // ITreeValueAccessor<TValue> Accessor { get; } 
+        // ITreeValueAccessor<TValue> Accessor { get; }
         bool IsActive { get; }
         bool MoveNext();
         void Reset();
     }
-    
+
     // Dummy iterator for testing purposes
     public class DummyGridIterator<TValue> : IGridIterator<TValue>
     {
@@ -56,7 +56,7 @@ namespace OpenVDB.Core.Tools
         /// If it captures mutable state and is not thread-safe, it should not be shared or requires synchronization.
         /// Current C# implementation with Action might share captured variables implicitly.
         /// </param>
-        public static void ForEach<TIterator>(TIterator iterator, Action<TIterator> operation, 
+        public static void ForEach<TIterator>(TIterator iterator, Action<TIterator> operation,
             bool threaded = true, bool shareOperation = true) where TIterator : class, IGridIterator<object> // Simplified TValue to object for now
         {
             // Note: The TIterator constraint and usage needs to align with actual iterator implementations.
@@ -90,10 +90,10 @@ namespace OpenVDB.Core.Tools
                 // We'd need to iterate and store the *data* each iterator points to.
                 // For now, let's assume the operation doesn't modify the iterator's state in a conflicting way
                 // OR that we are iterating over "keys" (like Coords) and getting accessors inside the loop.
-                
+
                 // A more realistic parallel ForEach would iterate over coordinates or indices
                 // and then get an accessor for that specific item within the parallel loop body.
-                
+
                 // For this placeholder, let's assume we can collect "work items"
                 var workItems = new List<Coord>(); // Example: Collect Coords
                 iterator.Reset();
@@ -106,7 +106,7 @@ namespace OpenVDB.Core.Tools
                     // The 'operation' takes TIterator. If TIterator is stateful, this is complex.
                     // For now, this shows the intent but not a fully working parallel generic iterator model.
                     // operation(iterator_for_coord); // This is the conceptual part that's hard with generic TIterator
-                    
+
                     // Simplified: if operation is on value, and iterator gives value. This assumes TIterator is simple.
                     // This is a conceptual placeholder for parallel execution.
                 });
@@ -119,7 +119,7 @@ namespace OpenVDB.Core.Tools
                 }
             }
         }
-        
+
         /// <summary>
         /// Transforms values from an input iterator and writes them to an output grid.
         /// </summary>
@@ -155,7 +155,7 @@ namespace OpenVDB.Core.Tools
                 // or if inputIterator state is an issue.
                 // A proper parallel transform often needs careful management of output access
                 // (e.g., thread-local storage and merge, or ConcurrentDictionary if keys are unique).
-                var workItems = new List<Coord>(); 
+                var workItems = new List<Coord>();
                 var inputValues = new Dictionary<Coord, TInIterator>(); // Storing iterator state or value by coord
 
                 inputIterator.Reset();
@@ -181,10 +181,10 @@ namespace OpenVDB.Core.Tools
                 Parallel.ForEach(collectedData, item =>
                 {
                     // This simplified version of transformFunction would need to take Tuple<Coord, TInValue>
-                    // TOutValue newValue = transformFunction(item); 
+                    // TOutValue newValue = transformFunction(item);
                     // For now, stick to the original signature and acknowledge simplification.
                     // This implies transformFunction might need to re-fetch data or use a stateless TInIterator.
-                    
+
                     // This is a placeholder for how the operation would be invoked in parallel.
                     // TOutValue newValue = transformFunction(an_iterator_or_data_for_item.Coord);
                     // For now, fallback to serial if complex parallel logic is needed.
@@ -199,7 +199,7 @@ namespace OpenVDB.Core.Tools
                 }
             }
         }
-        
+
         // Placeholder for Accumulate - this is a parallel reduction, more complex.
         public static TResult Accumulate<TIterator, TValue, TAccumulator, TResult>(
             TIterator iterator,
@@ -252,7 +252,7 @@ namespace OpenVDB.Core.Tools
             TValue currentValue = accessor.GetValue(xyz); // Assuming IsValueOn or default if not
             accessor.SetValue(xyz, op(currentValue, newValue));
         }
-        
+
         // More direct if accessor supports ModifyValue(Coord, Op)
         private delegate void ModifyValueOp<TValue>(ref TValue existingValue, TValue newValue);
 
@@ -274,7 +274,7 @@ namespace OpenVDB.Core.Tools
                                                 // This delegate signature is more for an internal Modify method.
                                                 // Let's re-evaluate the Func for SetValueOn*
             // }
-            
+
             // Simplified Get/Set for now:
             TValue currentValue = accessor.GetValue(xyz);
             TValue resultValue = currentValue; // Make a copy

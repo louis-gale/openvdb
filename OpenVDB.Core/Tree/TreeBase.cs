@@ -16,7 +16,7 @@ namespace OpenVDB.Core.Tree
         public abstract string TreeType { get; }
         public abstract string ValueTypeName { get; }
         public abstract Type ValueType { get; }
-        
+
         public abstract object BackgroundValue { get; }
 
         public abstract bool IsEmpty { get; }
@@ -39,7 +39,7 @@ namespace OpenVDB.Core.Tree
         // public abstract void ReadBuffers(BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata, CoordBBox bbox);
         public abstract void WriteBuffers(BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata);
         public abstract void ReadNonresidentBuffers();
-        
+
         public virtual void Print(TextWriter writer, int verboseLevel)
         {
             writer.WriteLine($"TreeType: {TreeType}, ValueType: {ValueTypeName}, Background: {BackgroundValue}");

@@ -68,7 +68,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(6.0, v.Z);
             Assert.Throws<IndexOutOfRangeException>(() => { v[3] = 7.0; });
         }
-        
+
         [Test]
         public void Add_Vector_ShouldReturnCorrectSum()
         {
@@ -100,7 +100,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(6f, cross.Y);
             Assert.AreEqual(-3f, cross.Z);
         }
-        
+
         [Test]
         public void Length_ShouldReturnCorrectLength()
         {
@@ -118,7 +118,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(3.0 / 7.0, v.Y, 1e-9);
             Assert.AreEqual(6.0 / 7.0, v.Z, 1e-9);
         }
-        
+
         [Test]
         public void Dot_Product_ShouldBeCorrect()
         {

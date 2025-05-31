@@ -23,7 +23,7 @@ namespace OpenVDB.Core
         public TTree Tree => _tree;
         public override ITree BaseTree => _tree;
         public TValue Background => _tree.BackgroundValue;
-        
+
         public override string GridTypeName => _tree.TreeType; // Or a more specific grid name like "FloatGrid"
         public override string ValueTypeName => _tree.ValueTypeName;
         public override Type ValueType => typeof(TValue);
@@ -36,7 +36,7 @@ namespace OpenVDB.Core
         public Grid(TValue background) : this(CreateTreeWithBackground(background))
         {
         }
-        
+
         private static TTree CreateTreeWithBackground(TValue background)
         {
             // This is a bit of a hack due to lack of direct constructor with background in new TTree() constraint.
@@ -64,13 +64,13 @@ namespace OpenVDB.Core
         {
             _tree = tree ?? throw new ArgumentNullException(nameof(tree));
         }
-        
+
         // Internal constructor for copying
         private Grid(TTree tree, MetaMap meta, Transform transform) : base(meta, transform)
         {
              _tree = tree ?? throw new ArgumentNullException(nameof(tree));
         }
-        
+
         // Copy constructor (deep copy of tree, metadata, transform)
         public Grid(Grid<TTree, TValue> other) : base(other) // Deep copies metadata & transform
         {
@@ -92,7 +92,7 @@ namespace OpenVDB.Core
                  Console.Error.WriteLine($"Warning: Grid created from GridBase of different ValueType. Using default background for new tree.");
             }
         }
-        
+
         /// <summary>
         /// Shallow copy of tree, deep copy of metadata & transform.
         /// </summary>
@@ -185,7 +185,7 @@ namespace OpenVDB.Core
             if (otherGrid == null) throw new ArgumentNullException(nameof(otherGrid));
             _tree.Merge(otherGrid.Tree, policy);
         }
-        
+
         public void TopologyUnion<TOtherValue>(Grid<ITree<TOtherValue>, TOtherValue> otherGrid)
         {
              if (otherGrid == null) throw new ArgumentNullException(nameof(otherGrid));
@@ -233,7 +233,7 @@ namespace OpenVDB.Core
             streamMetadata.HalfFloat = SaveFloatAsHalf;
             _tree.WriteBuffers(writer, streamMetadata);
         }
-        
+
         public override void ReadNonresidentBuffers() => _tree.ReadNonresidentBuffers();
 
         public override void Print(TextWriter writer, int verboseLevel = 1)
@@ -242,7 +242,7 @@ namespace OpenVDB.Core
             writer.WriteLine($"Name: {Name}, Creator: {Creator}, Class: {GridClass}");
             writer.WriteLine($"Is In World Space: {IsInWorldSpace}, Vector Type: {VectorType}");
             writer.WriteLine($"Save Float As Half: {SaveFloatAsHalf}");
-            
+
             writer.WriteLine("Metadata:");
             foreach(var metaPair in this) // Iterates MetaMap from GridBase
             {
@@ -257,7 +257,7 @@ namespace OpenVDB.Core
             writer.WriteLine("Tree:");
             _tree.Print(writer, verboseLevel);
         }
-        
+
         // Static registration (specific to this Grid<TTree, TValue> type)
         public static string StaticGridType => new TTree().TreeType; // Or a more robust way to get a static type name
 

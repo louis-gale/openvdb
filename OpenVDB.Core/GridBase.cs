@@ -53,7 +53,7 @@ namespace OpenVDB.Core
         {
             _transform = other._transform.Clone(); // Deep copy transform
         }
-        
+
         /// <summary>
         /// Initializes a new grid, sharing the transform of the other grid
         /// but deep-copying metadata. Used by Grid<TTree>(Grid, ShallowCopy)
@@ -87,7 +87,7 @@ namespace OpenVDB.Core
         public abstract CoordBBox EvalActiveVoxelBoundingBox();
         public abstract bool EvalActiveVoxelDim(out Coord dim);
         public abstract long MemUsage();
-        
+
         // Abstract I/O methods (to be implemented in Grid<TTree>)
         public abstract void ReadTopology(BinaryReader reader, StreamMetadata streamMetadata);
         public abstract void WriteTopology(BinaryWriter writer, StreamMetadata streamMetadata);
@@ -147,7 +147,7 @@ namespace OpenVDB.Core
             get => _transform;
             set => _transform = value?.Clone() ?? throw new ArgumentNullException(nameof(value));
         }
-        
+
         public void SetTransform(Transform transform) => Transform = transform; // Alias for property setter
 
 
@@ -160,7 +160,7 @@ namespace OpenVDB.Core
         public Vec3<double> WorldToIndex(Vec3<double> worldPoint) => _transform.WorldToIndex(worldPoint);
         public Coord WorldToIndexCellCentered(Vec3<double> worldPoint) => _transform.WorldToIndexCellCentered(worldPoint);
         public Coord WorldToIndexNodeCentered(Vec3<double> worldPoint) => _transform.WorldToIndexNodeCentered(worldPoint);
-        
+
         public BBox<Vec3<double>, double> IndexToWorld(BBox<Coord, int> indexBBox) => _transform.IndexToWorld(indexBBox);
         public BBox<Vec3<double>, double> IndexToWorld(BBox<Vec3<double>, double> indexBBox) => _transform.IndexToWorld(indexBBox);
         public BBox<Vec3<double>, double> WorldToIndex(BBox<Vec3<double>, double> worldBBox) => _transform.WorldToIndex(worldBBox);
@@ -193,7 +193,7 @@ namespace OpenVDB.Core
             }
             return stats;
         }
-        
+
         public void ClipGrid(BBox<Vec3<double>, double> worldSpaceBBox)
         {
             // Convert world-space BBox to index-space CoordBBox
@@ -203,7 +203,7 @@ namespace OpenVDB.Core
             // The C++ version applies clip to the tree using an index-space CoordBBox.
             // We assume worldToIndex for BBox handles non-linearity by sampling.
             BBox<Vec3<double>, double> indexSpaceFloatBBox = WorldToIndex(worldSpaceBBox);
-            
+
             // Convert floating point index-space BBox to integer CoordBBox.
             // The conversion rule depends on how voxels are centered/aligned.
             // Usually, for cell-centered, you'd round. For node-centered, floor/ceil.
@@ -212,7 +212,7 @@ namespace OpenVDB.Core
                 Coord.Floor(indexSpaceFloatBBox.Min), // Conservative: floor min
                 Coord.Ceil(indexSpaceFloatBBox.Max)   // Conservative: ceil max
             );
-            
+
             Clip(indexSpaceCoordBBox);
         }
 
@@ -228,7 +228,7 @@ namespace OpenVDB.Core
                 default: return "UnknownGrid";
             }
         }
-        
+
         // Other static helpers like stringToGridClass, vecTypeToString etc. can be added here.
     }
 

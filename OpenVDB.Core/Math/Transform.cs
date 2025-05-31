@@ -32,7 +32,7 @@ namespace OpenVDB.Math
         public bool IsLinear => _map.IsLinear;
         public bool HasUniformScale => _map.HasUniformScale;
         public string MapTypeName => _map.TypeName;
-        
+
         public bool IsIdentity()
         {
             // Check if it's an IdentityMap or an AffineMap representing identity
@@ -42,7 +42,7 @@ namespace OpenVDB.Math
             // For simplicity, if it's not explicitly IdentityMap or an identity AffineMap,
             // a more robust check would involve transforming basis vectors.
             // A simple check:
-            return _map.VoxelSize.IsApproxEqual(new Vec3<double>(1,1,1), 1e-7) && 
+            return _map.VoxelSize.IsApproxEqual(new Vec3<double>(1,1,1), 1e-7) &&
                    System.Math.Abs(_map.Determinant - 1.0) < 1e-7;
         }
 
@@ -59,7 +59,7 @@ namespace OpenVDB.Math
         public Vec3<double> WorldToIndex(Vec3<double> worldPoint) => _map.ApplyInverseMap(worldPoint);
         public Coord WorldToIndexCellCentered(Vec3<double> worldPoint) => Coord.Round(WorldToIndex(worldPoint));
         public Coord WorldToIndexNodeCentered(Vec3<double> worldPoint) => Coord.Floor(WorldToIndex(worldPoint));
-        
+
         public BBox<Vec3<double>, double> IndexToWorld(BBox<Coord, int> indexBBox)
         {
             if (!_map.IsLinear)
@@ -143,7 +143,7 @@ namespace OpenVDB.Math
         {
             return new Transform(new AffineMap(matrix));
         }
-        
+
         public static Transform CreateScaleTransform(Vec3<double> scale) => new Transform(new ScaleMap(scale));
         public static Transform CreateTranslationTransform(Vec3<double> translate) => new Transform(new TranslationMap(translate));
         public static Transform CreateUniformScaleTransform(double scale) => new Transform(new UniformScaleMap(scale));
@@ -177,7 +177,7 @@ namespace OpenVDB.Math
             _map = new AffineMap(_map.ToAffineMap(), affineMat); // M_current * M_new
         }
         public void PostMultiply(Mat3<double> mat) => PostMultiply(new Mat4<double>(mat));
-        
+
         public bool Equals(Transform other)
         {
             if (other == null) return false;
@@ -212,14 +212,14 @@ namespace OpenVDB.Math
         public void Read(BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata)
         {
             string mapTypeName = OpenVDB.Core.IO.IoUtils.ReadString(reader);
-            
+
             // This is where a MapFactory (like C++ MapRegistry) would be used.
             // For now, create a known map type or throw.
             // This simplified version assumes the map type being read is one we can directly instantiate
             // or it's the default type if the factory mechanism isn't in place.
             // Let's assume for now we try to create based on common types,
             // or default to AffineMap if typeName is "AffineMap" which is a common general case.
-            
+
             IMap newMap = null;
             if (mapTypeName == Maps.IdentityMap.StaticTypeName) newMap = new Maps.IdentityMap(); // Requires StaticTypeName in each map class
             else if (mapTypeName == Maps.TranslationMap.StaticTypeName) newMap = new Maps.TranslationMap();
@@ -231,7 +231,7 @@ namespace OpenVDB.Math
             else if (mapTypeName == Maps.UnitaryMap.StaticTypeName) newMap = new Maps.UnitaryMap();
             else if (mapTypeName == Maps.NonlinearFrustumMap.StaticTypeName) newMap = new Maps.NonlinearFrustumMap();
             // else if (mapTypeName == typeof(Maps.CompoundMap<,>).Name) // More complex for generics
-            
+
             if (newMap != null)
             {
                 newMap.ReadData(reader, streamMetadata);

@@ -34,7 +34,7 @@ namespace OpenVDB.Core.Math.Maps
 
         public Vec3<double> ApplyMap(Vec3<double> sourcePoint) => _map.ApplyMap(sourcePoint);
         public Vec3<double> ApplyInverseMap(Vec3<double> sourcePoint) => _map.ApplyInverseMap(sourcePoint);
-        
+
         public Vec3<double> ApplyJacobian(Vec3<double> sourceVector) => _map.ApplyJacobian(sourceVector);
         public Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector) => _map.ApplyInverseJacobian(sourceVector);
         public Vec3<double> ApplyJT(Vec3<double> sourceVector) => _map.ApplyJT(sourceVector);
@@ -60,7 +60,7 @@ namespace OpenVDB.Core.Math.Maps
         public IMap PostTranslate(Vec3<double> t) => new GenericMap(_map.PostTranslate(t));
         public IMap PostScale(Vec3<double> s) => new GenericMap(_map.PostScale(s));
         public IMap PostShear(double shear, Axis axis0, Axis axis1) => new GenericMap(_map.PostShear(shear, axis0, axis1));
-        
+
         // I/O methods
         public void WriteData(BinaryWriter writer, StreamMetadata streamMetadata)
         {

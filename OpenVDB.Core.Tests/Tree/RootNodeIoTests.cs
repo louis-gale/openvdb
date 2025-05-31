@@ -44,7 +44,7 @@ namespace OpenVDB.Core.Tests.Tree
             }
             return leaf;
         }
-        
+
         // Helper to create an InternalNode, potentially with one child LeafNode
         private TestInternalNode CreatePopulatedInternalNode(Coord origin, float tileValue, bool tileActive,
             Coord? childLeafLocalOrigin = null, TestLeafNode childLeaf = null)
@@ -75,7 +75,7 @@ namespace OpenVDB.Core.Tests.Tree
                 ms.Seek(0, SeekOrigin.Begin);
 
                 // For reading, RootNode constructor needs a dummy background, ReadTopology will set the actual one.
-                var newRoot = new TestRootNode(default(float)); 
+                var newRoot = new TestRootNode(default(float));
                 using (var reader = new BinaryReader(ms, System.Text.Encoding.UTF8, true))
                 {
                     newRoot.ReadTopology(reader, streamMeta);
@@ -91,7 +91,7 @@ namespace OpenVDB.Core.Tests.Tree
         {
             float rootBg = 0.0f;
             var originalRoot = new TestRootNode(rootBg);
-            
+
             var leafOrigin = new Coord(0, 0, 0); // This is the origin for the child node slot in root
                                                  // The leaf's own origin will be this.
             var originalLeaf = CreatePopulatedLeafNode(leafOrigin, 5.0f, allActive: true);
@@ -103,10 +103,10 @@ namespace OpenVDB.Core.Tests.Tree
             // The LeafNode will be a child of this InternalNode, at a local offset within it.
             var internalChildOrigin = leafOrigin; // Let InternalNode have the same origin for simplicity here
             var internalChild = new TestInternalNode(internalChildOrigin, TestInternalNode.StaticLog2Dim, rootBg, false);
-            
+
             Coord leafLocalCoordInInternal = new Coord(1,1,1); // Place leaf at (1,1,1) within InternalNode
             originalLeaf.Origin = internalChildOrigin + leafLocalCoordInInternal; // Update leaf's global origin
-            
+
             internalChild.SetChildNode(leafLocalCoordInInternal, originalLeaf);
             originalRoot.SetChildNode(internalChildOrigin, internalChild);
 
@@ -121,7 +121,7 @@ namespace OpenVDB.Core.Tests.Tree
                 }
 
                 ms.Seek(0, SeekOrigin.Begin);
-                
+
                 var newRoot = new TestRootNode(default(float));
                 using (var reader = new BinaryReader(ms, System.Text.Encoding.UTF8, true))
                 {
@@ -137,7 +137,7 @@ namespace OpenVDB.Core.Tests.Tree
                 var deserializedInternalChild = newRoot.GetChildNode(internalChildOrigin);
                 Assert.IsNotNull(deserializedInternalChild);
                 Assert.IsInstanceOf<TestInternalNode>(deserializedInternalChild);
-                
+
                 var deserializedLeaf = deserializedInternalChild.GetChildNode(leafLocalCoordInInternal);
                 Assert.IsNotNull(deserializedLeaf);
                 Assert.IsInstanceOf<TestLeafNode>(deserializedLeaf);
@@ -158,12 +158,12 @@ namespace OpenVDB.Core.Tests.Tree
                          Assert.AreEqual(originalLeaf.Buffer.GetValue(i), deserializedLeaf.Buffer.GetValue(i), Epsilon, $"Buffer value mismatch at leaf index {i}");
                     }
                 }
-                 Assert.AreEqual(originalLeaf.GetValue(LeafNode<float>.OffsetToLocalCoord(0, originalLeaf.Log2Dim)), 
+                 Assert.AreEqual(originalLeaf.GetValue(LeafNode<float>.OffsetToLocalCoord(0, originalLeaf.Log2Dim)),
                                 deserializedLeaf.GetValue(LeafNode<float>.OffsetToLocalCoord(0, originalLeaf.Log2Dim)), Epsilon);
 
             }
         }
-        
+
         [Test]
         public void WriteAndRead_RootWithNestedStructure_ShouldPreserveHierarchy()
         {
@@ -208,7 +208,7 @@ namespace OpenVDB.Core.Tests.Tree
                 // Check active tile in newInternal1
                 Assert.IsTrue(newInternal1.IsTileValueOn(new Coord(0,0,0)));
                 Assert.AreEqual(300.0f, newInternal1.GetLocalTileValue(new Coord(0,0,0)), Epsilon);
-                
+
                 // Check grandchild leaf
                 var newLeaf1 = newInternal1.GetChildNode(new Coord(1,1,1)) as TestLeafNode;
                 Assert.IsNotNull(newLeaf1);
@@ -218,7 +218,7 @@ namespace OpenVDB.Core.Tests.Tree
                 Assert.AreEqual(200.0f + 1, newLeaf1.GetValue(new Coord(0,0,1)), Epsilon); // Check another populated voxel
             }
         }
-        
+
         [Test]
         public void WriteAndRead_RootWithMultipleChildren_ShouldPreserveAll()
         {
@@ -232,7 +232,7 @@ namespace OpenVDB.Core.Tests.Tree
             var internal2Origin = new Coord(1 << TestInternalNode.StaticLog2Dim, 0, 0); // Place next to internal1
             var internal2 = CreatePopulatedInternalNode(internal2Origin, 2.0f, true);
             originalRoot.SetChildNode(internal2Origin, internal2);
-            
+
             var streamMeta = new StreamMetadata();
             using (var ms = new MemoryStream())
             {
@@ -272,7 +272,7 @@ namespace OpenVDB.Core.Tests.Tree
             where TChild : class, INode<TValue>, new()
             where TValue : struct
         {
-            var fieldInfo = typeof(RootNode<TChild, TValue>).GetField("_childTable", 
+            var fieldInfo = typeof(RootNode<TChild, TValue>).GetField("_childTable",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             var dict = fieldInfo?.GetValue(rootNode) as System.Collections.IDictionary;
             return dict?.Count ?? -1;

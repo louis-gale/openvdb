@@ -64,9 +64,9 @@ namespace OpenVDB
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
-    
+
     [Serializable]
-    public class LookupErrorException : OpenVDBException 
+    public class LookupErrorException : OpenVDBException
     {
         public LookupErrorException() : base("Lookup error.") { }
         public LookupErrorException(string message) : base(message) { }
@@ -88,7 +88,7 @@ namespace OpenVDB
     }
 
     [Serializable]
-    public class ReferenceErrorException : OpenVDBException 
+    public class ReferenceErrorException : OpenVDBException
     {
         public ReferenceErrorException() : base("Reference error.") { }
         public ReferenceErrorException(string message) : base(message) { }
@@ -97,9 +97,9 @@ namespace OpenVDB
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
-    
+
     [Serializable]
-    public class RuntimeErrorException : OpenVDBException 
+    public class RuntimeErrorException : OpenVDBException
     {
         public RuntimeErrorException() : base("Runtime error occurred.") { }
         public RuntimeErrorException(string message) : base(message) { }

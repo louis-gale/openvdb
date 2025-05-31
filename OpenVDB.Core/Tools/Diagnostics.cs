@@ -91,7 +91,7 @@ namespace OpenVDB.Core.Tools
         public bool CheckFailed(TValue value) => value.CompareTo(_maxValue) > 0;
         public string GetFailureDescription(TValue value) => $"Value {value} is greater than max {_maxValue}";
     }
-    
+
     // Placeholder for more complex checks
     public struct CheckNormGrad<TValue> : ICheckPredicate<TValue> where TValue : struct, IFloatingPointIeee754<TValue>
     {
@@ -162,16 +162,16 @@ namespace OpenVDB.Core.Tools
             // A full implementation would use ValueOnCIter or similar from the grid.
             // This placeholder iterates all voxels in the active bounding box.
             // This is NOT equivalent to C++ version which uses ValueOnCIter.
-            
+
             // This is a major simplification. The C++ version uses ValueTransformer::forEach
             // which operates on iterators. We don't have full iterators yet.
             // So, we'll iterate through the bounding box and use an accessor.
             // This will be slow and only check values within the active bounding box,
             // not necessarily only active voxels if the tree is sparse within that box.
-            
+
             var accessor = _grid.GetAccessor();
             var activeBox = _grid.EvalActiveVoxelBoundingBox();
-            
+
             if (activeBox.IsEmpty) return;
 
             // This iteration is a placeholder for proper ValueOnCIter traversal
@@ -240,7 +240,7 @@ namespace OpenVDB.Core.Tools
                 if (diagnose.FailureCount > 0)
                     errors.Add($"{diagnose.FailureCount} non-finite values found in '{grid.Name}' (e.g., NaN, Infinity)");
             }
-            
+
             // Placeholder for Eikonal check (complex)
             if (checkCount >= 8)
             {
@@ -258,7 +258,7 @@ namespace OpenVDB.Core.Tools
             Grid<TTree, TValue> grid, int checkCount = 6)
             where TGrid : Grid<TTree, TValue>
             where TTree : class, ITree<TValue>, new()
-            where TValue : struct, IFloatingPointIeee754<TValue>, IComparable<TValue> 
+            where TValue : struct, IFloatingPointIeee754<TValue>, IComparable<TValue>
         {
             var errors = new List<string>();
             if (grid == null) { errors.Add("Input grid is null."); return errors; }
@@ -273,7 +273,7 @@ namespace OpenVDB.Core.Tools
                 if (!TValue.IsZero(grid.Background))
                      errors.Add($"Fog volume grid '{grid.Name}' has non-zero background: {grid.Background}");
             }
-            
+
             if (checkCount >= 3) // Check for values outside [0,1] for normalized fog
             {
                 // This check is heuristic, fog volumes are not strictly normalized

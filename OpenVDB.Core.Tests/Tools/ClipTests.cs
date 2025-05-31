@@ -106,7 +106,7 @@ namespace OpenVDB.Core.Tests.Tools
 
             var clippedGrid = ClipTools.ClipWithBoundingBox<FloatGrid, Tree.Tree<float>, float>(grid, worldClipBBox, keepInterior: false);
             var clippedAccessor = clippedGrid.GetAccessor();
-            
+
             for (int x = 0; x <= 4; ++x)
             for (int y = 0; y <= 4; ++y)
             for (int z = 0; z <= 4; ++z)
@@ -155,7 +155,7 @@ namespace OpenVDB.Core.Tests.Tools
                 }
             }
         }
-        
+
         [Test]
         public void ClipWithMask_KeepExterior_MatchingTransform_ClipsCorrectly()
         {
@@ -195,7 +195,7 @@ namespace OpenVDB.Core.Tests.Tools
             var differentTransform = Transform.CreateTranslationTransform(new Vec3<double>(10,0,0));
             var maskingGrid = CreateMaskBoolGrid(new CoordBBox(new Coord(0,0,0), new Coord(1,1,1)), differentTransform);
 
-            Assert.Throws<NotImplementedException>(() => 
+            Assert.Throws<NotImplementedException>(() =>
                 ClipTools.ClipWithMask<FloatGrid, Tree.Tree<float>, float, BoolGrid, Tree.Tree<bool>, bool>(
                     gridToClip, maskingGrid, true)
             );
@@ -207,7 +207,7 @@ namespace OpenVDB.Core.Tests.Tools
             var originalActiveRegion = new CoordBBox(new Coord(1,1,1), new Coord(2,2,2));
             var floatGrid = CreateTestFloatGrid(originalActiveRegion, ActiveTestValue, BackgroundTestValue);
             // Add an inactive voxel within the original BBox to ensure only active are masked
-            floatGrid.GetAccessor().SetValueOff(new Coord(1,1,1)); 
+            floatGrid.GetAccessor().SetValueOff(new Coord(1,1,1));
 
             var maskGrid = ClipInternal.ConvertToMaskGrid<FloatGrid, Tree.Tree<float>, float>(floatGrid);
             var maskAccessor = maskGrid.GetAccessor();
@@ -222,7 +222,7 @@ namespace OpenVDB.Core.Tests.Tools
             {
                 var coord = new Coord(x,y,z);
                 bool originalIsActive = coord.Equals(new Coord(1,1,1)) ? false : originalActiveRegion.IsInside(coord);
-                
+
                 if (originalIsActive)
                 {
                     Assert.IsTrue(maskAccessor.IsValueOn(coord) && maskAccessor.GetValue(coord), $"Mask for active coord {coord} should be true.");

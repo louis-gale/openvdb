@@ -42,7 +42,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(0.0, m.M20); Assert.AreEqual(0.0, m.M21); Assert.AreEqual(1.0, m.M22); Assert.AreEqual(0.0, m.M23);
             Assert.AreEqual(0.0, m.M30); Assert.AreEqual(0.0, m.M31); Assert.AreEqual(0.0, m.M32); Assert.AreEqual(1.0, m.M33);
         }
-        
+
         [Test]
         public void Indexer_Get_ShouldReturnCorrectValues()
         {
@@ -68,7 +68,7 @@ namespace OpenVDB.Core.Tests.Math
             // Test with a translation matrix
             var translation = Mat4<float>.CreateTranslation(new Vec3<float>(10, 20, 30));
             var point = new Vec4<float>(1, 1, 1, 1); // Homogeneous coordinate for a point
-            
+
             var mPoint = new Mat4<float>( // Represent point as a column matrix
                 1,0,0,0,
                 1,0,0,0,
@@ -83,7 +83,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(1f + 30f, translatedPointVec.Z);
             Assert.AreEqual(1f, translatedPointVec.W);
         }
-        
+
         [Test]
         public void Multiply_Vector_MatTimesVec_ShouldTransformCorrectly()
         {
@@ -102,7 +102,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(3f, result.Z);
             Assert.AreEqual(0f, result.W);
         }
-        
+
         [Test]
         public void Multiply_Vector_VecTimesMat_ShouldTransformCorrectly()
         {
@@ -141,7 +141,7 @@ namespace OpenVDB.Core.Tests.Math
                 4, 8, 12, 16);
             Assert.IsTrue(transposed.Equals(expected));
         }
-        
+
         // Note: Mat4.Inverse() is complex and the current C# port has a placeholder.
         // These tests would fail or need adjustment once a full inverse is implemented.
         [Test]
@@ -160,7 +160,7 @@ namespace OpenVDB.Core.Tests.Math
                  Assert.Pass("Inverse method indicates it's a placeholder or matrix was deemed singular by placeholder.");
             }
         }
-        
+
         [Test]
         public void CreateTranslation_ShouldProduceCorrectMatrix()
         {

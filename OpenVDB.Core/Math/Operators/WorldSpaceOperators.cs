@@ -105,7 +105,7 @@ namespace OpenVDB.Core.Math.Operators
             {
                 // Attempt to use the more general IMap method if available from MapBase
                 // This still needs to be fully implemented for NonlinearFrustumMap for example.
-                wsGradDouble = map.ApplyIJT(isGradDouble); 
+                wsGradDouble = map.ApplyIJT(isGradDouble);
                 // Placeholder for: map.ApplyIJT(isGradDouble, ijk.ToVec3d());
                 // For now, using the simplified ApplyIJT as many maps default to it.
                 // This will be inaccurate for non-linear maps where Jacobian varies with position.
@@ -115,7 +115,7 @@ namespace OpenVDB.Core.Math.Operators
             {
                  wsGradDouble = map.ApplyIJT(isGradDouble);
             }
-            
+
             return ConvertVec3<double, TValue>(wsGradDouble);
         }
     }

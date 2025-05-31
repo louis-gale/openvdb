@@ -45,11 +45,11 @@ namespace OpenVDB.Core.Tests.Math
             var p1 = new Vec3<float>(5,1,6);
             var p2 = new Vec3<float>(0,8,2);
             var bbox = new BBox<Vec3<float>, float>(p1, p2, sorted: false);
-            
+
             Assert.AreEqual(0, bbox.Min.X); Assert.AreEqual(1, bbox.Min.Y); Assert.AreEqual(2, bbox.Min.Z);
             Assert.AreEqual(5, bbox.Max.X); Assert.AreEqual(8, bbox.Max.Y); Assert.AreEqual(6, bbox.Max.Z);
         }
-        
+
         [Test]
         public void Constructor_MinLength_ShouldCreateCube()
         {
@@ -60,7 +60,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(new Coord(1+3-1, 1+3-1, 1+3-1), bbox.Max); // (3,3,3)
             Assert.AreEqual(new Coord(3,3,3), bbox.Extents());
         }
-        
+
         [Test]
         public void Constructor_MinLength_Float_ShouldCreateCube()
         {
@@ -152,7 +152,7 @@ namespace OpenVDB.Core.Tests.Math
             bbox.Expand(new Coord(5,1,1));
             Assert.AreEqual(new Coord(0,0,0), bbox.Min);
             Assert.AreEqual(new Coord(5,2,2), bbox.Max);
-            
+
             bbox.Expand(new Coord(-1,3,0));
             Assert.AreEqual(new Coord(-1,0,0), bbox.Min);
             Assert.AreEqual(new Coord(5,3,2), bbox.Max);
@@ -167,7 +167,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(new Coord(0,0,0), b1.Min);
             Assert.AreEqual(new Coord(5,5,5), b1.Max);
         }
-        
+
         [Test]
         public void Expand_ByPadding_ShouldExpandAllSides()
         {

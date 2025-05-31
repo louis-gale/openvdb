@@ -35,7 +35,7 @@ namespace OpenVDB.Core
             // Example (if grid registration was manual and not in static ctors):
             // if (!FloatGrid.IsGridRegistered()) FloatGrid.RegisterGrid();
             // ... other grid types ...
-            
+
             Console.WriteLine("OpenVDB.Core Initialized (placeholder)");
             _isInitialized = true;
         }
@@ -53,7 +53,7 @@ namespace OpenVDB.Core
             // GridBase.ClearRegistry();
             // MapFactory.ClearRegistry(); // If exists
             // MetadataRegistry.ClearRegistry(); // If exists
-            
+
             Console.WriteLine("OpenVDB.Core Uninitialized (placeholder)");
             _isInitialized = false;
         }

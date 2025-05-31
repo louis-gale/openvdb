@@ -53,7 +53,7 @@ namespace OpenVDB.Core.Tree
             _buffer = new LeafBuffer<TValue>(log2Dim, initialValue, true);
             _valueMask = new NodeMask(log2Dim, activeState);
         }
-        
+
         // Static helper methods for coordinate/offset conversion
         // These are crucial for mapping 3D local coordinates to 1D array indices.
         // Assuming X varies fastest, then Y, then Z. (C++ OpenVDB default)
@@ -123,7 +123,7 @@ namespace OpenVDB.Core.Tree
                 // Ensure buffer becomes non-uniform so this active voxel with potentially
                 // different-than-uniform-value (if it was previously set with SetValueOnly)
                 // or same-as-uniform-value is explicitly stored.
-                _buffer.Allocate(); 
+                _buffer.Allocate();
             }
         }
 
@@ -135,7 +135,7 @@ namespace OpenVDB.Core.Tree
             int offset = LocalCoordToOffset(localXyz, _log2Dim);
             _buffer.SetValue(offset, value); // Makes buffer non-uniform if previously uniform
         }
-        
+
         /// <summary>
         /// Sets the value of a voxel at the given local coordinate and marks it as inactive.
         /// </summary>
@@ -167,7 +167,7 @@ namespace OpenVDB.Core.Tree
                     {
                         var localCoord = new Coord(x, y, z);
                         // These calls will make buffer non-uniform if needed.
-                        SetValueOnly(localCoord, value); 
+                        SetValueOnly(localCoord, value);
                         SetActiveState(localCoord, activeState);
                     }
                 }
@@ -207,7 +207,7 @@ namespace OpenVDB.Core.Tree
             // indicates they were not written (e.g. if mask is all off, buffer becomes uniform with this).
             _buffer.Read(reader, _valueMask, backgroundIfAllMaskedOff, fromHalf);
         }
-        
+
         // Placeholder for MemUsage - requires size of TValue and NodeMask/LeafBuffer internal sizes
         public long MemUsage()
         {
@@ -217,7 +217,7 @@ namespace OpenVDB.Core.Tree
             // size += _valueMask.MemUsage(); // Needs NodeMask.MemUsage()
             return size; // Placeholder
         }
-        
+
         // Placeholder for EvalActiveBoundingBox
         public CoordBBox EvalActiveBoundingBox(bool visitVoxels = true)
         {
@@ -261,7 +261,7 @@ namespace OpenVDB.Core.Tree
             {
                 // Buffer is not uniform, but mask is constant.
                 // If mask is all off, it's constant (value = buffer's uniform value before it became non-uniform or background)
-                if (!activeState) 
+                if (!activeState)
                 {
                     representativeValue = _buffer.GetValue(0); // Or some defined background for inactive constant
                     return true;
@@ -280,7 +280,7 @@ namespace OpenVDB.Core.Tree
                     }
                     else if (!EqualityComparer<TValue>.Default.Equals(currentValue, representativeValue))
                     {
-                        return false; 
+                        return false;
                     }
                 }
                 return true;

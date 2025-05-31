@@ -59,7 +59,7 @@ namespace OpenVDB.Math
                 M20 = a[2]; M21 = a[5]; M22 = a[8];
             }
         }
-        
+
         public Mat3(Vec3<T> row0, Vec3<T> row1, Vec3<T> row2)
         {
             M00 = row0.X; M01 = row0.Y; M02 = row0.Z;
@@ -99,7 +99,7 @@ namespace OpenVDB.Math
                 else /*row == 2*/ { if (col == 0) M20 = value; else if (col == 1) M21 = value; else M22 = value; }
             }
         }
-        
+
         public T[] AsArray(bool rowMajor = true)
         {
             if(rowMajor)
@@ -131,7 +131,7 @@ namespace OpenVDB.Math
             if (c < 0 || c >= 3) throw new IndexOutOfRangeException();
             return new Vec3<T>(this[0, c], this[1, c], this[2, c]);
         }
-        
+
         public void SetRows(Vec3<T> v0, Vec3<T> v1, Vec3<T> v2)
         {
             M00 = v0.X; M01 = v0.Y; M02 = v0.Z;
@@ -196,7 +196,7 @@ namespace OpenVDB.Math
                    T.Abs(M10 - other.M10) <= epsilon && T.Abs(M11 - other.M11) <= epsilon && T.Abs(M12 - other.M12) <= epsilon &&
                    T.Abs(M20 - other.M20) <= epsilon && T.Abs(M21 - other.M21) <= epsilon && T.Abs(M22 - other.M22) <= epsilon;
         }
-        
+
         public static Mat3<T> operator -(Mat3<T> m) => new Mat3<T>(
             -m.M00, -m.M01, -m.M02,
             -m.M10, -m.M11, -m.M12,
@@ -230,7 +230,7 @@ namespace OpenVDB.Math
             v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20,
             v.X * m.M01 + v.Y * m.M11 + v.Z * m.M21,
             v.X * m.M02 + v.Y * m.M12 + v.Z * m.M22);
-            
+
         // Matrix-matrix multiplication
         public static Mat3<T> operator *(Mat3<T> m1, Mat3<T> m2) => new Mat3<T>(
             m1.M00 * m2.M00 + m1.M01 * m2.M10 + m1.M02 * m2.M20,
@@ -258,7 +258,7 @@ namespace OpenVDB.Math
                    M01 * (M10 * M22 - M12 * M20) +
                    M02 * (M10 * M21 - M11 * M20);
         }
-        
+
         public T Trace() => M00 + M11 + M22;
 
         public Mat3<T> Adjoint() => new Mat3<T>(
@@ -276,7 +276,7 @@ namespace OpenVDB.Math
             }
             return Adjoint() * (T.One / det);
         }
-        
+
         public static Mat3<T> CreateRotation(Vec3<T> axis, T angle)
         {
             T cosAngle = T.Cos(angle);
@@ -299,7 +299,7 @@ namespace OpenVDB.Math
                 cosAngle + axis.Z * axis.Z * oneMinusCos
             );
         }
-        
+
         public static Mat3<T> CreateSkewSymmetric(Vec3<T> v) => new Mat3<T>(
             T.Zero, -v.Z,  v.Y,
              v.Z, T.Zero, -v.X,

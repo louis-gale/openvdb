@@ -77,7 +77,7 @@ namespace OpenVDB.Core.Tests.Math.Maps
             Assert.IsTrue(map.IsLinear);
             Assert.IsFalse(map.HasUniformScale);
         }
-        
+
         [Test]
         public void UniformScaleTranslateMap_ShouldTransformCorrectly()
         {
@@ -112,7 +112,7 @@ namespace OpenVDB.Core.Tests.Math.Maps
             var expected = new Vec3<double>(TestVec.X * 2, TestVec.Y * 3, TestVec.Z * 4);
             Assert.IsTrue(expected.IsApproxEqual(map.ApplyMap(TestVec), Epsilon));
         }
-        
+
         [Test]
         public void UnitaryMap_WithRotation_ShouldRotate()
         {
@@ -135,16 +135,16 @@ namespace OpenVDB.Core.Tests.Math.Maps
 
             IMap sMap = new ScaleMap(scale);
             IMap tMap = new TranslationMap(translate);
-            
+
             // Equivalent to: p' = (p * S) + T
             IMap composedMap = sMap.PostTranslate(translate); // ScaleMap.PostTranslate returns ScaleTranslateMap
-            
+
             var stMap = new ScaleTranslateMap(scale, translate);
 
             Assert.IsInstanceOf<ScaleTranslateMap>(composedMap);
             Assert.IsTrue(stMap.ApplyMap(TestVec).IsApproxEqual(composedMap.ApplyMap(TestVec), Epsilon));
         }
-        
+
         [Test]
         public void MapComposition_TranslateThenScale_ShouldBeCorrect()
         {
@@ -152,10 +152,10 @@ namespace OpenVDB.Core.Tests.Math.Maps
             var translate = new Vec3<double>(10,20,30);
 
             IMap tMap = new TranslationMap(translate);
-            
+
             // Equivalent to: p' = (p + T) * S = p*S + T*S
             IMap composedMap = tMap.PostScale(scale); // TranslationMap.PostScale returns ScaleTranslateMap
-            
+
             var stMap = new ScaleTranslateMap(scale, translate * scale);
 
             Assert.IsInstanceOf<ScaleTranslateMap>(composedMap);
@@ -177,7 +177,7 @@ namespace OpenVDB.Core.Tests.Math.Maps
             Assert.IsTrue((TestVec + t).IsApproxEqual(affineT.ApplyMap(TestVec), Epsilon));
             Assert.IsTrue((TestVec * s).IsApproxEqual(affineS.ApplyMap(TestVec), Epsilon));
         }
-        
+
         [Test]
         public void InverseMap_ForSimpleMaps_ShouldBeCorrect()
         {

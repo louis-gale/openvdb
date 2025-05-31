@@ -63,7 +63,7 @@ namespace OpenVDB.Core.Tests.Metadata
 
             var metaEmpty = new StringMetadata("");
             Assert.IsFalse(metaEmpty.AsBool());
-            
+
             var metaNull = new StringMetadata(null);
             Assert.AreEqual(string.Empty, metaNull.ValueAsString()); // Handled by null check in ValueAsString
             Assert.IsFalse(metaNull.AsBool());
@@ -83,7 +83,7 @@ namespace OpenVDB.Core.Tests.Metadata
             var metaZero = new Vec3SMetadata(Vec3<float>.Zero);
             Assert.IsFalse(metaZero.AsBool()); // Assuming Vec3<float>.Zero converts to 0.0 for AsBool
         }
-        
+
         [Test]
         public void Metadata_Copy_ShouldCreateDeepCopyForTypedMetadata()
         {
@@ -97,7 +97,7 @@ namespace OpenVDB.Core.Tests.Metadata
             copied.Value = 100;
             Assert.AreEqual(42, original.Value, "Original should not change after modifying copy.");
         }
-        
+
         [Test]
         public void UnknownMetadata_StoresAndRetrievesData()
         {
@@ -114,7 +114,7 @@ namespace OpenVDB.Core.Tests.Metadata
             Assert.AreNotSame(meta.Value, copiedMeta.Value); // Should be a copy of the byte array
             CollectionAssert.AreEqual(meta.Value, copiedMeta.Value);
         }
-        
+
         [Test]
         public void Metadata_Equality_ShouldCompareTypeAndValue()
         {
@@ -127,13 +127,13 @@ namespace OpenVDB.Core.Tests.Metadata
             Assert.IsTrue(meta1_int42 == meta2_int42);
             Assert.IsFalse(meta1_int42.Equals(meta3_int100));
             Assert.IsFalse(meta1_int42 == meta3_int100);
-            
+
             // Comparing different types
             Assert.IsFalse(meta1_int42.Equals(meta4_float42));
             // The custom == operator in Metadata base might call TypeName then ValueAsString.
             // This will depend on the exact implementation of Metadata.Equals.
             // If it uses ValueAsString, "42" == "42", but TypeName check should fail first.
-            Assert.IsFalse(meta1_int42 == (Metadata)meta4_float42); 
+            Assert.IsFalse(meta1_int42 == (Metadata)meta4_float42);
         }
     }
 }

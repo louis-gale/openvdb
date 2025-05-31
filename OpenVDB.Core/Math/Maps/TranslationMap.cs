@@ -67,7 +67,7 @@ namespace OpenVDB.Math.Maps
             // (x*s_x + t_x, y*s_y + t_y, z*s_z + t_z) which is ScaleTranslate
             return new ScaleTranslateMap(s, _translation);
         }
-        
+
         public override IMap PostRotate(double radians, Axis axis)
         {
             // T(v) * R = R * T(R_inv * v)

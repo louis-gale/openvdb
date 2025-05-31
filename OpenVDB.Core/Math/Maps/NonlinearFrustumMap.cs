@@ -34,7 +34,7 @@ namespace OpenVDB.Math.Maps
             _secondMap = new AffineMap(); // Identity
             Init();
         }
-        
+
         public NonlinearFrustumMap(BBox<Vec3<double>, double> bbox, double taper, double depth)
             : this(bbox, taper, depth, new AffineMap()) // Call constructor with identity secondMap
         {
@@ -49,7 +49,7 @@ namespace OpenVDB.Math.Maps
             _secondMap = (AffineMap)secondMap.Clone(); // Store a copy
             Init();
         }
-        
+
         public NonlinearFrustumMap(NonlinearFrustumMap other)
         {
             _bbox = other._bbox;
@@ -92,7 +92,7 @@ namespace OpenVDB.Math.Maps
             _mDepthOnLz = _depth / _mLz;
             _mDepthOnLzLxLx = _depth / (_mLz * _mLx * _mLx); // Precompute mDepth / (Lz * Lx^2)
         }
-        
+
         private Vec3<double> ApplyFrustumMapInternal(Vec3<double> p)
         {
             Vec3<double> q = p - _bbox.Min;
@@ -107,7 +107,7 @@ namespace OpenVDB.Math.Maps
                  // or the frustum is ill-defined. Handle as appropriate (e.g., return a specific value or throw).
                  // For now, to prevent NaNs, let's return something, though this might not be physically correct.
                  // A robust solution would check mLx during Init().
-                 return new Vec3<double>(0,0,q.Z); 
+                 return new Vec3<double>(0,0,q.Z);
             }
 
             q.X *= scale;
@@ -119,7 +119,7 @@ namespace OpenVDB.Math.Maps
         {
             Vec3<double> q = p;
             double sFactor = _mGamma * q.Z + 1.0;
-            
+
             if (MathUtil.IsApproxZero(sFactor))
             {
                 // Point is at the eye of the perspective projection, inverse is undefined or at infinity.
@@ -144,7 +144,7 @@ namespace OpenVDB.Math.Maps
 
         public override Vec3<double> ApplyMap(Vec3<double> sourcePoint) => _secondMap.ApplyMap(ApplyFrustumMapInternal(sourcePoint));
         public override Vec3<double> ApplyInverseMap(Vec3<double> sourcePoint) => ApplyFrustumInverseMapInternal(_secondMap.ApplyInverseMap(sourcePoint));
-        
+
         // Jacobians, Determinant, VoxelSize for non-linear maps are complex and position-dependent.
         // The C++ code has detailed implementations. These are simplified/deferred.
         public override Vec3<double> ApplyJacobian(Vec3<double> sourceVector)
@@ -179,7 +179,7 @@ namespace OpenVDB.Math.Maps
                                                        // C++: s * s * mDepthOnLzLxLx; where mDepthOnLzLxLx = mDepth/(mLz*mLx*mLx)
                                                        // Jacobian elements are: scale, scale, mDepthOnLz. Det = scale^2 * mDepthOnLz
                                                        // scale = (mGamma * z' + 1) / mLx. So Det_frustum = ((mGamma*z'+1)/mLx)^2 * mDepthOnLz
-            
+
             return _secondMap.Determinant * frustumDet;
         }
 
@@ -232,7 +232,7 @@ namespace OpenVDB.Math.Maps
             // if (mapTypeName != AffineMap.StaticTypeName) throw new IoErrorException("Expected AffineMap for Frustum's second map");
             _secondMap = new AffineMap(); // Default constructor
             _secondMap.ReadData(reader, streamMetadata);
-            
+
             Init(); // Recompute derived members
         }
     }

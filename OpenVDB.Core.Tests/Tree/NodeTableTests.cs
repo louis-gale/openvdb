@@ -40,7 +40,7 @@ namespace OpenVDB.Core.Tests.Tree
         {
             var table = new NodeTable<LeafNode<float>, float>(TableSize, DefaultTileValue);
             var leafNode = CreateTestLeafNode(new Coord(0,0,0));
-            
+
             table.SetChildNode(0, leafNode);
             Assert.IsTrue(table.IsChildNode(0));
             Assert.AreSame(leafNode, table.GetChildNode(0));
@@ -56,7 +56,7 @@ namespace OpenVDB.Core.Tests.Tree
         {
             var table = new NodeTable<LeafNode<float>, float>(TableSize, DefaultTileValue);
             float newTileValue = 5.0f;
-            
+
             table.SetTileValue(0, newTileValue);
             Assert.IsFalse(table.IsChildNode(0));
             Assert.AreEqual(newTileValue, table.GetTileValue(0), Epsilon);
@@ -76,7 +76,7 @@ namespace OpenVDB.Core.Tests.Tree
             Assert.AreEqual(newTileValue, table.GetTileValue(0), Epsilon);
             Assert.IsNull(table.GetChildNode(0), "GetChildNode should return null after being set to tile.");
         }
-        
+
         [Test]
         public void RemoveChild_ReplacesChildWithTile()
         {
@@ -123,7 +123,7 @@ namespace OpenVDB.Core.Tests.Tree
 
             Assert.IsFalse(table.IsUniform(childMask, out _));
         }
-        
+
         [Test]
         public void IsUniform_SomeChildrenAndUniformTiles_ReturnsFalseIfAnyChildPresent()
         {
@@ -137,7 +137,7 @@ namespace OpenVDB.Core.Tests.Tree
             // Even if all other tiles are uniform, the presence of a child makes the table non-uniform in this context.
             Assert.IsFalse(table.IsUniform(childMask, out _));
         }
-        
+
         [Test]
         public void IsUniform_EmptyTable_ReturnsTrue() // Log2Dim=0 -> Size=1
         {
@@ -194,7 +194,7 @@ namespace OpenVDB.Core.Tests.Tree
 
                 Assert.AreEqual(-1.0f, newTable.GetTileValue(1), Epsilon); // Was child, should be background in newTable after ReadTiles
                 Assert.IsFalse(newTable.IsChildNode(1));
-                
+
                 Assert.AreEqual(3.0f, newTable.GetTileValue(2), Epsilon); // Was active tile
                 Assert.IsFalse(newTable.IsChildNode(2));
 

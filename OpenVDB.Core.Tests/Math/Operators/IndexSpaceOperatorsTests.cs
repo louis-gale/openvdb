@@ -72,9 +72,9 @@ namespace OpenVDB.Core.Tests.Math.Operators
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
             Vec3<float> expectedGrad = GradLinearFunc(TestCoord.X, TestCoord.Y, TestCoord.Z);
-            
+
             Vec3<float> grad = ISGradient.Result<float, ITreeValueAccessor<float>>(accessor, TestCoord, scheme);
-            
+
             Assert.IsTrue(expectedGrad.IsApproxEqual(grad, EpsilonF), $"Scheme {scheme} failed. Expected {expectedGrad}, got {grad}");
         }
 
@@ -97,7 +97,7 @@ namespace OpenVDB.Core.Tests.Math.Operators
             var grid = CreateScalarGrid(QuadFunc, TestDomain); // f(x,y,z) = x^2 + 2y^2 + 3z^2
             var accessor = grid.GetAccessor();
             var coord = TestCoord; // (1,1,1)
-            
+
             // Bias (+,+,+) -> all backward
             var biasPositive = new Vec3<float>(1, 1, 1);
             var gradBackward = ISGradientBiased.Result<float, ITreeValueAccessor<float>, float>(accessor, coord, BiasedGradientScheme.FIRST_BIAS, biasPositive);
@@ -117,7 +117,7 @@ namespace OpenVDB.Core.Tests.Math.Operators
                 D1.InZ<float, ITreeValueAccessor<float>>(accessor, coord, DScheme.FD_1ST)
             );
             Assert.IsTrue(expectedForward.IsApproxEqual(gradForward, EpsilonF));
-            
+
             // Bias mixed (+,-,+)
             var biasMixed = new Vec3<float>(1, -1, 1);
             var gradMixed = ISGradientBiased.Result<float, ITreeValueAccessor<float>, float>(accessor, coord, BiasedGradientScheme.FIRST_BIAS, biasMixed);
@@ -128,16 +128,16 @@ namespace OpenVDB.Core.Tests.Math.Operators
             );
             Assert.IsTrue(expectedMixed.IsApproxEqual(gradMixed, EpsilonF));
         }
-        
+
         [Test]
         public void ISGradientBiased_HJWENO5_ShouldCallHJWENOOrThrow()
         {
             var grid = CreateScalarGrid(QuadFunc, TestDomain);
             var accessor = grid.GetAccessor();
             var bias = new Vec3<float>(1,1,1); // Positive velocity for all components
-            
+
             // D1.HjWeno5InX/Y/Z are placeholders that throw NotImplementedException
-            Assert.Throws<NotImplementedException>(() => 
+            Assert.Throws<NotImplementedException>(() =>
                 ISGradientBiased.Result<float, ITreeValueAccessor<float>, float>(accessor, TestCoord, BiasedGradientScheme.HJWENO5_BIAS, bias)
             );
         }
@@ -150,7 +150,7 @@ namespace OpenVDB.Core.Tests.Math.Operators
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
             var coord = TestCoord; // (1,1,1)
-            
+
             float valCenter = accessor.GetValue(coord); // 2*1 + 3*1 + 4*1 + 5 = 14
             bool positiveSign = valCenter > 0; // True
 
@@ -172,13 +172,13 @@ namespace OpenVDB.Core.Tests.Math.Operators
             float computedNormSq = ISGradientNormSqrd.Result<float, ITreeValueAccessor<float>>(accessor, coord, BiasedGradientScheme.FIRST_BIAS);
             Assert.AreEqual(expectedNormSq, computedNormSq, EpsilonF);
         }
-        
+
         [Test]
         public void ISGradientNormSqrd_HJWENO5_ShouldThrowNotImplemented()
         {
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
-            Assert.Throws<NotImplementedException>(() => 
+            Assert.Throws<NotImplementedException>(() =>
                 ISGradientNormSqrd.Result<float, ITreeValueAccessor<float>>(accessor, TestCoord, BiasedGradientScheme.HJWENO5_BIAS)
             );
         }
@@ -196,7 +196,7 @@ namespace OpenVDB.Core.Tests.Math.Operators
             float laplacian = ISLaplacian.Result<float, ITreeValueAccessor<float>>(accessor, TestCoord, DDScheme.CD_SECOND);
             Assert.AreEqual(expectedLaplacian, laplacian, EpsilonF);
         }
-        
+
         [Test]
         public void ISLaplacian_OtherSchemes_ShouldThrowNotImplemented()
         {
@@ -216,14 +216,14 @@ namespace OpenVDB.Core.Tests.Math.Operators
             float divergence = ISDivergence.Result<float, Vec3<float>, ITreeValueAccessor<Vec3<float>>>(accessor, TestCoord, DScheme.CD_2ND);
             Assert.AreEqual(expectedDiv, divergence, EpsilonF);
         }
-        
+
         [Test]
         public void ISDivergence_OtherSchemes_MayThrowNotImplemented()
         {
             var grid = CreateVectorGrid(VectorFuncLinear, TestDomain);
             var accessor = grid.GetAccessor();
             // CD_4TH in D1.Divergence is not implemented, so ISDivergence should throw.
-            Assert.Throws<NotImplementedException>(() => 
+            Assert.Throws<NotImplementedException>(() =>
                 ISDivergence.Result<float, Vec3<float>, ITreeValueAccessor<Vec3<float>>>(accessor, TestCoord, DScheme.CD_4TH));
         }
 
@@ -233,7 +233,7 @@ namespace OpenVDB.Core.Tests.Math.Operators
         {
             var grid = CreateVectorGrid(VectorFuncLinear, TestDomain);
             var accessor = grid.GetAccessor();
-            Assert.Throws<NotImplementedException>(() => 
+            Assert.Throws<NotImplementedException>(() =>
                 ISCurl.Result<float, Vec3<float>, ITreeValueAccessor<Vec3<float>>>(accessor, TestCoord, DScheme.CD_2ND));
         }
     }

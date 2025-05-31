@@ -33,7 +33,7 @@ namespace OpenVDB.Core.Metadata
         /// (Empty strings and zero values typically evaluate to false).
         /// </summary>
         public abstract bool AsBool();
-        
+
         // C++ size() returns bytes. This is less relevant for managed C#.
         // If needed for serialization, it would be handled differently.
 
@@ -62,7 +62,7 @@ namespace OpenVDB.Core.Metadata
         // Abstract methods for I/O, to be implemented by derived classes
         public abstract void ReadValue(System.IO.BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMeta, uint sizeFromFile);
         public abstract void WriteValue(System.IO.BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMeta);
-        
+
         // C++ Metadata::size() is for on-disk size.
         // This is different from in-memory size and specific to serialization.
         public abstract uint GetSizeOnDisk();
@@ -105,9 +105,9 @@ namespace OpenVDB.Core.Metadata
         }
 
         public override Metadata Copy() => new UnknownMetadata(_typeName, (byte[])_data.Clone());
-        
+
         public override string ValueAsString() => _data.Length > 0 ? "<binary_data>" : "";
-        
+
         public override bool AsBool() => _data.Length > 0;
 
         public void SetValue(byte[] data) => _data = data ?? Array.Empty<byte>();
@@ -152,13 +152,13 @@ namespace OpenVDB.Core.Metadata
         {
             _value = value;
         }
-        
+
         public TypedMetadata(TypedMetadata<T> other) // Copy constructor
         {
             // For simple value types or immutable types, direct assignment is fine.
             // For complex reference types, a deep copy mechanism might be needed if T can be one.
             // Assuming T is mostly primitive, string, or simple struct (Vec, Mat).
-            _value = other._value; 
+            _value = other._value;
         }
 
         public override Metadata Copy() => new TypedMetadata<T>(this);
@@ -175,14 +175,14 @@ namespace OpenVDB.Core.Metadata
             if (_value == null) return false;
             if (typeof(T) == typeof(string)) return !string.IsNullOrEmpty((string)(object)_value);
             if (typeof(T) == typeof(bool)) return (bool)(object)_value;
-            
+
             // Mimic C++ isZero behavior: non-zero is true.
             try { return Convert.ToDouble(_value) != 0.0; } // General case for numbers
             catch { /* Fall through for non-convertible types */ }
-            
+
             return true; // Default for non-numeric, non-string, non-bool if not null
         }
-        
+
         public override bool Equals(object obj)
         {
             if (obj is TypedMetadata<T> other)
@@ -233,7 +233,7 @@ namespace OpenVDB.Core.Metadata
             // ...
             else throw new NotSupportedException($"Metadata deserialization for type {TypeName} not implemented.");
         }
-        
+
         public override uint GetSizeOnDisk()
         {
             if (typeof(T) == typeof(string))
@@ -267,7 +267,7 @@ namespace OpenVDB.Core.Metadata
     public using Vec3DMetadata = TypedMetadata<Vec3<double>>;
     public using Vec3IMetadata = TypedMetadata<Vec3<int>>;
     public using Vec3SMetadata = TypedMetadata<Vec3<float>>;
-    
+
     // Assuming Vec4 types exist and are needed for metadata
     public using Vec4DMetadata = TypedMetadata<Vec4<double>>;
     public using Vec4IMetadata = TypedMetadata<Vec4<int>>;

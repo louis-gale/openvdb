@@ -36,7 +36,7 @@ namespace OpenVDB.Core.Tests.Tools
             _grid = new FloatGrid(0.0f); // Background 0 for simplicity
             _grid.Transform = Transform.CreateLinearTransform(1.0);
             _accessor = _grid.GetAccessor();
-            
+
             // Clear active states by setting all to background and inactive (if tree supported this well)
             // For placeholder tree, ensure values are set and then explicitly manage active state for test setup.
             // The simplified iteration in Activate.cs iterates the ActiveVoxelBoundingBox.
@@ -79,7 +79,7 @@ namespace OpenVDB.Core.Tests.Tools
             _accessor.SetValueOff(coordF);      // Inactive
             _accessor.SetValueOff(coordG);      // Inactive
             _accessor.SetValueOn(coordH, 0.60f);// Active
-            
+
             // Ensure the active bounding box covers these points for the simplified iteration in Activate.cs
             // If no points were active, EvalActiveVoxelBoundingBox would be empty.
             // By activating A, C, E, H, the bounding box will be at least _testBBox.
@@ -95,7 +95,7 @@ namespace OpenVDB.Core.Tests.Tools
 
             Assert.IsTrue(_accessor.IsValueOn(coordB), "B (inactive, 0.5f) should become active.");
             Assert.AreEqual(0.5f, _accessor.GetValue(coordB));
-            
+
             Assert.IsTrue(_accessor.IsValueOn(coordC), "C (active, 1.0f) should remain active.");
             Assert.IsFalse(_accessor.IsValueOn(coordD), "D (inactive, 1.0f) should remain inactive.");
             Assert.IsTrue(_accessor.IsValueOn(coordE), "E (active, 0.52f) should remain active (no exact match).");
@@ -111,7 +111,7 @@ namespace OpenVDB.Core.Tests.Tools
             Assert.IsTrue(_accessor.IsValueOn(coordB), "B (inactive, 0.5f) should become active.");
             Assert.IsTrue(_accessor.IsValueOn(coordE), "E (active, 0.52f) should remain active.");
             Assert.IsTrue(_accessor.IsValueOn(coordF), "F (inactive, 0.48f) should become active due to tolerance.");
-            
+
             Assert.IsFalse(_accessor.IsValueOn(coordG), "G (inactive, 0.40f) should remain inactive (outside tolerance).");
             Assert.IsTrue(_accessor.IsValueOn(coordH), "H (active, 0.60f) should remain active (outside tolerance).");
             Assert.IsFalse(_accessor.IsValueOn(coordD), "D (inactive, 1.0f) should remain inactive.");
@@ -142,12 +142,12 @@ namespace OpenVDB.Core.Tests.Tools
 
             Assert.IsFalse(_accessor.IsValueOn(coordA), "A (active, 0.5f) should become inactive.");
             Assert.IsFalse(_accessor.IsValueOn(coordB), "B (inactive, 0.5f) should remain inactive.");
-            
+
             Assert.IsTrue(_accessor.IsValueOn(coordC), "C (active, 1.0f) should remain active.");
             Assert.IsFalse(_accessor.IsValueOn(coordD), "D (inactive, 1.0f) should remain inactive.");
             Assert.IsTrue(_accessor.IsValueOn(coordE), "E (active, 0.52f) should remain active (no exact match).");
         }
-        
+
         [Test]
         public void DoDeactivate_ToleranceMatch_DeactivatesCorrectVoxels()
         {

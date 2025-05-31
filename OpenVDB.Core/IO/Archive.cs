@@ -18,7 +18,7 @@ namespace OpenVDB.Core.IO
         private ushort _libraryVersionMinorRead;
         private string _uuidRead;
         private bool _inputHasGridOffsets; // True if the archive being read contains grid offsets
-        
+
         // Settings for writing
         private bool _enableInstancing;
         private CompressionFlags _compressionFlags;
@@ -50,7 +50,7 @@ namespace OpenVDB.Core.IO
             get => _enableGridStats;
             set => _enableGridStats = value;
         }
-        
+
         public IReadOnlyList<GridDescriptor> GridDescriptors => _gridDescriptors.AsReadOnly();
 
         public Archive()
@@ -60,8 +60,8 @@ namespace OpenVDB.Core.IO
             _libraryVersionMajorRead = 0;
             _libraryVersionMinorRead = 0;
             _uuidRead = string.Empty;
-            _inputHasGridOffsets = false; 
-            
+            _inputHasGridOffsets = false;
+
             // Default settings for writing
             _enableInstancing = true;
             _compressionFlags = CompressionUtil.DefaultCompressionFlags;
@@ -78,11 +78,11 @@ namespace OpenVDB.Core.IO
             _libraryVersionMinorRead = other._libraryVersionMinorRead;
             _uuidRead = other._uuidRead;
             _inputHasGridOffsets = other._inputHasGridOffsets;
-            
+
             _enableInstancing = other._enableInstancing;
             _compressionFlags = other._compressionFlags;
             _enableGridStats = other._enableGridStats;
-            
+
             // Deep copy descriptors if any
             _gridDescriptors = new List<GridDescriptor>(other._gridDescriptors.Select(d => new GridDescriptor(d)));
         }
@@ -95,9 +95,9 @@ namespace OpenVDB.Core.IO
 
         public string GetUniqueTag() => _uuidRead; // Or a separate UUID for writing operations? C++ uses one.
         public bool IsIdentical(string uuidStr) => _uuidRead.Equals(uuidStr, StringComparison.OrdinalIgnoreCase);
-        
-        public static bool HasBloscCompression() => false; 
-        public static bool HasZLibCompression() => true;  
+
+        public static bool HasBloscCompression() => false;
+        public static bool HasZLibCompression() => true;
 
         /// <summary>
         /// Reads the VDB file header from the stream.
@@ -107,7 +107,7 @@ namespace OpenVDB.Core.IO
         public void ReadHeader(Stream stream)
         {
             if (!stream.CanRead) throw new ArgumentException("Stream is not readable.", nameof(stream));
-            
+
             _gridDescriptors.Clear(); // Clear any previous descriptors
 
             using (var reader = new BinaryReader(stream, Encoding.ASCII, leaveOpen: true))
@@ -117,7 +117,7 @@ namespace OpenVDB.Core.IO
                 byte m2 = reader.ReadByte();
                 byte m3 = reader.ReadByte();
 
-                if (m0 != IoConstants.Magic0 || m1 != IoConstants.Magic1 || 
+                if (m0 != IoConstants.Magic0 || m1 != IoConstants.Magic1 ||
                     m2 != IoConstants.Magic2 || m3 != IoConstants.Magic3)
                 {
                     throw new IOException("Invalid VDB magic number. Not a VDB file or corrupt.");
@@ -126,8 +126,8 @@ namespace OpenVDB.Core.IO
                 _fileVersionRead = reader.ReadUInt32();
                 _libraryVersionMajorRead = reader.ReadUInt16();
                 _libraryVersionMinorRead = reader.ReadUInt16();
-                
-                _inputHasGridOffsets = reader.ReadBoolean(); 
+
+                _inputHasGridOffsets = reader.ReadBoolean();
 
                 char[] uuidChars = reader.ReadChars(36);
                 _uuidRead = new string(uuidChars);
@@ -164,11 +164,11 @@ namespace OpenVDB.Core.IO
                 writer.Write(IoConstants.Magic2);
                 writer.Write(IoConstants.Magic3);
 
-                writer.Write(IoConstants.CurrentFileVersion); 
+                writer.Write(IoConstants.CurrentFileVersion);
                 writer.Write(Version.MajorVersion);
                 writer.Write(Version.MinorVersion);
-                
-                writer.Write(hasGridOffsets); 
+
+                writer.Write(hasGridOffsets);
 
                 string uuidToWrite = string.IsNullOrEmpty(_uuidRead) ? System.Guid.NewGuid().ToString() : _uuidRead;
                 if (uuidToWrite.Length != 36) uuidToWrite = System.Guid.NewGuid().ToString();
@@ -206,7 +206,7 @@ namespace OpenVDB.Core.IO
                 WriteGridStats = this.IsGridStatsMetadataEnabled,
                 IsSeekable = stream.CanSeek
             };
-            
+
             // This is a simplified Write sequence. A full implementation is more complex.
             // 1. Write Header (potentially with placeholder offsets if not seekable, or come back later)
             bool hasGridOffsets = _enableInstancing && gridList.Count > 1;
@@ -252,7 +252,7 @@ namespace OpenVDB.Core.IO
                 // Or, write descriptors after all grid data and store a pointer to the descriptor block.
                 Console.WriteLine("Placeholder: Grid descriptor offset table would be updated if seekable.");
             }
-            
+
             // 6. Write Grid Descriptors now (if not written via an offset table earlier)
             //    This is simplified; VDB format might put descriptors before grid data,
             //    requiring either seeking or knowing all sizes beforehand.
@@ -266,7 +266,7 @@ namespace OpenVDB.Core.IO
         {
             if (!stream.CanRead) throw new ArgumentException("Stream is not readable.", nameof(stream));
             _gridDescriptors.Clear();
-            
+
             var streamMetadata = new StreamMetadata // Create a relevant StreamMetadata for reading descriptors
             {
                 FileVersion = _fileVersionRead,
@@ -286,7 +286,7 @@ namespace OpenVDB.Core.IO
                 }
             }
         }
-        
+
         /// <summary>
         /// Writes the provided list of grid descriptors to the stream.
         /// </summary>
@@ -311,7 +311,7 @@ namespace OpenVDB.Core.IO
         public virtual GridBase ReadGrid(Stream stream, GridDescriptor descriptor)
         {
             if (descriptor == null) throw new ArgumentNullException(nameof(descriptor));
-            
+
             var streamMetadata = new StreamMetadata // Create StreamMetadata for this grid
             {
                 FileVersion = _fileVersionRead,
@@ -332,7 +332,7 @@ namespace OpenVDB.Core.IO
             Console.WriteLine($"Placeholder: Reading grid '{descriptor.Name}' of type '{descriptor.GridType}'.");
             // Actual implementation is complex and involves creating the right grid type,
             // seeking to various offsets specified in the descriptor, and deserializing components.
-            return null; 
+            return null;
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace OpenVDB.Core.IO
             // 1. Write Grid Metadata
             descriptor.MetaDataOffset = writer.BaseStream.Position;
             grid.Write(writer, streamMetadata); // Assumes MetaMap (base of GridBase) has Write method
-            
+
             // 2. Write Grid Transform
             descriptor.TransformOffset = writer.BaseStream.Position;
             grid.Transform.Write(writer, streamMetadata);
@@ -370,7 +370,7 @@ namespace OpenVDB.Core.IO
             // 4. Write Tree Buffers (Voxel Data)
             // C++ has IsDataInstance. For now, assume data is written if topology is written.
             // A more complete IsDataInstance would check if BlocksOffset should be from parent.
-            bool writeData = (!descriptor.IsTopologyInstance() || isInstanceRoot); 
+            bool writeData = (!descriptor.IsTopologyInstance() || isInstanceRoot);
             if (writeData)
             {
                 descriptor.BlocksOffset = writer.BaseStream.Position;
@@ -382,10 +382,10 @@ namespace OpenVDB.Core.IO
                 descriptor.BlocksOffset = 0; // Or point to parent's blocks offset
                 descriptor.BlocksByteSize = 0;
             }
-            
+
             // Descriptor itself doesn't store its end position; it's implicit or handled by Archive writing sequence.
         }
-        
+
         public override void Write(Stream stream, IEnumerable<GridBase> grids, MetaMap globalMetadata)
         {
             if (grids == null) throw new ArgumentNullException(nameof(grids));
@@ -426,7 +426,7 @@ namespace OpenVDB.Core.IO
                 // TODO: Handle instancing detection here to set desc.InstanceParentName and desc.InstanceTransform
                 descriptors.Add(desc);
             }
-            
+
             // Determine if grid offsets table is needed
             bool hasGridOffsets = _enableInstancing && gridList.Count > 0; // Simplified: always true if instancing and grids exist
                                                                           // C++ logic is more complex, depends on actual instances
@@ -434,7 +434,7 @@ namespace OpenVDB.Core.IO
             // Write Header (potentially with placeholder offsets for descriptors)
             WriteHeader(stream, descriptors.Count, hasGridOffsets);
             long gridDescriptorTableOffset = stream.Position; // Position after header (and after grid count/offsets if written)
-            
+
             // If hasGridOffsets, the offsets written by WriteHeader are placeholders.
             // We will need to come back and update them if the stream is seekable.
 
@@ -463,12 +463,12 @@ namespace OpenVDB.Core.IO
                 {
                     var grid = gridList[i];
                     var descriptor = descriptors[i];
-                    
+
                     // Update descriptor with its own starting position IF descriptors are written sequentially after global metadata
                     // This depends on the final VDB structure being targeted.
                     // For now, assume descriptors are written later in a block.
                     // The WriteGrid method will populate offsets relative to start of grid data.
-                    
+
                     // TODO: Determine isInstanceRoot properly. For now, treat all as roots if not instancing.
                     bool isInstanceRoot = true; // Simplified for now
                     if (descriptor.IsInstance())
@@ -517,7 +517,7 @@ namespace OpenVDB.Core.IO
                         // The offset stored in the header table should be the absolute offset to the descriptor.
                         // This requires knowing where each descriptor WILL BE written.
                         // If `WriteGridDescriptors` writes them sequentially starting at `finalDescriptorsOffset`:
-                        writer.Write(currentDescriptorOffsetInTable); 
+                        writer.Write(currentDescriptorOffsetInTable);
                         // This isn't quite right: `desc.GridDescriptorOffset` should be this value.
                         // The C++ `Archive::write` calculates these offsets *before* writing grid data,
                         // then writes descriptors, then grid data. This requires knowing sizes or multiple passes.

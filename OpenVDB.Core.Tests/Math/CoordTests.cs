@@ -45,7 +45,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(5, c.Y);
             Assert.AreEqual(6, c.Z);
         }
-        
+
         [Test]
         public void Constructor_IntArray_ShouldInitializeCorrectly()
         {
@@ -89,14 +89,14 @@ namespace OpenVDB.Core.Tests.Math
             c.Reset(7);
             Assert.AreEqual(new Coord(7,7,7), c);
         }
-        
+
         [Test]
         public void Offset_And_OffsetBy_ShouldWork()
         {
             var c = new Coord(1,2,3);
             c.Offset(1,1,1);
             Assert.AreEqual(new Coord(2,3,4), c);
-            
+
             var c2 = c.OffsetBy(2,2,2);
             Assert.AreEqual(new Coord(4,5,6), c2);
             Assert.AreEqual(new Coord(2,3,4), c); // c should be unchanged by OffsetBy
@@ -132,7 +132,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(new Coord(2, 4, 6), 2 * c1);
             Assert.AreEqual(new Coord(0, 1, 1), c1 / 2); // Integer division
         }
-        
+
         [Test]
         public void BitwiseOperators_ShouldComputeCorrectly()
         {
@@ -166,7 +166,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.IsTrue(c1 <= c2);
             Assert.IsTrue(c1 <= c1_copy);
             Assert.IsFalse(c2 <= c1);
-            
+
             Assert.IsTrue(c2 > c1);
             Assert.IsFalse(c1 > c2);
 
@@ -174,19 +174,19 @@ namespace OpenVDB.Core.Tests.Math
             Assert.IsTrue(c1_copy >= c1);
             Assert.IsFalse(c1 >= c2);
         }
-        
+
         [Test]
         public void MinMaxComponent_ShouldWorkCorrectly()
         {
             var c1 = new Coord(1, 5, 2);
             var c2 = new Coord(3, 2, 4);
-            
+
             var minStatic = Coord.MinComponent(c1, c2);
             Assert.AreEqual(new Coord(1, 2, 2), minStatic);
 
             var maxStatic = Coord.MaxComponent(c1, c2);
             Assert.AreEqual(new Coord(3, 5, 4), maxStatic);
-            
+
             var c1Copy = c1;
             c1Copy.MinComponent(c2);
             Assert.AreEqual(new Coord(1, 2, 2), c1Copy);
@@ -195,7 +195,7 @@ namespace OpenVDB.Core.Tests.Math
             c1Copy.MaxComponent(c2);
             Assert.AreEqual(new Coord(3, 5, 4), c1Copy);
         }
-        
+
         [Test]
         public void MinMaxIndex_ShouldReturnCorrectIndex()
         {
@@ -217,7 +217,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(49, c.LengthSqr());
             Assert.AreEqual(7.0, c.Length(), 1e-9);
         }
-        
+
         [Test]
         public void Abs_ShouldReturnAbsoluteValues()
         {

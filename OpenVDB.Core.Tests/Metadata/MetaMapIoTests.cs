@@ -44,7 +44,7 @@ namespace OpenVDB.Core.Tests.Metadata
                 Assert.AreEqual(originalMap.GetValue<string>("myString"), readMap.GetValue<string>("myString"));
                 Assert.AreEqual(originalMap.GetValue<bool>("myBool"), readMap.GetValue<bool>("myBool"));
                 Assert.AreEqual(originalMap.GetValue<double>("myDouble"), readMap.GetValue<double>("myDouble"));
-                
+
                 var originalVec = originalMap.GetValue<Vec3<double>>("myVec3d");
                 var readVec = readMap.GetValue<Vec3<double>>("myVec3d");
                 Assert.IsTrue(originalVec.IsApproxEqual(readVec, 1e-9));

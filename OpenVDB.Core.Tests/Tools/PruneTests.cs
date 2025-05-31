@@ -43,7 +43,7 @@ namespace OpenVDB.Core.Tests.Tools
                 else accessor.SetValueOff(coord, value);
             }
         }
-        
+
         private void SetupRegionForConstToleranceCheck(ITreeValueAccessor<float> accessor, Coord regionOrigin, float baseValue, float delta, bool active)
         {
             float val = baseValue;
@@ -122,7 +122,7 @@ namespace OpenVDB.Core.Tests.Tools
             Assert.IsTrue(accessor.IsValueOn(nodeOrigin), "Node origin should be active after Prune (exact).");
             Assert.AreEqual(true, accessor.GetValue(nodeOrigin), "Node origin value should be representative constant value.");
         }
-        
+
         [Test]
         public void Prune_ToleranceMatch_FloatGrid_ShouldSetConstantNodeOriginToTile()
         {
@@ -131,7 +131,7 @@ namespace OpenVDB.Core.Tests.Tools
             var nodeOrigin = new Coord(0,0,0);
             float baseValue = 0.5f;
             float tolerance = 0.01f; // All values in [0.49, 0.51] approx
-            
+
             // Setup: region with values ~0.5f, all active
             SetupRegionForConstToleranceCheck(accessor, nodeOrigin, baseValue, tolerance / 2.0f, true);
             accessor.SetValueOn(new Coord(10,10,10), 100.0f); // Ensure grid is not empty
@@ -141,7 +141,7 @@ namespace OpenVDB.Core.Tests.Tools
             // The simplified IsConstant takes the value at Origin as representative.
             float expectedRepValue = baseValue; // Since baseValue was at Origin
             Assert.IsTrue(accessor.IsValueOn(nodeOrigin), "Node origin should be active after Prune (tolerance).");
-            Assert.AreEqual(expectedRepValue, accessor.GetValue(nodeOrigin), EpsilonF, 
+            Assert.AreEqual(expectedRepValue, accessor.GetValue(nodeOrigin), EpsilonF,
                 "Node origin value should be representative constant value.");
         }
 
@@ -151,7 +151,7 @@ namespace OpenVDB.Core.Tests.Tools
             var grid = CreateFloatGridForPrune();
             var accessor = grid.GetAccessor();
             var nodeOrigin = new Coord(0,0,0);
-            
+
             // Setup: Non-constant region
             accessor.SetValueOn(nodeOrigin.OffsetBy(0,0,0), 1.0f);
             accessor.SetValueOn(nodeOrigin.OffsetBy(1,0,0), 10.0f); // Clearly different
@@ -216,7 +216,7 @@ namespace OpenVDB.Core.Tests.Tools
             }
             accessor.SetValue(nodeOrigin, -2.0f);
             accessor.SetValueOff(nodeOrigin);
-            
+
             accessor.SetValueOn(new Coord(10,10,10), 100.0f);
 
             PruneTools.PruneLevelSet(grid, outsideWidth, insideWidth, threaded: false);
@@ -224,7 +224,7 @@ namespace OpenVDB.Core.Tests.Tools
             Assert.IsFalse(accessor.IsValueOn(nodeOrigin), "Node origin should be inactive.");
             Assert.AreEqual(insideWidth, accessor.GetValue(nodeOrigin), EpsilonF, "Node origin value should be insideWidth.");
         }
-        
+
         [Test]
         public void PruneLevelSet_DefaultWidths_UsesBackground()
         {
@@ -240,7 +240,7 @@ namespace OpenVDB.Core.Tests.Tools
             }
             accessor.SetValue(nodeOrigin, 0.1f);
             accessor.SetValueOff(nodeOrigin);
-            
+
             accessor.SetValueOn(new Coord(10,10,10), 100.0f);
 
             PruneTools.PruneLevelSet(grid, threaded: false); // Uses default widths (background, -background)

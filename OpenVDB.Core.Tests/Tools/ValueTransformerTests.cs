@@ -42,7 +42,7 @@ namespace OpenVDB.Core.Tests.Tools
                 Tuple.Create(new Coord(1, 0, 0), 2.0f, true),
                 Tuple.Create(new Coord(0, 1, 0), 3.0f, true)
             };
-            
+
             // The DummyGridIterator<object> and Action<DummyGridIterator<object>> will require casting
             // or a more flexible DummyGridIterator. Let's adapt the test data and action.
             // For simplicity, we'll assume the operation modifies an external collection based on iterator values.
@@ -97,7 +97,7 @@ namespace OpenVDB.Core.Tests.Tools
                 }
                 return -999; // Should not happen if input data is correct
             };
-            
+
             // The constraints on TransformValues are:
             // TInIterator : class, IGridIterator<TInValue>
             // TOutGrid : Grid<TOutTree, TOutValue>
@@ -107,7 +107,7 @@ namespace OpenVDB.Core.Tests.Tools
             // The current ValueTransformer.TransformValues has TInIterator : class, IGridIterator<TInValue>
             // So, TInValue is inferred from TInIterator.
             // The current DummyGridIterator<object> means TInValue is object.
-            
+
             ValueTransformer.TransformValues<DummyGridIterator<object>, object, Int32Grid, OpenVDB.Core.Tree.Tree<int>, int>(
                 inputIterator, outputGrid, transformFunction, threaded: false);
 

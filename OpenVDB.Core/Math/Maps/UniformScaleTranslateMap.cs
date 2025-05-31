@@ -24,7 +24,7 @@ namespace OpenVDB.Math.Maps
             : base(scaleMap.Scale, translationMap.Translation)
         {
         }
-        
+
         public UniformScaleTranslateMap(UniformScaleTranslateMap other) : base(other)
         {
         }
@@ -99,7 +99,7 @@ namespace OpenVDB.Math.Maps
             var sX = reader.ReadDouble();
             var sY = reader.ReadDouble(); // Read all components
             var sZ = reader.ReadDouble();
-            
+
             // For UniformScale, sX, sY, sZ should be the same.
             // We can validate this or just use sX and enforce uniformity.
             if (!(System.Math.Abs(sX - sY) < MathUtil.DefaultEpsilonD && System.Math.Abs(sX - sZ) < MathUtil.DefaultEpsilonD))

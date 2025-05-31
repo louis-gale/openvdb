@@ -64,7 +64,7 @@ namespace OpenVDB.Math
             Z = axis.Z * s;
             W = T.Cos(halfAngle);
         }
-        
+
         public Quat(Mat3<T> mat)
         {
             // Adapted from C++ version; requires robust IsUnitary and matrix determinant/trace.
@@ -109,7 +109,7 @@ namespace OpenVDB.Math
             X = x; Y = y; Z = z; W = w;
             if (x == default && y == default && z == default && w == default) W = T.One; // Identity for parameterless init
         }
-        
+
         public void SetIdentity()
         {
             X = Y = Z = T.Zero;
@@ -148,7 +148,7 @@ namespace OpenVDB.Math
             T invLength = T.One / T.Sqrt(sqrLength);
             return new Vec3<T>(X * invLength, Y * invLength, Z * invLength);
         }
-        
+
         public static Quat<T> operator +(Quat<T> q1, Quat<T> q2) =>
             new Quat<T>(q1.X + q2.X, q1.Y + q2.Y, q1.Z + q2.Z, q1.W + q2.W);
 
@@ -160,10 +160,10 @@ namespace OpenVDB.Math
             q1.W * q2.Y - q1.X * q2.Z + q1.Y * q2.W + q1.Z * q2.X,
             q1.W * q2.Z + q1.X * q2.Y - q1.Y * q2.X + q1.Z * q2.W,
             q1.W * q2.W - q1.X * q2.X - q1.Y * q2.Y - q1.Z * q2.Z);
-            
+
         public static Quat<T> operator *(Quat<T> q, T scalar) =>
             new Quat<T>(q.X * scalar, q.Y * scalar, q.Z * scalar, q.W * scalar);
-            
+
         public static Quat<T> operator *(T scalar, Quat<T> q) => q * scalar;
 
         public static Quat<T> operator /(Quat<T> q, T scalar)
@@ -171,7 +171,7 @@ namespace OpenVDB.Math
             if (T.IsZero(scalar)) throw new DivideByZeroException("Scalar cannot be zero.");
             return new Quat<T>(q.X / scalar, q.Y / scalar, q.Z / scalar, q.W / scalar);
         }
-        
+
         public static Quat<T> operator -(Quat<T> q) => new Quat<T>(-q.X, -q.Y, -q.Z, -q.W); // Note: conjugate is often (-x,-y,-z, w)
 
         public T Dot(Quat<T> other) => X * other.X + Y * other.Y + Z * other.Z + W * other.W;
@@ -195,7 +195,7 @@ namespace OpenVDB.Math
             if (len <= epsilon) throw new InvalidOperationException("Cannot normalize a zero-length quaternion.");
             return this / len;
         }
-        
+
         public Quat<T> Conjugate() => new Quat<T>(-X, -Y, -Z, W);
 
         public Quat<T> Inverse(T epsilon = default)
@@ -206,7 +206,7 @@ namespace OpenVDB.Math
                 throw new InvalidOperationException("Cannot invert a zero-length quaternion.");
             return Conjugate() / lenSqr;
         }
-        
+
         public Vec3<T> RotateVector(Vec3<T> v)
         {
             // q * v * q^-1
@@ -231,7 +231,7 @@ namespace OpenVDB.Math
                 two * (xz - wy),             two * (yz + wx),          one - two * (xx + yy)
             );
         }
-        
+
         public static Quat<T> Slerp(Quat<T> q1, Quat<T> q2, T t, T epsilon = default)
         {
             if (epsilon == default) epsilon = T.Epsilon;

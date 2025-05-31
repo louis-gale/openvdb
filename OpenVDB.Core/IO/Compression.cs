@@ -88,12 +88,12 @@ namespace OpenVDB.Core.IO
         public static string ToString(CompressionFlags flags)
         {
             if (flags == CompressionFlags.None) return "None";
-            
+
             var parts = new System.Collections.Generic.List<string>();
             if ((flags & CompressionFlags.Zip) != 0) parts.Add("Zip");
             if ((flags & CompressionFlags.ActiveMask) != 0) parts.Add("ActiveMask");
             if ((flags & CompressionFlags.Blosc) != 0) parts.Add("Blosc");
-            
+
             return string.Join(" | ", parts);
         }
     }

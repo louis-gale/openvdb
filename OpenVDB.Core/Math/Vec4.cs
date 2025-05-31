@@ -61,7 +61,7 @@ namespace OpenVDB.Math
             Z = a[2];
             W = a[3];
         }
-        
+
         public Vec4(Vec4<T> other)
         {
             X = other.X;
@@ -69,7 +69,7 @@ namespace OpenVDB.Math
             Z = other.Z;
             W = other.W;
         }
-        
+
         public T[] AsArray() => new[] { X, Y, Z, W };
 
         public Vec3<T> GetVec3() => new Vec3<T>(X, Y, Z);
@@ -122,7 +122,7 @@ namespace OpenVDB.Math
                    T.Abs(Z - other.Z) <= epsilon &&
                    T.Abs(W - other.W) <= epsilon;
         }
-        
+
         // C++ version uses isApproxEqual for eq method
         public bool Eq(Vec4<T> other, T epsilon = default)
         {
@@ -139,7 +139,7 @@ namespace OpenVDB.Math
         {
             return new Vec4<T>(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z, v1.W + v2.W);
         }
-        
+
         public static Vec4<T> operator +(Vec4<T> v, T scalar)
         {
             return new Vec4<T>(v.X + scalar, v.Y + scalar, v.Z + scalar, v.W + scalar);
@@ -154,7 +154,7 @@ namespace OpenVDB.Math
         {
             return new Vec4<T>(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z, v1.W - v2.W);
         }
-        
+
         public static Vec4<T> operator -(Vec4<T> v, T scalar)
         {
             return new Vec4<T>(v.X - scalar, v.Y - scalar, v.Z - scalar, v.W - scalar);
@@ -180,17 +180,17 @@ namespace OpenVDB.Math
             if (scalar.Equals(T.Zero)) throw new DivideByZeroException("Scalar cannot be zero.");
             return new Vec4<T>(v.X / scalar, v.Y / scalar, v.Z / scalar, v.W / scalar);
         }
-        
+
         public static Vec4<T> operator /(T scalar, Vec4<T> v)
         {
-            if (v.X.Equals(T.Zero) || v.Y.Equals(T.Zero) || v.Z.Equals(T.Zero) || v.W.Equals(T.Zero)) 
+            if (v.X.Equals(T.Zero) || v.Y.Equals(T.Zero) || v.Z.Equals(T.Zero) || v.W.Equals(T.Zero))
                 throw new DivideByZeroException("Vector component cannot be zero for scalar division.");
             return new Vec4<T>(scalar / v.X, scalar / v.Y, scalar / v.Z, scalar / v.W);
         }
 
         public static Vec4<T> operator /(Vec4<T> v1, Vec4<T> v2) // Component-wise
         {
-             if (v2.X.Equals(T.Zero) || v2.Y.Equals(T.Zero) || v2.Z.Equals(T.Zero) || v2.W.Equals(T.Zero)) 
+             if (v2.X.Equals(T.Zero) || v2.Y.Equals(T.Zero) || v2.Z.Equals(T.Zero) || v2.W.Equals(T.Zero))
                 throw new DivideByZeroException("Divisor vector component cannot be zero.");
             return new Vec4<T>(v1.X / v2.X, v1.Y / v2.Y, v1.Z / v2.Z, v1.W / v2.W);
         }
@@ -236,7 +236,7 @@ namespace OpenVDB.Math
             }
             return new Vec4<T>(X / len, Y / len, Z / len, W / len);
         }
-        
+
         public Vec4<T> UnitSafe()
         {
             T l2 = LengthSqr();
@@ -244,7 +244,7 @@ namespace OpenVDB.Math
                 return new Vec4<T>(T.One, T.Zero, T.Zero, T.Zero); // (1,0,0,0) for Vec4
             return this / T.Sqrt(l2);
         }
-        
+
         public T Sum() => X + Y + Z + W;
         public T Product() => X * Y * Z * W;
 

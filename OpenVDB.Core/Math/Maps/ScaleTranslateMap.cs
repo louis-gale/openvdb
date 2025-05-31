@@ -23,7 +23,7 @@ namespace OpenVDB.Math.Maps
                 return val;
             }
         }
-        
+
         public Vec3<double> Translation => _translation;
         public Vec3<double> Scale => _scaleValues;
 
@@ -45,7 +45,7 @@ namespace OpenVDB.Math.Maps
             : this(scaleMap.Scale, translationMap.Translation)
         {
         }
-        
+
         public ScaleTranslateMap(ScaleTranslateMap other)
         {
             _scaleValues = other._scaleValues;
@@ -157,7 +157,7 @@ namespace OpenVDB.Math.Maps
             var sY = reader.ReadDouble();
             var sZ = reader.ReadDouble();
             _scaleValues = new Vec3<double>(sX, sY, sZ);
-            
+
             // Re-initialize derived members
             _voxelSize = new Vec3<double>(System.Math.Abs(sX), System.Math.Abs(sY), System.Math.Abs(sZ));
             _scaleValuesInverse = new Vec3<double>(1.0 / sX, 1.0 / sY, 1.0 / sZ);

@@ -59,7 +59,7 @@ namespace OpenVDB.Core.Tests.IO
             desc.InstanceParentName = "Parent";
             Assert.IsTrue(desc.IsInstance());
             Assert.IsTrue(desc.IsTopologyInstance(), "Should be topology instance if offset is 0 by default");
-            
+
             desc.SetIsTransformInstance(true);
             Assert.IsTrue(desc.IsTransformInstance());
             Assert.AreEqual("share", desc.InstanceTransform);
@@ -67,7 +67,7 @@ namespace OpenVDB.Core.Tests.IO
             desc.SetIsTransformInstance(false);
             Assert.IsFalse(desc.IsTransformInstance());
             Assert.AreEqual("copy", desc.InstanceTransform);
-            
+
             desc.TopologyOffset = 12345; // Non-zero offset
             Assert.IsFalse(desc.IsTopologyInstance(), "Should not be topo instance if offset is non-zero");
         }
@@ -115,7 +115,7 @@ namespace OpenVDB.Core.Tests.IO
                 AssertDescriptorsEqual(originalDesc, readDesc, streamMeta.FileVersion);
             }
         }
-        
+
         [Test]
         public void ReadWrite_LegacyVersion_BeforeGridDescNameIsLast_ShouldBeConsistent()
         {

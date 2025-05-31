@@ -57,7 +57,7 @@ namespace OpenVDB.Math
             X = other.X;
             Y = other.Y;
         }
-        
+
         public T[] AsArray() => new[] { X, Y };
 
         public void Init(T x = default, T y = default)
@@ -102,7 +102,7 @@ namespace OpenVDB.Math
             return T.Abs(X - other.X) <= epsilon &&
                    T.Abs(Y - other.Y) <= epsilon;
         }
-        
+
         public static Vec2<T> operator -(Vec2<T> v)
         {
             return new Vec2<T>(-v.X, -v.Y);
@@ -112,7 +112,7 @@ namespace OpenVDB.Math
         {
             return new Vec2<T>(v1.X + v2.X, v1.Y + v2.Y);
         }
-        
+
         public static Vec2<T> operator +(Vec2<T> v, T scalar)
         {
             return new Vec2<T>(v.X + scalar, v.Y + scalar);
@@ -127,7 +127,7 @@ namespace OpenVDB.Math
         {
             return new Vec2<T>(v1.X - v2.X, v1.Y - v2.Y);
         }
-        
+
         public static Vec2<T> operator -(Vec2<T> v, T scalar)
         {
             return new Vec2<T>(v.X - scalar, v.Y - scalar);
@@ -153,7 +153,7 @@ namespace OpenVDB.Math
             if (scalar.Equals(T.Zero)) throw new DivideByZeroException("Scalar cannot be zero.");
             return new Vec2<T>(v.X / scalar, v.Y / scalar);
         }
-        
+
         public static Vec2<T> operator /(T scalar, Vec2<T> v)
         {
             if (v.X.Equals(T.Zero) || v.Y.Equals(T.Zero)) throw new DivideByZeroException("Vector component cannot be zero for scalar division.");
@@ -165,7 +165,7 @@ namespace OpenVDB.Math
             if (v2.X.Equals(T.Zero) || v2.Y.Equals(T.Zero)) throw new DivideByZeroException("Divisor vector component cannot be zero.");
             return new Vec2<T>(v1.X / v2.X, v1.Y / v2.Y);
         }
-        
+
         public T Dot(Vec2<T> other)
         {
             return X * other.X + Y * other.Y;
@@ -189,7 +189,7 @@ namespace OpenVDB.Math
             {
                 // Optionally throw, or set to a default vector like (1,0)
                 // For now, matches C++ bool return by not modifying if too small
-                return; 
+                return;
             }
             X /= len;
             Y /= len;
@@ -208,7 +208,7 @@ namespace OpenVDB.Math
             }
             return new Vec2<T>(X / len, Y / len);
         }
-        
+
         public Vec2<T> UnitSafe()
         {
             T l2 = LengthSqr();
@@ -237,7 +237,7 @@ namespace OpenVDB.Math
         {
             return new Vec2<T>(-Y, X);
         }
-        
+
         public T Sum() => X + Y;
         public T Product() => X * Y;
 
@@ -253,7 +253,7 @@ namespace OpenVDB.Math
         {
             return $"[{X.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}, {Y.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}]";
         }
-        
+
         public void Write(System.IO.BinaryWriter writer)
         {
             if (typeof(T) == typeof(double)) { writer.Write((double)(object)X); writer.Write((double)(object)Y); }
@@ -271,7 +271,7 @@ namespace OpenVDB.Math
             // Add other supported types as necessary
             throw new NotSupportedException($"Vec2.Read for type {typeof(T)} not supported for metadata deserialization.");
         }
-        
+
         public static uint GetSizeInBytes()
         {
             if (typeof(T) == typeof(double)) return (uint)System.Runtime.InteropServices.Marshal.SizeOf<double>() * 2;
@@ -288,5 +288,5 @@ namespace OpenVDB.Math
     public using Vec2d = Vec2<double>;
     // Note: Vec2s in OpenVDB C++ is often Vec2<float>.
     // If System.Half is available and desired:
-    // public using Vec2h = Vec2<System.Half>; 
+    // public using Vec2h = Vec2<System.Half>;
 }

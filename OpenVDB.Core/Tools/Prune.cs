@@ -16,7 +16,7 @@ namespace OpenVDB.Core.Tools
         Coord Origin { get; } // Origin of this conceptual node's local space
         int Level { get; }    // Level in the tree (0 for leaf, higher for internal)
         bool IsInactive(ITreeValueAccessor<TValue> gridAccessor); // Check if this conceptual node is entirely inactive background
-        bool IsConstant(ITreeValueAccessor<TValue> gridAccessor, TValue tolerance, 
+        bool IsConstant(ITreeValueAccessor<TValue> gridAccessor, TValue tolerance,
                         out TValue representativeValue, out bool representativeActiveState);
         TValue GetFirstValue(ITreeValueAccessor<TValue> gridAccessor); // Gets a representative value (e.g., at Origin)
     }
@@ -47,13 +47,13 @@ namespace OpenVDB.Core.Tools
             for (int k = 0; k < 2; k++)
             {
                 var coord = Origin.OffsetBy(i,j,k);
-                if (gridAccessor.IsValueOn(coord) || 
+                if (gridAccessor.IsValueOn(coord) ||
                     !EqualityComparer<TValue>.Default.Equals(gridAccessor.GetValue(coord), GetTreeBackground(gridAccessor)))
                     return false;
             }
             return true;
         }
-        
+
         private TValue GetTreeBackground(ITreeValueAccessor<TValue> gridAccessor)
         {
             // Accessor doesn't directly know tree's background. This is a conceptual problem.
@@ -70,7 +70,7 @@ namespace OpenVDB.Core.Tools
 
 
         // Highly simplified IsConstant. A real one would recurse or iterate all values in node.
-        public bool IsConstant(ITreeValueAccessor<TValue> gridAccessor, TValue tolerance, 
+        public bool IsConstant(ITreeValueAccessor<TValue> gridAccessor, TValue tolerance,
                                out TValue representativeValue, out bool representativeActiveState)
         {
             representativeValue = gridAccessor.GetValue(Origin);
@@ -87,7 +87,7 @@ namespace OpenVDB.Core.Tools
                 if (representativeActiveState) // Only compare values if active
                 {
                     TValue currentValue = gridAccessor.GetValue(coord);
-                    if (tolerance is IFloatingPointIeee754<TValue> tolFloat && 
+                    if (tolerance is IFloatingPointIeee754<TValue> tolFloat &&
                         representativeValue is IFloatingPointIeee754<TValue> repFloat &&
                         currentValue is IFloatingPointIeee754<TValue> currFloat)
                     {
@@ -101,7 +101,7 @@ namespace OpenVDB.Core.Tools
             }
             return true;
         }
-        
+
         public TValue GetFirstValue(ITreeValueAccessor<TValue> gridAccessor) => gridAccessor.GetValue(Origin);
     }
 
@@ -137,7 +137,7 @@ namespace OpenVDB.Core.Tools
                     // This requires an accessor method like SetTile or making the node itself inactive.
                     // For now, we'll just set the origin point to the inactive value.
                     // This is NOT a correct representation of AddTile.
-                    accessor.SetValueOff(nodeInfo.Origin); 
+                    accessor.SetValueOff(nodeInfo.Origin);
                     accessor.SetValue(nodeInfo.Origin, _valueToSet); // Ensure background value is set if it changed
                     Console.WriteLine($"Placeholder: Pruned node at {nodeInfo.Origin} to inactive tile with value {_valueToSet}");
                     return true;
@@ -164,15 +164,15 @@ namespace OpenVDB.Core.Tools
                     // Replace with a tile
                     if (isActive) accessor.SetValueOn(nodeInfo.Origin, medianValue);
                     else accessor.SetValueOff(nodeInfo.Origin); // and ensure value is median/background
-                    
+
                     Console.WriteLine($"Placeholder: Pruned node at {nodeInfo.Origin} to constant tile (Value: {medianValue}, Active: {isActive})");
                     return true;
                 }
                 return false;
             }
         }
-        
-        internal class LevelSetPruneOperation<TValue> : PruneOperation<TValue> 
+
+        internal class LevelSetPruneOperation<TValue> : PruneOperation<TValue>
             where TValue : struct, IFloatingPointIeee754<TValue> // Level sets are float/double
         {
             private readonly TValue _outsideWidth;
@@ -223,7 +223,7 @@ namespace OpenVDB.Core.Tools
             Console.WriteLine($"Warning: Pruning uses simplified BBox iteration. True tree traversal (bottom-up) not yet implemented.");
             var accessor = grid.GetAccessor();
             CoordBBox bbox = grid.EvalActiveVoxelBoundingBox();
-            if (bbox.IsEmpty && !(operation is PruneInternal.InactivePruneOperation<TValue> && 
+            if (bbox.IsEmpty && !(operation is PruneInternal.InactivePruneOperation<TValue> &&
                                   ((PruneInternal.InactivePruneOperation<TValue>)(object)operation).IsMatchForBackground(grid.Background))) // Complex check, simplify
             {
                  return;
@@ -268,13 +268,13 @@ namespace OpenVDB.Core.Tools
                 operation.ProcessNode(accessor, nodeInfo);
             }
         }
-        
+
         // Helper extension for InactivePruneOperation to check background match (conceptual)
         internal static bool IsMatchForBackground<TValue>(this PruneInternal.InactivePruneOperation<TValue> op, TValue backgroundValue) where TValue:struct
         {
             // Reflection or a public property would be needed to get _targetValue
             // This is just for the placeholder logic in SimplifiedTraversal.
-            return false; 
+            return false;
         }
 
 
@@ -310,7 +310,7 @@ namespace OpenVDB.Core.Tools
             var op = new PruneInternal.TolerancePruneOperation<TValue>(tolerance);
             SimplifiedTraversal<TGrid, TTree, TValue, PruneInternal.TolerancePruneOperation<TValue>>(grid, op);
         }
-        
+
         public static void PruneLevelSet<TGrid, TTree, TValue>(
             TGrid grid, TValue outsideWidth, TValue insideWidth, bool threaded = true, int grainSize = 1)
             where TGrid : Grid<TTree, TValue>

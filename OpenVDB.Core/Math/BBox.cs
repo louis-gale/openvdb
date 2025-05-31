@@ -29,7 +29,7 @@ namespace OpenVDB.Math
                     return (TPoint)(object)new Coord((int)(object)x, (int)(object)y, (int)(object)z);
                 throw new NotSupportedException($"TPoint type {typeof(TPoint)} with TElement {typeof(TElement)} not supported for Create.");
             }
-            
+
             public static TPoint Create(TElement val)
             {
                  if (typeof(TPoint) == typeof(Vec3<TElement>))
@@ -197,7 +197,7 @@ namespace OpenVDB.Math
                 Max = PointOps.MaxComponents(p1, p2);
             }
         }
-        
+
         public static BBox<TPoint, TElement> CreateEmpty()
         {
              var minVal = PointOps.Create(TElement.MaxValue);
@@ -289,7 +289,7 @@ namespace OpenVDB.Math
             if (IsEmpty || other.IsEmpty) return false;
              return PointOps.IsLessThanOrEqual(Min, other.Max) && PointOps.IsGreaterThanOrEqual(Max, other.Min);
         }
-        
+
         public void Expand(TElement padding)
         {
             if (typeof(TPoint) == typeof(Coord))
@@ -334,7 +334,7 @@ namespace OpenVDB.Math
                 }
             }
         }
-        
+
         public void Translate(TPoint t)
         {
             Min = PointOps.Add(Min, t);

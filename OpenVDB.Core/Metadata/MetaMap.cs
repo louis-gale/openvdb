@@ -60,7 +60,7 @@ namespace OpenVDB.Core.Metadata
                         $"Metadata '{name}' already exists with type '{existingMeta.TypeName}', cannot overwrite with type '{metadata.TypeName}'.");
                 }
                 // Overwrite with a copy to maintain consistency (e.g. if user inserts same instance twice)
-                _metadataMap[name] = metadata.Copy(); 
+                _metadataMap[name] = metadata.Copy();
             }
             else
             {
@@ -89,7 +89,7 @@ namespace OpenVDB.Core.Metadata
                 Insert(pair.Key, pair.Value); // Insert will handle copying and type checking
             }
         }
-        
+
         /// <summary>
         /// Alias for Insert(MetaMap otherMap).
         /// </summary>
@@ -115,7 +115,7 @@ namespace OpenVDB.Core.Metadata
             _metadataMap.TryGetValue(name, out Metadata meta);
             return meta; // Returns null if not found, which is similar to C++ Ptr behavior
         }
-        
+
         /// <summary>
         /// Gets the strongly-typed metadata object associated with the specified name.
         /// </summary>
@@ -145,7 +145,7 @@ namespace OpenVDB.Core.Metadata
 
             if (meta is TypedMetadata<TValue> typedMeta)
                 return typedMeta.Value;
-            
+
             // Attempt conversion for some common compatible types if direct cast fails
             if (meta is TypedMetadata<double> doubleMeta && typeof(TValue) == typeof(float))
                 return (TValue)(object)Convert.ToSingle(doubleMeta.Value);
@@ -167,7 +167,7 @@ namespace OpenVDB.Core.Metadata
         {
             if (_metadataMap.TryGetValue(name, out Metadata meta) && meta is TypedMetadata<TValue> typedMeta)
                 return typedMeta.Value;
-            
+
             // Attempt conversion for some common compatible types if direct cast fails
             if (meta is TypedMetadata<double> doubleMeta && typeof(TValue) == typeof(float))
                 return (TValue)(object)Convert.ToSingle(doubleMeta.Value);
@@ -185,7 +185,7 @@ namespace OpenVDB.Core.Metadata
 
         public IEnumerator<KeyValuePair<string, Metadata>> GetEnumerator() => _metadataMap.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        
+
         public override bool Equals(object obj)
         {
             if (obj is MetaMap other)
@@ -204,7 +204,7 @@ namespace OpenVDB.Core.Metadata
         public override int GetHashCode()
         {
             // Simple hash based on count. More robust would iterate, but can be slow.
-            return _metadataMap.Count; 
+            return _metadataMap.Count;
         }
 
         public void Write(BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMeta)
@@ -287,7 +287,7 @@ namespace OpenVDB.Core.Metadata
                     // For UnknownMetadata, it should read its byte array.
                     // metaValue = new UnknownMetadata(typeName, /* read byte array here */);
                 }
-                
+
                 if (metaValue != null)
                 {
                     _metadataMap[name] = metaValue; // No need to copy, it's newly created.

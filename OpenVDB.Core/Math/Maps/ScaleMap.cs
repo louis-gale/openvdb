@@ -38,7 +38,7 @@ namespace OpenVDB.Math.Maps
             _voxelSize = new Vec3<double>(System.Math.Abs(scale.X), System.Math.Abs(scale.Y), System.Math.Abs(scale.Z));
             _scaleValuesInverse = new Vec3<double>(1.0 / scale.X, 1.0 / scale.Y, 1.0 / scale.Z);
         }
-        
+
         public ScaleMap(ScaleMap other)
         {
             _scaleValues = other._scaleValues;
@@ -81,7 +81,7 @@ namespace OpenVDB.Math.Maps
                 return new UniformScaleMap(newScale.X);
             return new ScaleMap(newScale);
         }
-        
+
         public override IMap PostTranslate(Vec3<double> t)
         {
             // T(v) * S. If this map is S, and we post-translate by T(t),

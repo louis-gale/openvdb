@@ -98,7 +98,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(32f, result.Y);
             Assert.AreEqual(50f, result.Z);
         }
-        
+
         [Test]
         public void Multiply_Vector_ShouldReturnCorrectProduct_VecTimesMat()
         {
@@ -107,7 +107,7 @@ namespace OpenVDB.Core.Tests.Math
                 1f, 4f, 7f, // Note: transpose of previous matrix for easier check
                 2f, 5f, 8f,
                 3f, 6f, 9f);
-            var result = v * m; 
+            var result = v * m;
             // This is v.x*m.col0 + v.y*m.col1 + v.z*m.col2 for each component
             // For result.X: 1*1 + 2*2 + 3*3 = 1+4+9 = 14
             // For result.Y: 1*4 + 2*5 + 3*6 = 4+10+18 = 32
@@ -157,7 +157,7 @@ namespace OpenVDB.Core.Tests.Math
             // -24 + 40 - 15 = 1
             Assert.AreEqual(1f, m3.Determinant());
         }
-        
+
         [Test]
         public void Inverse_ForIdentity_ShouldReturnIdentity()
         {

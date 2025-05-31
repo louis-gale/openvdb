@@ -36,7 +36,7 @@ namespace OpenVDB.Core.IO
         /// Version 252: OpenVDB 10.0.0
         /// </summary>
         public const uint CurrentFileVersion = 252; // Example: OpenVDB 10.0.0
-        
+
         /// <summary>
         /// Size of the file header before grid descriptors, including magic, versions, and UUID.
         /// Magic (4) + FileVersion (4) + LibMajor (2) + LibMinor (2) + GridOffsets (1) + UUID (36) = 49 bytes
@@ -55,7 +55,7 @@ namespace OpenVDB.Core.IO
             int length = reader.ReadInt32(); // VDB strings are prefixed with int32 length
             if (length < 0) throw new IOException("Invalid string length encountered in stream.");
             if (length == 0) return string.Empty;
-            
+
             byte[] bytes = reader.ReadBytes(length);
             return Encoding.UTF8.GetString(bytes);
         }
@@ -70,7 +70,7 @@ namespace OpenVDB.Core.IO
             writer.Write(bytes.Length); // int32 length prefix
             writer.Write(bytes);
         }
-        
+
         // Placeholders for MetaMap and Transform serialization - to be implemented later
         public static MetaMap ReadMetaMap(BinaryReader reader, StreamMetadata streamMeta)
         {

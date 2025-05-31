@@ -65,7 +65,7 @@ namespace OpenVDB
 
     // Coord is now defined in OpenVDB.Math.Coord.cs
     // Using alias for convenience if needed locally, or fully qualify.
-    // public using Coord = OpenVDB.Math.Coord; 
+    // public using Coord = OpenVDB.Math.Coord;
 
     // BBox related type aliases
     // CoordBBox uses BBox<Coord, int>
@@ -91,7 +91,7 @@ namespace OpenVDB
 
         public PointIndex(TIntType i) { mIndex = i; }
 
-        public PointIndex(object i) 
+        public PointIndex(object i)
         {
             mIndex = (TIntType)Convert.ChangeType(i, typeof(TIntType));
         }
@@ -167,7 +167,7 @@ namespace OpenVDB
             { typeof(long), "int64" },   // int64_t
             { typeof(ulong), "uint64" }, // uint64_t
             { typeof(Vec2i), "vec2i" },
-            { typeof(Vec2s), "vec2s" }, 
+            { typeof(Vec2s), "vec2s" },
             { typeof(Vec2d), "vec2d" },
             { typeof(Vec3U8), "vec3u8"},
             { typeof(Vec3U16), "vec3u16"},
@@ -178,11 +178,11 @@ namespace OpenVDB
             { typeof(Vec4f), "vec4s" }, // C++ Vec4s is float
             { typeof(Vec4d), "vec4d" },
             { typeof(string), "string" },
-            { typeof(Mat3s), "mat3s" }, 
+            { typeof(Mat3s), "mat3s" },
             { typeof(Mat3d), "mat3d" },
-            { typeof(Mat4s), "mat4s" }, 
+            { typeof(Mat4s), "mat4s" },
             { typeof(Mat4d), "mat4d" },
-            { typeof(Quats), "quats" }, 
+            { typeof(Quats), "quats" },
             { typeof(Quatd), "quatd" },
             { typeof(PointIndex32), "ptidx32" },
             { typeof(PointIndex64), "ptidx64" },
@@ -206,7 +206,7 @@ namespace OpenVDB
                 if (backtick > 0) typeName = typeName.Substring(0, backtick);
                 return $"{typeName}<{genericArgs}>";
             }
-            return type.Name; 
+            return type.Name;
         }
     }
 
@@ -215,7 +215,7 @@ namespace OpenVDB
         where TAValueType : struct
         where TBValueType : struct
     {
-        private TAValueType _resultVal; 
+        private TAValueType _resultVal;
         public TAValueType AVal { get; private set; }
         public TBValueType BVal { get; private set; }
         private Func<TAValueType> _getResultVal;
@@ -229,13 +229,13 @@ namespace OpenVDB
 
         public bool AIsActive { get; private set; }
         public bool BIsActive { get; private set; }
-        public bool ResultIsActive { get; set; } 
+        public bool ResultIsActive { get; set; }
 
         public CombineArgs(TAValueType a, TBValueType b, bool aOn = false, bool bOn = false)
         {
             AVal = a;
             BVal = b;
-            _resultVal = default(TAValueType); 
+            _resultVal = default(TAValueType);
             _getResultVal = () => _resultVal;
             _setResultVal = (val) => _resultVal = val;
             AIsActive = aOn;
@@ -255,10 +255,10 @@ namespace OpenVDB
             BIsActive = bOn;
             UpdateResultActive();
         }
-        
+
         public CombineArgs<TAValueType, TBValueType> SetResult(TAValueType val) { ResultVal = val; return this; }
-        public CombineArgs<TAValueType, TBValueType> SetAVal(TAValueType a) { AVal = a; return this; } 
-        public CombineArgs<TAValueType, TBValueType> SetBVal(TBValueType b) { BVal = b; return this; } 
+        public CombineArgs<TAValueType, TBValueType> SetAVal(TAValueType a) { AVal = a; return this; }
+        public CombineArgs<TAValueType, TBValueType> SetBVal(TBValueType b) { BVal = b; return this; }
         public CombineArgs<TAValueType, TBValueType> SetAIsActive(bool b) { AIsActive = b; UpdateResultActive(); return this; }
         public CombineArgs<TAValueType, TBValueType> SetBIsActive(bool b) { BIsActive = b; UpdateResultActive(); return this; }
 
@@ -281,7 +281,7 @@ namespace OpenVDB
 
     public class SwappedCombineOp<TValueType, TCombineOpDelegate>
         where TValueType : struct
-        where TCombineOpDelegate : Delegate 
+        where TCombineOpDelegate : Delegate
     {
         private readonly TCombineOpDelegate _op;
 
@@ -294,13 +294,13 @@ namespace OpenVDB
         {
             TValueType tempResult = default;
             var swappedArgs = new CombineArgs<TValueType>(
-                args.BVal, args.AVal, 
+                args.BVal, args.AVal,
                 () => tempResult, (val) => tempResult = val, // Use delegates for temp storage
                 args.BIsActive, args.AIsActive);
-            
-            _op.DynamicInvoke(swappedArgs); 
 
-            args.SetResult(tempResult); 
+            _op.DynamicInvoke(swappedArgs);
+
+            args.SetResult(tempResult);
             args.ResultIsActive = swappedArgs.ResultIsActive;
         }
     }

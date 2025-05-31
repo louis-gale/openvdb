@@ -25,11 +25,11 @@ namespace OpenVDB.Math.Maps
                 double det = mat3.Determinant();
                 if (System.Math.Abs(det) < MathUtil.DefaultEpsilonD * MathUtil.DefaultEpsilonD * MathUtil.DefaultEpsilonD) // Effectively zero determinant
                     return false;
-                
+
                 // Check if (1/cbrt(abs(det))) * M is unitary
                 double scaleFactor = 1.0 / System.Math.Cbrt(System.Math.Abs(det));
                 Mat3<double> scaledMat = mat3 * scaleFactor;
-                
+
                 // Check if scaledMat * scaledMat.Transpose() is Identity
                 Mat3<double> check = scaledMat * scaledMat.Transposed();
                 return check.IsApproxEqual(Mat3<double>.Identity, MathUtil.DefaultEpsilonD);
@@ -72,7 +72,7 @@ namespace OpenVDB.Math.Maps
             _matrix = matrix;
             UpdateAccelerationStructures();
         }
-        
+
         public AffineMap(AffineMap first, AffineMap second)
         {
             _matrix = first._matrix * second._matrix; // Composition
@@ -144,7 +144,7 @@ namespace OpenVDB.Math.Maps
 
         public override Vec3<double> ApplyJacobian(Vec3<double> sourceVector) => _matrix.GetMat3() * sourceVector; // J * V (J is 3x3 part)
         public override Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector) => _matrixInverse.GetMat3() * sourceVector;
-        
+
         public override Vec3<double> ApplyJT(Vec3<double> sourceVector) => _matrix.GetMat3().Transposed() * sourceVector; // J^T * V
         public override Vec3<double> ApplyIJT(Vec3<double> sourceVector) => _jacobianInverseTranspose * sourceVector; // (J^-1)^T * V
 
@@ -153,7 +153,7 @@ namespace OpenVDB.Math.Maps
         public override Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector, Vec3<double> domainPos) => ApplyInverseJacobian(sourceVector);
         public override Vec3<double> ApplyJT(Vec3<double> sourceVector, Vec3<double> domainPos) => ApplyJT(sourceVector);
         public override Vec3<double> ApplyIJT(Vec3<double> sourceVector, Vec3<double> domainPos) => ApplyIJT(sourceVector);
-        
+
         public override double GetDeterminant(Vec3<double> domainPos) => _determinant; // Determinant is constant for affine maps
         public override Vec3<double> GetVoxelSize(Vec3<double> domainPos) => _voxelSize; // VoxelSize is constant for affine maps
 
@@ -186,7 +186,7 @@ namespace OpenVDB.Math.Maps
         }
         public override IMap PreTranslate(Vec3<double> t) => new AffineMap(Mat4<double>.CreateTranslation(t) * _matrix);
         public override IMap PreScale(Vec3<double> s) => new AffineMap(Mat4<double>.CreateScale(s) * _matrix);
-        
+
         public override IMap PostRotate(double radians, Axis axis)
         {
             var rotMat = Mat4<double>.Identity;
@@ -197,7 +197,7 @@ namespace OpenVDB.Math.Maps
         }
         public override IMap PostTranslate(Vec3<double> t) => new AffineMap(_matrix * Mat4<double>.CreateTranslation(t));
         public override IMap PostScale(Vec3<double> s) => new AffineMap(_matrix * Mat4<double>.CreateScale(s));
-        
+
         // PreShear and PostShear would require Mat4.CreateShear()
 
         public override void WriteData(System.IO.BinaryWriter writer, Core.IO.StreamMetadata streamMetadata)

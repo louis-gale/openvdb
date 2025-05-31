@@ -78,12 +78,12 @@ namespace OpenVDB.Core.Tools
             // A more robust approach would iterate over the intersection of active areas or use tree iterators.
             CoordBBox gridBBox = grid.EvalActiveVoxelBoundingBox();
             CoordBBox maskBBox = clipMask.EvalActiveVoxelBoundingBox();
-            
+
             // If either grid is empty, the active processing region might be empty or specific.
             // If gridBBox is empty, but we are keeping exterior and mask is large, this logic is flawed.
             // For now, assume we iterate over the original grid's active area.
             // If gridBBox is empty, outputGrid remains empty (background).
-            if (gridBBox.IsEmpty) 
+            if (gridBBox.IsEmpty)
             {
                 if(outputGrid.GridClass == GridClass.LevelSet) outputGrid.GridClass = GridClass.Unknown;
                 return outputGrid;
@@ -144,7 +144,7 @@ namespace OpenVDB.Core.Tools
             // Transform.WorldToIndex(BBoxD) returns BBox<Vec3d,double>. We need CoordBBox.
             // This involves converting the float BBox min/max to Coords (e.g. floor/ceil or round).
             BBox<Vec3<double>, double> indexFloatBBox = grid.Transform.WorldToIndex(worldBBox);
-            
+
             // Convert floating point index-space BBox to integer CoordBBox.
             // This needs to be conservative to include all relevant voxels.
             Coord minCoord = Coord.Floor(indexFloatBBox.Min);
@@ -168,7 +168,7 @@ namespace OpenVDB.Core.Tools
             {
                 clipMaskGrid.Fill(indexBBox, true, true); // Fill with 'true' and activate
             }
-            
+
             return ClipInternal.DoClip(grid, clipMaskGrid, keepInterior);
         }
 
@@ -189,7 +189,7 @@ namespace OpenVDB.Core.Tools
             BoolGrid actualClipMask;
 
             // Check if maskGridIn is already a BoolGrid and transforms match
-            if (maskGridIn is BoolGrid boolMask && 
+            if (maskGridIn is BoolGrid boolMask &&
                 grid.Transform.GetMap().ToAffineMap().Matrix.IsApproxEqual(boolMask.Transform.GetMap().ToAffineMap().Matrix, 1e-7)) // Simplified transform check
             {
                 actualClipMask = boolMask;
@@ -206,21 +206,21 @@ namespace OpenVDB.Core.Tools
                     // ResampleToMatch is a complex tool. For now, throw NotImplemented.
                     throw new NotImplementedException(
                         "ClipWithMask where transforms differ requires ResampleToMatch, which is not implemented.");
-                    
+
                     // Placeholder for ResampleToMatch:
                     // actualClipMask = new BoolGrid(false);
                     // actualClipMask.Transform = grid.Transform.Clone();
-                    // ResampleToMatch_Simplified(tempMask, actualClipMask); 
+                    // ResampleToMatch_Simplified(tempMask, actualClipMask);
                 }
                 else
                 {
                     actualClipMask = tempMask;
                 }
             }
-            
+
             return ClipInternal.DoClip(grid, actualClipMask, keepInterior);
         }
-        
+
         // Placeholder for a very simplified ResampleToMatch for demonstration if needed by tests.
         // This would not be robust.
         private static void ResampleToMatch_Simplified(BoolGrid sourceMask, BoolGrid targetMask)

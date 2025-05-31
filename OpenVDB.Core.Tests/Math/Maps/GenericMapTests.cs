@@ -28,14 +28,14 @@ namespace OpenVDB.Core.Tests.Math.Maps
             // If constructor GenericMap(IMap map) is changed to map.Clone(), this test would change.
             // Current C# GenericMap(IMap map) does not clone.
         }
-        
+
         [Test]
         public void Constructor_WithTransform_ShouldWrapMapsCopy()
         {
             var translationVec = new Vec3<double>(10, 20, 30);
             var concreteMap = new TranslationMap(translationVec);
             var transform = new Transform(concreteMap);
-            
+
             var genericMap = new GenericMap(transform);
             var wrappedMap = genericMap.GetWrappedMapTestHook();
 
@@ -94,10 +94,10 @@ namespace OpenVDB.Core.Tests.Math.Maps
             var clonedGenericMap = (GenericMap)originalGenericMap.Clone();
 
             Assert.AreNotSame(originalGenericMap, clonedGenericMap);
-            
+
             var originalWrappedMap = originalGenericMap.GetWrappedMapTestHook();
             var clonedWrappedMap = clonedGenericMap.GetWrappedMapTestHook();
-            
+
             Assert.AreNotSame(originalWrappedMap, clonedWrappedMap, "Cloned GenericMap should wrap a new map instance.");
             Assert.IsInstanceOf<TranslationMap>(clonedWrappedMap);
             Assert.IsTrue(((TranslationMap)originalWrappedMap).Translation.IsApproxEqual(((TranslationMap)clonedWrappedMap).Translation, Epsilon));
@@ -109,7 +109,7 @@ namespace OpenVDB.Core.Tests.Math.Maps
             // Cloned map should not be affected
             var pointAfterOriginalMod = originalGenericMap.ApplyMap(TestPoint); // (1,2,3) + (6,6,6) = (7,8,9)
             var pointForCloned = clonedGenericMap.ApplyMap(TestPoint);      // (1,2,3) + (5,5,5) = (6,7,8)
-            
+
             Assert.IsFalse(pointAfterOriginalMod.IsApproxEqual(pointForCloned, Epsilon), "Clone was affected by modification to original's wrapped map.");
             Assert.IsTrue(new Vec3<double>(6+1, 7+1, 8+1).IsApproxEqual(pointAfterOriginalMod, Epsilon)); // (7,8,9)
             Assert.IsTrue(new Vec3<double>(6,7,8).IsApproxEqual(pointForCloned, Epsilon));
@@ -124,7 +124,7 @@ namespace OpenVDB.Core.Tests.Math.Maps
 
             var inverseGenericMap = (GenericMap)genericMap.InverseMap();
             Assert.IsNotNull(inverseGenericMap);
-            
+
             var wrappedInverse = inverseGenericMap.GetWrappedMapTestHook();
             Assert.IsInstanceOf<ScaleMap>(wrappedInverse);
             Assert.IsTrue(new Vec3<double>(0.5, 0.25, 0.2).IsApproxEqual(((ScaleMap)wrappedInverse).Scale, Epsilon));
@@ -142,7 +142,7 @@ namespace OpenVDB.Core.Tests.Math.Maps
 
             var postTranslation = new Vec3<double>(5,5,5);
             var composedGenericMap = (GenericMap)genericMap.PostTranslate(postTranslation);
-            
+
             var expectedFinalTranslation = initialTranslation + postTranslation; // (6,6,6)
             var wrappedComposedMap = composedGenericMap.GetWrappedMapTestHook();
             Assert.IsInstanceOf<TranslationMap>(wrappedComposedMap, "PostTranslate on TranslationMap should result in TranslationMap.");
@@ -151,7 +151,7 @@ namespace OpenVDB.Core.Tests.Math.Maps
             var finalPoint = composedGenericMap.ApplyMap(TestPoint); // (1,2,3) + (6,6,6) = (7,8,9)
             Assert.IsTrue(new Vec3<double>(7,8,9).IsApproxEqual(finalPoint, Epsilon));
         }
-        
+
         [Test]
         public void ToAffineMap_ShouldDelegateCorrectly()
         {

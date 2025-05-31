@@ -59,7 +59,7 @@ namespace OpenVDB.Core.Tests
             Assert.AreSame(tree, gridWithTree.Tree);
             Assert.AreEqual(77.0f, gridWithTree.Background);
         }
-        
+
         [Test]
         public void Grid_StaticCreate_Methods_ShouldWork()
         {
@@ -70,7 +70,7 @@ namespace OpenVDB.Core.Tests
             var g2 = FloatGrid.Create(10.0f);
             Assert.IsNotNull(g2);
             Assert.AreEqual(10.0f, g2.Background);
-            
+
             var tree = new Tree.Tree<float>(20.0f);
             var g3 = FloatGrid.Create(tree);
             Assert.IsNotNull(g3);
@@ -111,17 +111,17 @@ namespace OpenVDB.Core.Tests
             Assert.IsTrue(_grid.Transform.GetMap().ToAffineMap().Matrix.IsApproxEqual(newTransform.GetMap().ToAffineMap().Matrix, 1e-9));
             Assert.AreEqual(new Vec3<double>(2,2,2), _grid.VoxelSize());
         }
-        
+
         [Test]
         public void GridBase_IndexWorldConversions_ShouldUseTransform()
         {
             _grid.Transform = Transform.CreateScaleTranslateTransform(
-                new Vec3<double>(2.0, 2.0, 2.0), 
+                new Vec3<double>(2.0, 2.0, 2.0),
                 new Vec3<double>(10, 20, 30));
 
             var indexPt = new Vec3<double>(1, 1, 1);
             var expectedWorldPt = new Vec3<double>(1*2+10, 1*2+20, 1*2+30); // (12, 22, 32)
-            
+
             Assert.IsTrue(expectedWorldPt.IsApproxEqual(_grid.IndexToWorld(indexPt), 1e-9));
             Assert.IsTrue(indexPt.IsApproxEqual(_grid.WorldToIndex(expectedWorldPt), 1e-9));
         }
@@ -135,7 +135,7 @@ namespace OpenVDB.Core.Tests
             Assert.IsTrue(_grid.HasMetadata(GridBaseMetadataKeys.FileBBoxMin));
             Assert.IsTrue(_grid.HasMetadata(GridBaseMetadataKeys.FileBBoxMax));
             Assert.IsTrue(_grid.HasMetadata(GridBaseMetadataKeys.FileMemBytes));
-            
+
             Assert.AreEqual(0L, _grid.GetValue<long>(GridBaseMetadataKeys.FileVoxelCount, -1L));
         }
 
@@ -144,7 +144,7 @@ namespace OpenVDB.Core.Tests
         {
             _grid.Name = "OriginalGrid";
             _grid.Transform = Transform.CreateTranslationTransform(new Vec3<double>(5,0,0));
-            
+
             // CopyGrid (shares tree, copies metadata & transform)
             var shallowTreeCopy = (FloatGrid)_grid.CopyGrid();
             Assert.AreEqual("OriginalGrid", shallowTreeCopy.Name);
@@ -165,7 +165,7 @@ namespace OpenVDB.Core.Tests
             Assert.AreEqual(_grid.Background, newTreeCopy.Background, "New tree should have same background.");
             Assert.AreNotSame(_grid.Transform, newTreeCopy.Transform, "CopyGridWithNewTree should copy the transform.");
         }
-        
+
         [Test]
         public void Grid_GetAccessor_ShouldReturnAccessor()
         {
@@ -188,7 +188,7 @@ namespace OpenVDB.Core.Tests
             Assert.DoesNotThrow(() => _grid.Clear());
             Assert.AreEqual(0, _grid.ActiveVoxelCount()); // Placeholder returns 0
         }
-        
+
         [Test]
         public void Grid_StaticRegistry_ShouldWork()
         {

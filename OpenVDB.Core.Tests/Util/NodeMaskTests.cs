@@ -127,7 +127,7 @@ namespace OpenVDB.Core.Tests.Util
                 ms.Seek(0, SeekOrigin.Begin);
 
                 // For Read, the NodeMask must be constructed with the same Log2Dim
-                var newMask = new NodeMask(3); 
+                var newMask = new NodeMask(3);
                 using (var reader = new BinaryReader(ms, System.Text.Encoding.UTF8, true))
                 {
                     newMask.Read(reader);
@@ -142,7 +142,7 @@ namespace OpenVDB.Core.Tests.Util
                 }
             }
         }
-        
+
         [Test]
         public void WriteAndRead_EmptyMask_DoesNotThrow()
         {
@@ -214,7 +214,7 @@ namespace OpenVDB.Core.Tests.Util
             Assert.Throws<ArgumentException>(() => { var x = maskA | maskC; });
             Assert.Throws<ArgumentException>(() => { var x = maskA ^ maskC; });
         }
-        
+
         [Test]
         public void CopyAndClone_CreateIndependentMasks()
         {
@@ -236,7 +236,7 @@ namespace OpenVDB.Core.Tests.Util
             originalMask.SetOff(0);
 
             Assert.AreEqual(originalMask.Count -1, copiedMask.CountOn()); // Copied should still have 5 off
-            Assert.IsTrue(copiedMask.IsOn(0)); 
+            Assert.IsTrue(copiedMask.IsOn(0));
             Assert.IsFalse(copiedMask.IsOn(5));
         }
     }

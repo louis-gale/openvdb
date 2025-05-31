@@ -47,7 +47,7 @@ namespace OpenVDB.Core.Tests.Math
 
                 Assert.AreEqual(originalTransform.IsLinear, newTransform.IsLinear);
                 Assert.AreEqual(originalTransform.HasUniformScale, newTransform.HasUniformScale);
-                
+
                 var p1 = originalTransform.IndexToWorld(TestPoint);
                 var p2 = newTransform.IndexToWorld(TestPoint);
                 Assert.IsTrue(p1.IsApproxEqual(p2, Epsilon), $"Transformed points do not match for {typeof(TMap).Name}. Expected {p1}, got {p2}");
@@ -66,7 +66,7 @@ namespace OpenVDB.Core.Tests.Math
             TestTransformSerialization<IdentityMap>(transform, (orig, read) =>
             {
                 // No data members to compare for IdentityMap
-                Assert.Pass(); 
+                Assert.Pass();
             });
         }
 
@@ -138,8 +138,8 @@ namespace OpenVDB.Core.Tests.Math
         [Test]
         public void AffineMap_Serialization_ShouldPreserveMap()
         {
-            var matrix = Mat4<double>.CreateScale(new Vec3<double>(1,2,3)) * 
-                         Mat4<double>.CreateRotationX(0.5) * 
+            var matrix = Mat4<double>.CreateScale(new Vec3<double>(1,2,3)) *
+                         Mat4<double>.CreateRotationX(0.5) *
                          Mat4<double>.CreateTranslation(new Vec3<double>(10,20,30));
             var map = new AffineMap(matrix);
             var transform = new Transform(map);
@@ -148,7 +148,7 @@ namespace OpenVDB.Core.Tests.Math
                 Assert.IsTrue(orig.Matrix.IsApproxEqual(read.Matrix, Epsilon));
             });
         }
-        
+
         [Test]
         public void UnitaryMap_Serialization_ShouldPreserveMap()
         {
@@ -169,7 +169,7 @@ namespace OpenVDB.Core.Tests.Math
             double taper = 0.5;
             double depth = 20.0;
             var affinePart = new AffineMap(Mat4<double>.CreateTranslation(new Vec3<double>(1,2,3)));
-            
+
             var map = new NonlinearFrustumMap(bbox, taper, depth, affinePart);
             var transform = new Transform(map);
 

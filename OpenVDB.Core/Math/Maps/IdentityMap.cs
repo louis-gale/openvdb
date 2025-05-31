@@ -19,7 +19,7 @@ namespace OpenVDB.Math.Maps
         public override Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector) => sourceVector;
         public override Vec3<double> ApplyJT(Vec3<double> sourceVector) => sourceVector;
         public override Vec3<double> ApplyIJT(Vec3<double> sourceVector) => sourceVector;
-        
+
         public override double GetDeterminant(Vec3<double> domainPos) => 1.0;
         public override Vec3<double> GetVoxelSize(Vec3<double> domainPos) => new Vec3<double>(1.0, 1.0, 1.0);
 

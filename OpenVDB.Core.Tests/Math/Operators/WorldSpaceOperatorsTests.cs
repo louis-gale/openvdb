@@ -52,18 +52,18 @@ namespace OpenVDB.Core.Tests.Math.Operators
         {
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
-            
+
             var translationVec = new Vec3<double>(10.0, 20.0, 30.0);
             var translationMap = new TranslationMap(translationVec);
 
             // Calculate ISGradient
             Vec3<float> isGrad = ISGradient.Result<float, ITreeValueAccessor<float>>(accessor, TestCoord, scheme);
-            
+
             // Calculate WSGradient with TranslationMap
             Vec3<float> wsGrad = WSGradient.Result<float, ITreeValueAccessor<float>, TranslationMap>(
                 translationMap, accessor, TestCoord, scheme);
 
-            Assert.IsTrue(isGrad.IsApproxEqual(wsGrad, EpsilonF), 
+            Assert.IsTrue(isGrad.IsApproxEqual(wsGrad, EpsilonF),
                 $"WSGradient with TranslationMap should equal ISGradient for scheme {scheme}. ISG: {isGrad}, WSG: {wsGrad}");
 
             // Also verify against analytical result
@@ -86,7 +86,7 @@ namespace OpenVDB.Core.Tests.Math.Operators
             Vec3<float> isGrad = ISGradient.Result<float, ITreeValueAccessor<float>>(accessor, TestCoord, scheme);
             Vec3<float> wsGrad = WSGradient.Result<float, ITreeValueAccessor<float>, TranslationMap>(
                 translationMap, accessor, TestCoord, scheme);
-                
+
             Assert.IsTrue(isGrad.IsApproxEqual(wsGrad, EpsilonF),
                 $"WSGradient with TranslationMap should equal ISGradient for scheme {scheme} on quadratic. ISG: {isGrad}, WSG: {wsGrad}");
 
@@ -94,24 +94,24 @@ namespace OpenVDB.Core.Tests.Math.Operators
              Assert.IsTrue(analyticalGrad.IsApproxEqual(wsGrad, EpsilonF),
                 $"WSGradient with TranslationMap result incorrect for scheme {scheme} on quadratic. Expected: {analyticalGrad}, Got: {wsGrad}");
         }
-        
+
         [Test]
         public void WSGradient_GeneralCase_WithNonTranslationMap_ShouldThrowNotImplemented()
         {
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
-            
+
             // Use a ScaleMap, which is not the specialized TranslationMap
             var scaleMap = new ScaleMap(new Vec3<double>(2.0, 2.0, 2.0));
 
             // The generic Result method in WSGradient is expected to throw NotImplementedException
             // as its general case logic (map.ApplyIJT) is not fully implemented or tested for all maps.
-            Assert.Throws<System.NotImplementedException>(() => 
+            Assert.Throws<System.NotImplementedException>(() =>
                 WSGradient.Result<float, ITreeValueAccessor<float>, ScaleMap>(
                     scaleMap, accessor, TestCoord, DScheme.CD_2ND)
             );
         }
-        
+
         [Test]
         public void WSGradient_Specializations_UniformScaleMap_CD2_ShouldBeImplementedAndCorrect()
         {
@@ -121,11 +121,11 @@ namespace OpenVDB.Core.Tests.Math.Operators
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
             var map = new UniformScaleMap(2.0);
-            
+
             var expectedWSGrad = new Vec3<float>(1.0f, 1.5f, 2.0f);
-            
+
             var wsGrad = WSGradient.Result<float, ITreeValueAccessor<float>, UniformScaleMap>(map, accessor, TestCoord, DScheme.CD_2ND);
-            
+
             Assert.IsTrue(expectedWSGrad.IsApproxEqual(wsGrad, EpsilonF), $"Expected {expectedWSGrad}, got {wsGrad}");
         }
 
@@ -138,14 +138,14 @@ namespace OpenVDB.Core.Tests.Math.Operators
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
             var map = new ScaleMap(new Vec3<double>(2.0, 1.0, 0.5));
-            
+
             var expectedWSGrad = new Vec3<float>(1.0f, 3.0f, 8.0f);
-            
+
             var wsGrad = WSGradient.Result<float, ITreeValueAccessor<float>, ScaleMap>(map, accessor, TestCoord, DScheme.CD_2ND);
-            
+
             Assert.IsTrue(expectedWSGrad.IsApproxEqual(wsGrad, EpsilonF), $"Expected {expectedWSGrad}, got {wsGrad}");
         }
-        
+
         [Test]
         public void WSGradient_Specializations_ScaleTranslateMap_CD2_ShouldBeImplementedAndCorrect()
         {
@@ -156,11 +156,11 @@ namespace OpenVDB.Core.Tests.Math.Operators
             var grid = CreateScalarGrid(LinearFunc, TestDomain);
             var accessor = grid.GetAccessor();
             var map = new ScaleTranslateMap(new Vec3<double>(2.0, 1.0, 0.5), new Vec3<double>(10,20,30));
-            
+
             var expectedWSGrad = new Vec3<float>(1.0f, 3.0f, 8.0f);
-            
+
             var wsGrad = WSGradient.Result<float, ITreeValueAccessor<float>, ScaleTranslateMap>(map, accessor, TestCoord, DScheme.CD_2ND);
-            
+
             Assert.IsTrue(expectedWSGrad.IsApproxEqual(wsGrad, EpsilonF), $"Expected {expectedWSGrad}, got {wsGrad}");
         }
     }

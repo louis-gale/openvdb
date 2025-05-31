@@ -34,16 +34,16 @@ namespace OpenVDB.Core.Tree
     public class Tree<TValue> : TreeBase, ITree<TValue>
     {
         private TValue _background;
-        
+
         // Corresponds to TreeConfig::ValueType in C++ (e.g. float, Vec3d)
-        public new TValue BackgroundValue => _background; 
+        public new TValue BackgroundValue => _background;
         object ITree.BackgroundValue => _background; // Explicit implementation for non-generic interface
 
         // Corresponds to TreeConfig::TreeType in C++ (e.g. "TreeFloatR5")
         public override string TreeType => $"Tree{ValueTypeNameDefault}R?"; // Placeholder, R? for config level
-        
+
         public override string ValueTypeName => OpenVDB.TypeName.GetName<TValue>();
-        
+
         private string ValueTypeNameDefault => typeof(TValue).Name; // Basic name for TreeType construction
 
         public override Type ValueType => typeof(TValue);
@@ -55,7 +55,7 @@ namespace OpenVDB.Core.Tree
         {
             _background = background;
         }
-        
+
         /// <summary>
         /// Copy constructor from another tree of potentially different value type.
         /// Requires TValue to be constructible from TOtherValue.
@@ -95,7 +95,7 @@ namespace OpenVDB.Core.Tree
             }
         }
         public override void Clip(CoordBBox bbox) { /* Placeholder */ }
-        
+
         public override ITree Copy() => new Tree<TValue>(this); // Placeholder, needs deep copy logic
 
         public ITreeValueAccessor<TValue> GetAccessor() => new TreeValueAccessor<TValue>(this); // Placeholder
@@ -104,7 +104,7 @@ namespace OpenVDB.Core.Tree
         public virtual void Fill(CoordBBox bbox, TValue value, bool activeState) { /* Placeholder */ }
         public virtual void DenseFill(CoordBBox bbox, TValue value, bool activeState) { /* Placeholder */ }
         public virtual void Merge(ITree<TValue> otherTree, MergePolicy policy) { /* Placeholder */ }
-        
+
         public virtual void TopologyUnion<TOtherValue>(ITree<TOtherValue> otherTree) { /* Placeholder */ }
         public virtual void TopologyIntersection<TOtherValue>(ITree<TOtherValue> otherTree) { /* Placeholder */ }
         public virtual void TopologyDifference<TOtherValue>(ITree<TOtherValue> otherTree) { /* Placeholder */ }

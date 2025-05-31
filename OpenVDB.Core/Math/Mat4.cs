@@ -62,7 +62,7 @@ namespace OpenVDB.Math
                 M30 = a[3]; M31 = a[7]; M32 = a[11]; M33 = a[15];
             }
         }
-        
+
         public Mat4(Vec4<T> row0, Vec4<T> row1, Vec4<T> row2, Vec4<T> row3)
         {
             M00 = row0.X; M01 = row0.Y; M02 = row0.Z; M03 = row0.W;
@@ -93,18 +93,18 @@ namespace OpenVDB.Math
                 else /*row == 3*/ { if (col == 0) M30 = value; else if (col == 1) M31 = value; else if (col == 2) M32 = value; else M33 = value; }
             }
         }
-        
+
         public T[] AsArray(bool rowMajor = true)
         {
             if(rowMajor)
-                return new[] { 
-                    M00, M01, M02, M03, M10, M11, M12, M13, 
-                    M20, M21, M22, M23, M30, M31, M32, M33 
+                return new[] {
+                    M00, M01, M02, M03, M10, M11, M12, M13,
+                    M20, M21, M22, M23, M30, M31, M32, M33
                 };
             else
-                 return new[] { 
-                    M00, M10, M20, M30, M01, M11, M21, M31, 
-                    M02, M12, M22, M32, M03, M13, M23, M33 
+                 return new[] {
+                    M00, M10, M20, M30, M01, M11, M21, M31,
+                    M02, M12, M22, M32, M03, M13, M23, M33
                 };
         }
 
@@ -131,7 +131,7 @@ namespace OpenVDB.Math
             if (c < 0 || c >= 4) throw new IndexOutOfRangeException();
             return new Vec4<T>(this[0, c], this[1, c], this[2, c], this[3, c]);
         }
-        
+
         public void SetZero()
         {
             M00 = M01 = M02 = M03 = T.Zero;
@@ -202,7 +202,7 @@ namespace OpenVDB.Math
             m.M10 * scalar, m.M11 * scalar, m.M12 * scalar, m.M13 * scalar,
             m.M20 * scalar, m.M21 * scalar, m.M22 * scalar, m.M23 * scalar,
             m.M30 * scalar, m.M31 * scalar, m.M32 * scalar, m.M33 * scalar);
-            
+
         public static Mat4<T> operator *(T scalar, Mat4<T> m) => m * scalar;
 
         // Matrix-vector multiplication (m * v)
@@ -212,7 +212,7 @@ namespace OpenVDB.Math
             m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W,
             m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W,
             m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
-            
+
         // Vector-matrix multiplication (v * m)
         public static Vec4<T> operator *(Vec4<T> v, Mat4<T> m) => new Vec4<T>(
             v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20 + v.W * m.M30,
@@ -253,7 +253,7 @@ namespace OpenVDB.Math
             M03, M13, M23, M33);
 
         public void Transpose() => this = Transposed();
-        
+
         public Mat3<T> GetMat3() => new Mat3<T>(M00, M01, M02, M10, M11, M12, M20, M21, M22);
         public void SetMat3(Mat3<T> m3)
         {
@@ -306,7 +306,7 @@ namespace OpenVDB.Math
             {
                 throw new InvalidOperationException("Matrix is singular or nearly singular; cannot invert.");
             }
-            
+
             // Placeholder - this is not a correct general inverse.
             // A full implementation is required.
             // Example: Using adjugate matrix / determinant
@@ -356,7 +356,7 @@ namespace OpenVDB.Math
                 (M20 * p.X + M21 * p.Y + M22 * p.Z + M23) * invW
             );
         }
-        
+
         // Transform for vector (assumes W=0)
         public Vec3<T> TransformVector(Vec3<T> v) => new Vec3<T>(
             M00 * v.X + M01 * v.Y + M02 * v.Z,

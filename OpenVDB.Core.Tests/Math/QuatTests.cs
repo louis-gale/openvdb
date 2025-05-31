@@ -16,7 +16,7 @@ namespace OpenVDB.Core.Tests.Math
             // Default constructor for struct will init to all zeros.
             // The Quat<T> constructor with no args sets to identity if all params are default.
             // Let's test the parameterless struct constructor behavior first.
-            var q = new Quat<float>(); 
+            var q = new Quat<float>();
             Assert.AreEqual(0f, q.X);
             Assert.AreEqual(0f, q.Y);
             Assert.AreEqual(0f, q.Z);
@@ -59,14 +59,14 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(axis.Z * sinHalfAngle, q.Z, 1e-9);
             Assert.AreEqual(System.Math.Cos(angle / 2.0), q.W, 1e-9);
         }
-        
+
         [Test]
         public void Length_And_Normalize_ShouldWorkCorrectly()
         {
             var q = new Quat<double>(1.0, 2.0, 3.0, 4.0);
             double lenSqr = 1*1 + 2*2 + 3*3 + 4*4; // 1 + 4 + 9 + 16 = 30
             double len = System.Math.Sqrt(lenSqr);
-            
+
             Assert.AreEqual(lenSqr, q.LengthSqr(), 1e-9);
             Assert.AreEqual(len, q.Length(), 1e-9);
 
@@ -97,7 +97,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(1.0, v_qy.X, 1e-9);
             Assert.AreEqual(0.0, v_qy.Y, 1e-9);
             Assert.AreEqual(0.0, v_qy.Z, 1e-9);
-            
+
             // Apply qx to result: (1,0,0) rotated by 90 deg around X remains (1,0,0)
             var v_qx_qy = qx.RotateVector(v_qy);
             Assert.AreEqual(1.0, v_qx_qy.X, 1e-9);
@@ -130,7 +130,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(conjugate.Y, inverse.Y, 1e-9);
             Assert.AreEqual(conjugate.Z, inverse.Z, 1e-9);
             Assert.AreEqual(conjugate.W, inverse.W, 1e-9);
-            
+
             var identity = q * inverse;
             Assert.AreEqual(0.0, identity.X, 1e-9);
             Assert.AreEqual(0.0, identity.Y, 1e-9);
@@ -151,14 +151,14 @@ namespace OpenVDB.Core.Tests.Math
             // [cos(90)  0  sin(90)]   [0  0  1]
             // [   0     1    0   ] = [0  1  0]
             // [-sin(90) 0  cos(90)]   [-1 0  0]
-            
+
             Assert.AreEqual(System.Math.Cos(angle), mat.M00, 1e-9); Assert.AreEqual(0.0, mat.M01, 1e-9); Assert.AreEqual(System.Math.Sin(angle), mat.M02, 1e-9);
             Assert.AreEqual(0.0, mat.M10, 1e-9); Assert.AreEqual(1.0, mat.M11, 1e-9); Assert.AreEqual(0.0, mat.M12, 1e-9);
             Assert.AreEqual(-System.Math.Sin(angle), mat.M20, 1e-9); Assert.AreEqual(0.0, mat.M21, 1e-9); Assert.AreEqual(System.Math.Cos(angle), mat.M22, 1e-9);
 
             var v = new Vec3<double>(1,0,0); // Point on X axis
             var rotatedV = mat * v; // Mat3 * Vec3 multiplication
-            
+
             // (1,0,0) rotated 90 deg around Y should be (0,0,-1)
             Assert.AreEqual(0.0, rotatedV.X, 1e-9);
             Assert.AreEqual(0.0, rotatedV.Y, 1e-9);
@@ -169,7 +169,7 @@ namespace OpenVDB.Core.Tests.Math
              Assert.AreEqual(rotatedV.Y, rotatedVQuat.Y, 1e-9);
              Assert.AreEqual(rotatedV.Z, rotatedVQuat.Z, 1e-9);
         }
-        
+
         [Test]
         public void Slerp_ShouldInterpolateCorrectly()
         {
@@ -179,7 +179,7 @@ namespace OpenVDB.Core.Tests.Math
             // Midpoint interpolation (t=0.5) should be 90 degrees around Z
             var qMid = Quat<double>.Slerp(q1, q2, 0.5);
             var expectedMid = new Quat<double>(new Vec3<double>(0,0,1), System.Math.PI / 2.0);
-            
+
             Assert.IsTrue(qMid.IsApproxEqual(expectedMid, 1e-9) || qMid.IsApproxEqual(-expectedMid, 1e-9)); // Quaternion can be q or -q
 
             var v = new Vec3<double>(1,0,0);
@@ -188,11 +188,11 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(0.0, rotatedV.X, 1e-9);
             Assert.AreEqual(1.0, rotatedV.Y, 1e-9);
             Assert.AreEqual(0.0, rotatedV.Z, 1e-9);
-            
+
             // Test t=0 and t=1
             var qStart = Quat<double>.Slerp(q1, q2, 0.0);
              Assert.IsTrue(qStart.IsApproxEqual(q1, 1e-9) || qStart.IsApproxEqual(-q1, 1e-9));
-            
+
             var qEnd = Quat<double>.Slerp(q1, q2, 1.0);
             Assert.IsTrue(qEnd.IsApproxEqual(q2, 1e-9) || qEnd.IsApproxEqual(-q2, 1e-9));
         }

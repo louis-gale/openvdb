@@ -13,8 +13,8 @@ namespace OpenVDB.Core.Math.Operators
     public static class ISGradient
     {
         public static Vec3<TValue> Result<TValue, TAccessor>(
-            TAccessor accessor, 
-            Coord ijk, 
+            TAccessor accessor,
+            Coord ijk,
             DScheme scheme)
             where TAccessor : ITreeValueAccessor<TValue>
             where TValue : struct, IFloatingPointIeee754<TValue>
@@ -48,7 +48,7 @@ namespace OpenVDB.Core.Math.Operators
                                                                             // C++ BIAS_SCHEME<SECOND_BIAS>::FD is FD_2ND_ORDER.
                                                                             // Let's map to best available forward/backward for now.
                     Console.WriteLine($"Warning: BiasedGradientScheme.{scheme} mapped to DScheme.FD_1ST (FD part). Full higher-order bias not yet ported.");
-                    return DScheme.FD_1ST; 
+                    return DScheme.FD_1ST;
                 case BiasedGradientScheme.THIRD_BIAS:
                     Console.WriteLine($"Warning: BiasedGradientScheme.{scheme} mapped to DScheme.FD_1ST (FD part). Full higher-order bias not yet ported.");
                     return DScheme.FD_1ST;
@@ -76,9 +76,9 @@ namespace OpenVDB.Core.Math.Operators
         }
 
         public static Vec3<TValue> Result<TValue, TAccessor, TBiasValue>(
-            TAccessor accessor, 
-            Coord ijk, 
-            BiasedGradientScheme scheme, 
+            TAccessor accessor,
+            Coord ijk,
+            BiasedGradientScheme scheme,
             Vec3<TBiasValue> biasVector)
             where TAccessor : ITreeValueAccessor<TValue>
             where TValue : struct, IFloatingPointIeee754<TValue>
@@ -106,7 +106,7 @@ namespace OpenVDB.Core.Math.Operators
             TValue dx = biasVector.X < TBiasValue.Zero ? D1.InX(accessor, ijk, fdScheme) : D1.InX(accessor, ijk, bdScheme);
             TValue dy = biasVector.Y < TBiasValue.Zero ? D1.InY(accessor, ijk, fdScheme) : D1.InY(accessor, ijk, bdScheme);
             TValue dz = biasVector.Z < TBiasValue.Zero ? D1.InZ(accessor, ijk, fdScheme) : D1.InZ(accessor, ijk, bdScheme);
-            
+
             return new Vec3<TValue>(dx, dy, dz);
         }
     }
@@ -127,7 +127,7 @@ namespace OpenVDB.Core.Math.Operators
                 case BiasedGradientScheme.SECOND_BIAS: // C++ uses FD_2ND_ORDER_BIAS
                 case BiasedGradientScheme.THIRD_BIAS:  // C++ uses FD_3RD_ORDER_BIAS
                     Console.WriteLine($"Warning: BiasedGradientScheme.{scheme} for ISGradientNormSqrd mapped to DScheme.FD_1ST. Higher-order bias not fully ported.");
-                    return DScheme.FD_1ST; 
+                    return DScheme.FD_1ST;
                 case BiasedGradientScheme.WENO5_BIAS: return DScheme.WENO5;
                 case BiasedGradientScheme.HJWENO5_BIAS: return DScheme.HJWENO5; // HJWENO5 needs velocity for D1.InX etc.
                 default: throw new ArgumentOutOfRangeException(nameof(scheme));
@@ -150,8 +150,8 @@ namespace OpenVDB.Core.Math.Operators
         }
 
         public static TValue Result<TValue, TAccessor>(
-            TAccessor accessor, 
-            Coord ijk, 
+            TAccessor accessor,
+            Coord ijk,
             BiasedGradientScheme scheme)
             where TAccessor : ITreeValueAccessor<TValue>
             where TValue : struct, IFloatingPointIeee754<TValue>
@@ -174,11 +174,11 @@ namespace OpenVDB.Core.Math.Operators
                 // Fallback or throw for now.
                 throw new NotImplementedException("ISGradientNormSqrd with HJWENO5_BIAS requires specific upwind/downwind HJWENO gradient calculations not yet fully ported to D1 helpers.");
             }
-            
+
             // For non-HJWENO schemes, determine D+ and D- based on scheme choice
             // D+ (upwind for positiveSign=false, i.e. valCenter <= 0) uses Forward differences
             // D- (downwind for positiveSign=true, i.e. valCenter > 0) uses Backward differences
-            upwindGradient = ISGradient.Result(accessor, ijk, GetFD_Scheme(scheme)); 
+            upwindGradient = ISGradient.Result(accessor, ijk, GetFD_Scheme(scheme));
             downwindGradient = ISGradient.Result(accessor, ijk, GetBD_Scheme(scheme));
 
             return MathUtil.GodunovsNormSqrd<TValue>(positiveSign, downwindGradient, upwindGradient);
@@ -188,8 +188,8 @@ namespace OpenVDB.Core.Math.Operators
     public static class ISLaplacian
     {
         public static TValue Result<TValue, TAccessor>(
-            TAccessor accessor, 
-            Coord ijk, 
+            TAccessor accessor,
+            Coord ijk,
             DDScheme scheme)
             where TAccessor : ITreeValueAccessor<TValue>
             where TValue : struct, IFloatingPointIeee754<TValue> // Assuming Laplacian applies to scalar fields

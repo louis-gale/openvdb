@@ -18,11 +18,11 @@ namespace OpenVDB.Core.IO
         public uint FileVersion { get; set; } = IoConstants.CurrentFileVersion; // Default to current
         public ushort LibraryVersionMajor { get; set; } = Version.MajorVersion;
         public ushort LibraryVersionMinor { get; set; } = Version.MinorVersion;
-        
+
         public CompressionFlags Compression { get; set; } = CompressionFlags.Default;
-        
+
         public GridClass GridClass { get; set; } = GridClass.Unknown;
-        
+
         // Background value handling: store as object and its type
         public object BackgroundValue { get; private set; }
         public Type BackgroundType { get; private set; }
@@ -36,7 +36,7 @@ namespace OpenVDB.Core.IO
         public uint CurrentPass { get; set; } = 0; // Format: (numPasses << 16) | passIdx
 
         // For delayed loading (placeholders)
-        public ulong CurrentLeafNode { get; set; } = 0; 
+        public ulong CurrentLeafNode { get; set; } = 0;
         public bool HasDelayedLoadMetadata => GridMeta?.HasMetadata(GridBaseMetadataKeys.FileDelayedLoad) ?? false;
 
 
@@ -49,7 +49,7 @@ namespace OpenVDB.Core.IO
         /// Auxiliary data map for custom user data associated with the stream.
         /// </summary>
         public Dictionary<string, object> AuxData { get; set; }
-        
+
         // Test member from C++ Impl (purpose unclear, included for completeness if needed by tests/logic)
         private uint _testData = 0;
 
@@ -96,7 +96,7 @@ namespace OpenVDB.Core.IO
             {
                 return (T)BackgroundValue; // This will be null if BackgroundValue is null and T is reference type
             }
-            
+
             // Attempt conversion if types are compatible (e.g. int to long)
             try { return (T)Convert.ChangeType(BackgroundValue, typeof(T)); }
             catch (Exception ex) when (ex is InvalidCastException || ex is FormatException || ex is OverflowException)
@@ -104,13 +104,13 @@ namespace OpenVDB.Core.IO
                 throw new InvalidCastException($"Cannot convert background value of type {BackgroundType?.Name ?? "null"} to {typeof(T).Name}.", ex);
             }
         }
-        
+
         public string GetVersionString() => $"{LibraryVersionMajor}.{LibraryVersionMinor}/{FileVersion}";
 
         // Test methods from C++ (if their purpose becomes clear or needed for direct porting of tests)
         public uint GetTestData() => _testData;
         public void SetTestData(uint data) => _testData = data;
-        
+
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();

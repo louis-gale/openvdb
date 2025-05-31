@@ -120,7 +120,7 @@ namespace OpenVDB.Core.Tests.Tools
             accessor.SetValueOn(coordOk, 1.0f);
             accessor.SetValueOn(coordNaN, float.NaN);
             accessor.SetValueOn(coordInf, float.PositiveInfinity);
-            
+
             // Manually set active states for placeholder tree
             ((Tree<float>)grid.Tree).SetActiveState(coordOk, true);
             ((Tree<float>)grid.Tree).SetActiveState(coordNaN, true);
@@ -144,7 +144,7 @@ namespace OpenVDB.Core.Tests.Tools
             Assert.AreEqual(0, diagnose.ValueCount);
             Assert.IsFalse(maskAccessor.GetValue(coordNaN), "Mask should be cleared.");
         }
-        
+
         [Test]
         public void Diagnose_Check_With_CheckRange()
         {
@@ -157,7 +157,7 @@ namespace OpenVDB.Core.Tests.Tools
             accessor.SetValueOn(coordInRange, 0.5f);
             accessor.SetValueOn(coordOutOfRangeLow, -1.0f);
             accessor.SetValueOn(coordOutOfRangeHigh, 1.5f);
-            
+
             ((Tree<float>)grid.Tree).SetActiveState(coordInRange, true);
             ((Tree<float>)grid.Tree).SetActiveState(coordOutOfRangeLow, true);
             ((Tree<float>)grid.Tree).SetActiveState(coordOutOfRangeHigh, true);
@@ -178,7 +178,7 @@ namespace OpenVDB.Core.Tests.Tools
             var grid = CreateTestFloatGrid(3.0f * 0.1f); // background = halfWidth * voxelSize
             grid.Transform = Transform.CreateLinearTransform(0.1); // Voxel size 0.1
             grid.GridClass = GridClass.LevelSet;
-            
+
             var accessor = grid.GetAccessor();
             accessor.SetValueOn(new Coord(1,1,1), 0.5f); // Inside +/- background
             ((Tree<float>)grid.Tree).SetActiveState(new Coord(1,1,1), true);
@@ -187,7 +187,7 @@ namespace OpenVDB.Core.Tests.Tools
             var errors = Diagnostics.CheckLevelSet<FloatGrid, Tree<float>, float>(grid, checkCount: 5); // Up to CheckFinite
             CollectionAssert.IsEmpty(errors, string.Join("; ", errors));
         }
-        
+
         [Test]
         public void Diagnostics_CheckLevelSet_FailingGridClass()
         {
@@ -208,7 +208,7 @@ namespace OpenVDB.Core.Tests.Tools
             var errors = Diagnostics.CheckLevelSet<FloatGrid, Tree<float>, float>(grid, checkCount: 6); // CheckFinite is around check 5 or 6
             Assert.IsTrue(errors.Any(s => s.Contains("non-finite values found")));
         }
-        
+
         // Test for CheckLevelSet for values outside +/- background will be skipped as
         // the Diagnose.Check method uses a simplified BBox iteration, not a proper ValueOnCIter,
         // and the CheckRange predicate for this specific level set constraint is not explicitly added
@@ -243,7 +243,7 @@ namespace OpenVDB.Core.Tests.Tools
             var errors = Diagnostics.CheckFogVolume<FloatGrid, Tree<float>, float>(grid, checkCount: 2);
             Assert.IsTrue(errors.Any(s => s.Contains("non-zero background")));
         }
-        
+
         // CheckFogVolume for values outside [0,1] is commented out in Diagnostics.cs, so no test for it.
 
         [Test]

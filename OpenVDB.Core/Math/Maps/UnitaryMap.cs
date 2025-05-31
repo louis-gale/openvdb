@@ -51,7 +51,7 @@ namespace OpenVDB.Math.Maps
         {
             _affineMap = new AffineMap(Mat4<double>.CreateRotation(axis, radians));
         }
-        
+
         public UnitaryMap(Axis axis, double radians)
         {
              _affineMap = new AffineMap(Mat4<double>.CreateRotation(Vec3<double>.Zero, radians, axis)); // CreateRotation needs axis for arbitrary, or specific axis rotation
@@ -62,7 +62,7 @@ namespace OpenVDB.Math.Maps
         {
             _affineMap = (AffineMap)other._affineMap.Clone();
         }
-        
+
         public UnitaryMap(UnitaryMap first, UnitaryMap second) // Composition
         {
             _affineMap = new AffineMap(first._affineMap, second._affineMap);
@@ -74,9 +74,9 @@ namespace OpenVDB.Math.Maps
 
         public override Vec3<double> ApplyJacobian(Vec3<double> sourceVector) => _affineMap.ApplyJacobian(sourceVector);
         public override Vec3<double> ApplyInverseJacobian(Vec3<double> sourceVector) => _affineMap.ApplyInverseJacobian(sourceVector);
-        
+
         // For unitary maps, J^T = J^-1
-        public override Vec3<double> ApplyJT(Vec3<double> sourceVector) => ApplyInverseJacobian(sourceVector); 
+        public override Vec3<double> ApplyJT(Vec3<double> sourceVector) => ApplyInverseJacobian(sourceVector);
         public override Vec3<double> ApplyIJT(Vec3<double> sourceVector) => ApplyJacobian(sourceVector);
 
 
@@ -96,7 +96,7 @@ namespace OpenVDB.Math.Maps
 
         public override IMap PreTranslate(Vec3<double> t) => ToAffineMap().PreTranslate(t); // Result is Affine
         public override IMap PreScale(Vec3<double> s) => ToAffineMap().PreScale(s);     // Result is Affine
-        
+
         public override IMap PostRotate(double radians, Axis axis)
         {
             var rotMap = new UnitaryMap(axis, radians);
@@ -120,7 +120,7 @@ namespace OpenVDB.Math.Maps
             // was part of a constructor.
             var affineData = new AffineMap(); // Default constructor
             affineData.ReadData(reader, streamMetadata);
-            
+
             // Validate if affineData represents a unitary transformation.
             // For now, we assume the data read corresponds to a valid unitary matrix.
             // A full validation is complex (check if M*M^T = I, no translation, etc.).

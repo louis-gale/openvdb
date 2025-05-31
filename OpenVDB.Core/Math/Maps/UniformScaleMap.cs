@@ -16,17 +16,17 @@ namespace OpenVDB.Math.Maps
 
         public UniformScaleMap() : this(1.0) { }
 
-        public UniformScaleMap(double scale) 
+        public UniformScaleMap(double scale)
             : base(new Vec3<double>(scale, scale, scale)) // Call base constructor
         {
         }
-        
+
         public UniformScaleMap(UniformScaleMap other) : base(other) // Call base copy constructor
         {
         }
 
         public override IMap Clone() => new UniformScaleMap(this);
-        
+
         // ToAffineMap is inherited from ScaleMap
 
         public override IMap InverseMap() => new UniformScaleMap(1.0 / UniformScaleValue);

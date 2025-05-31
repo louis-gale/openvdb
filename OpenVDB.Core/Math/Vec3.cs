@@ -57,14 +57,14 @@ namespace OpenVDB.Math
             Y = a[1];
             Z = a[2];
         }
-        
+
         public Vec3(Vec3<T> other)
         {
             X = other.X;
             Y = other.Y;
             Z = other.Z;
         }
-        
+
         public T[] AsArray() => new[] { X, Y, Z };
 
         public void Init(T x = default, T y = default, T z = default)
@@ -112,7 +112,7 @@ namespace OpenVDB.Math
                    T.Abs(Y - other.Y) <= epsilon &&
                    T.Abs(Z - other.Z) <= epsilon;
         }
-        
+
         // C++ version uses isRelOrApproxEqual for eq method
         public bool Eq(Vec3<T> other, T epsilon = default, T relTol = default)
         {
@@ -134,7 +134,7 @@ namespace OpenVDB.Math
         {
             return new Vec3<T>(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
         }
-        
+
         public static Vec3<T> operator +(Vec3<T> v, T scalar)
         {
             return new Vec3<T>(v.X + scalar, v.Y + scalar, v.Z + scalar);
@@ -149,7 +149,7 @@ namespace OpenVDB.Math
         {
             return new Vec3<T>(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
         }
-        
+
         public static Vec3<T> operator -(Vec3<T> v, T scalar)
         {
             return new Vec3<T>(v.X - scalar, v.Y - scalar, v.Z - scalar);
@@ -175,17 +175,17 @@ namespace OpenVDB.Math
             if (scalar.Equals(T.Zero)) throw new DivideByZeroException("Scalar cannot be zero.");
             return new Vec3<T>(v.X / scalar, v.Y / scalar, v.Z / scalar);
         }
-        
+
         public static Vec3<T> operator /(T scalar, Vec3<T> v)
         {
-            if (v.X.Equals(T.Zero) || v.Y.Equals(T.Zero) || v.Z.Equals(T.Zero)) 
+            if (v.X.Equals(T.Zero) || v.Y.Equals(T.Zero) || v.Z.Equals(T.Zero))
                 throw new DivideByZeroException("Vector component cannot be zero for scalar division.");
             return new Vec3<T>(scalar / v.X, scalar / v.Y, scalar / v.Z);
         }
 
         public static Vec3<T> operator /(Vec3<T> v1, Vec3<T> v2) // Component-wise
         {
-            if (v2.X.Equals(T.Zero) || v2.Y.Equals(T.Zero) || v2.Z.Equals(T.Zero)) 
+            if (v2.X.Equals(T.Zero) || v2.Y.Equals(T.Zero) || v2.Z.Equals(T.Zero))
                 throw new DivideByZeroException("Divisor vector component cannot be zero.");
             return new Vec3<T>(v1.X / v2.X, v1.Y / v2.Y, v1.Z / v2.Z);
         }
@@ -219,7 +219,7 @@ namespace OpenVDB.Math
             T len = Length();
             if (len <= epsilon) // Or use IsApproxZero
             {
-                return false; 
+                return false;
             }
             X /= len;
             Y /= len;
@@ -238,7 +238,7 @@ namespace OpenVDB.Math
             }
             return new Vec3<T>(X / len, Y / len, Z / len);
         }
-        
+
         public Vec3<T> UnitSafe()
         {
             T l2 = LengthSqr();
@@ -246,7 +246,7 @@ namespace OpenVDB.Math
                 return new Vec3<T>(T.One, T.Zero, T.Zero); // (1,0,0) for Vec3
             return this / T.Sqrt(l2);
         }
-        
+
         public T Component(Vec3<T> onto, T eps = default)
         {
             if (eps == default) eps = T.Epsilon;
@@ -281,7 +281,7 @@ namespace OpenVDB.Math
                 return new Vec3<T>(T.Zero, Z * l, -Y * l);
             }
         }
-        
+
         public Vec3<T> Sorted()
         {
             T val0 = X, val1 = Y, val2 = Z;
@@ -305,7 +305,7 @@ namespace OpenVDB.Math
 
         public static Vec3<T> Zero() => new Vec3<T>(T.Zero, T.Zero, T.Zero);
         public static Vec3<T> Ones() => new Vec3<T>(T.One, T.One, T.One);
-        
+
         // Standard axes
         public static Vec3<T> XAxis() => new Vec3<T>(T.One, T.Zero, T.Zero);
         public static Vec3<T> YAxis() => new Vec3<T>(T.Zero, T.One, T.Zero);
@@ -334,7 +334,7 @@ namespace OpenVDB.Math
             // Add other supported types as necessary
             throw new NotSupportedException($"Vec3.Read for type {typeof(T)} not supported for metadata deserialization.");
         }
-        
+
         public static uint GetSizeInBytes()
         {
             if (typeof(T) == typeof(double)) return (uint)System.Runtime.InteropServices.Marshal.SizeOf<double>() * 3;

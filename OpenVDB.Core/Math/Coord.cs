@@ -33,7 +33,7 @@ namespace OpenVDB.Math
             Y = v.Y;
             Z = v.Z;
         }
-        
+
         public Coord(Vec3<uint> v) // from Vec3I in C++
         {
             X = (int)v.X;
@@ -103,7 +103,7 @@ namespace OpenVDB.Math
         {
             return new Coord(X + n, Y + n, Z + n);
         }
-        
+
         public int this[int i]
         {
             get
@@ -121,7 +121,7 @@ namespace OpenVDB.Math
                 else throw new IndexOutOfRangeException("Coord index out of range.");
             }
         }
-        
+
         public int[] ToArray() => new[] { X, Y, Z };
         public Vec3<double> ToVec3d() => new Vec3<double>(X, Y, Z);
         public Vec3<float> ToVec3f() => new Vec3<float>(X, Y, Z);
@@ -132,7 +132,7 @@ namespace OpenVDB.Math
         public static Coord operator +(Coord a, Coord b) => new Coord(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         public static Coord operator -(Coord a, Coord b) => new Coord(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         public static Coord operator -(Coord a) => new Coord(-a.X, -a.Y, -a.Z);
-        
+
         public static Coord operator *(Coord c, int scalar) => new Coord(c.X * scalar, c.Y * scalar, c.Z * scalar);
         public static Coord operator *(int scalar, Coord c) => new Coord(c.X * scalar, c.Y * scalar, c.Z * scalar);
         public static Coord operator /(Coord c, int scalar)
@@ -166,7 +166,7 @@ namespace OpenVDB.Math
         public static bool operator <=(Coord a, Coord b) => a.CompareTo(b) <= 0;
         public static bool operator >(Coord a, Coord b) => a.CompareTo(b) > 0;
         public static bool operator >=(Coord a, Coord b) => a.CompareTo(b) >= 0;
-        
+
         public void MinComponent(Coord other)
         {
             X = System.Math.Min(X, other.X);
@@ -186,9 +186,9 @@ namespace OpenVDB.Math
 
         public static Coord MaxComponent(Coord a, Coord b) =>
             new Coord(System.Math.Max(a.X, b.X), System.Math.Max(a.Y, b.Y), System.Math.Max(a.Z, b.Z));
-            
+
         public static bool LessThan(Coord a, Coord b) => (a.X < b.X || a.Y < b.Y || a.Z < b.Z);
-        
+
         public int MinIndex()
         {
             if (X <= Y && X <= Z) return 0;
@@ -202,7 +202,7 @@ namespace OpenVDB.Math
             if (Y >= Z) return 1;
             return 2;
         }
-        
+
         public long LengthSqr() => (long)X * X + (long)Y * Y + (long)Z * Z; // Use long to avoid overflow before sqrt
         public double Length() => System.Math.Sqrt(LengthSqr());
 
@@ -214,7 +214,7 @@ namespace OpenVDB.Math
         // If identical hash values to C++ are needed, this specific algorithm should be ported.
 
         public override string ToString() => $"[{X}, {Y}, {Z}]";
-        
+
         public static Coord Zero = new Coord(0,0,0);
         public static Coord One = new Coord(1,1,1);
         public static Coord XAxis = new Coord(1,0,0);

@@ -39,11 +39,11 @@ namespace OpenVDB.Core.IO
         public long TransformOffset { get; set; } = 0;
         public long TopologyOffset { get; set; } = 0; // Offset to the tree topology data
         public long BlocksOffset { get; set; } = 0;   // Offset to the data blocks (leaf node values)
-        
+
         // Byte sizes of components
         public long TopologyByteSize { get; set; } = 0;
         public long BlocksByteSize { get; set; } = 0;
-        
+
         // Legacy/compatibility fields (not explicitly in C++ GridDescriptor but implied by Read/Write logic)
         // C++ GridDescriptor has mGridPos, mBlockPos, mEndPos
         // mGridPos seems to be start of all grid data (metadata, transform, topology, blocks)
@@ -82,7 +82,7 @@ namespace OpenVDB.Core.IO
         {
             InstanceTransform = on ? "share" : "copy";
         }
-        
+
         /// <summary>
         /// Appends a suffix to a name, used for creating unique names for instanced grids.
         /// Suffix is separated by an ASCII "record separator" (char 30).
@@ -103,7 +103,7 @@ namespace OpenVDB.Core.IO
             Name = name;
             UniqueName = AddSuffix(name, suffix);
         }
-        
+
         public void SetUniqueName(string uniqueName)
         {
             UniqueName = uniqueName;
@@ -160,14 +160,14 @@ namespace OpenVDB.Core.IO
                 }
                 else // Name is implicitly current string (should not happen with NameOffset > 0)
                 {
-                    Name = IoUtils.ReadString(reader); 
+                    Name = IoUtils.ReadString(reader);
                 }
                 UniqueName = Name; // Placeholder, C++ reads unique name if different from name.
                                    // For simplicity, assume Name is the UniqueName read here.
                                    // A full implementation would read mUniqueName separately if file version supports it.
                 reader.BaseStream.Seek(currentPos, SeekOrigin.Begin); // Reset stream position
             }
-            
+
             // Read grid properties that were added over time
             if (streamMeta.FileVersion >= VersionNumbers.FileVersionGridClass)
                 GridClass = (GridClass)reader.ReadInt32();
@@ -210,11 +210,11 @@ namespace OpenVDB.Core.IO
 
             // Placeholder for NameOffset: assume name is written inline or managed externally
             // For now, write name first for simplicity (matches legacy or non-offsetted name)
-            IoUtils.WriteString(writer, Name); 
+            IoUtils.WriteString(writer, Name);
 
             IoUtils.WriteString(writer, GridType);
             IoUtils.WriteString(writer, InstanceParentName ?? ""); // Ensure empty string if null
-            
+
             if (streamMeta.FileVersion >= VersionNumbers.FileVersionGridSharedTransform)
             {
                 IoUtils.WriteString(writer, InstanceTransform ?? "copy");
@@ -233,13 +233,13 @@ namespace OpenVDB.Core.IO
 
             if (streamMeta.FileVersion >= VersionNumbers.FileVersionGridClass)
                 writer.Write((int)GridClass);
-            
+
             if (streamMeta.FileVersion >= VersionNumbers.FileVersionSaveHalfFloat)
                 writer.Write(SaveFloatAsHalf);
 
             if (streamMeta.FileVersion >= VersionNumbers.FileVersionWorldSpaceBit)
                 writer.Write(IsInWorldSpace);
-            
+
             if (streamMeta.FileVersion >= VersionNumbers.FileVersionTopologyStats)
             {
                 writer.Write(TopologyByteSize);
@@ -252,7 +252,7 @@ namespace OpenVDB.Core.IO
                 writer.Write(FileBBoxMax.X); writer.Write(FileBBoxMax.Y); writer.Write(FileBBoxMax.Z);
             }
         }
-        
+
         public void Print(TextWriter writer, string indent = "")
         {
             writer.WriteLine($"{indent}GridDescriptor:");

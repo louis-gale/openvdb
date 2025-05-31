@@ -49,7 +49,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(5f, v.Z);
             Assert.AreEqual(6f, v.W);
         }
-        
+
         [Test]
         public void Indexer_Get_ShouldReturnCorrectValues()
         {
@@ -87,7 +87,7 @@ namespace OpenVDB.Core.Tests.Math
             Assert.AreEqual(10f, result.Z);
             Assert.AreEqual(12f, result.W);
         }
-        
+
         [Test]
         public void Dot_Product_ShouldBeCorrect()
         {
@@ -100,7 +100,7 @@ namespace OpenVDB.Core.Tests.Math
         [Test]
         public void Length_ShouldReturnCorrectLength()
         {
-            var v = new Vec4<double>(1.0, 2.0, 3.0, 4.0); 
+            var v = new Vec4<double>(1.0, 2.0, 3.0, 4.0);
             // 1 + 4 + 9 + 16 = 30
             Assert.AreEqual(System.Math.Sqrt(30.0), v.Length(), 1e-9);
         }
