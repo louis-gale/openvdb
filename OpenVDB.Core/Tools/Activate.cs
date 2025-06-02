@@ -12,7 +12,7 @@ namespace OpenVDB.Core.Tools
     internal static class ActivateInternal
     {
         // Base class for common logic (optional, but can be useful)
-        internal abstract class ValueMatcherOperation<TValue> where TValue : struct
+        internal abstract class ValueMatcherOperation<TValue> where TValue : struct, IFloatingPointIeee754<TValue>
         {
             protected readonly TValue _targetValue;
             protected readonly TValue _tolerance;

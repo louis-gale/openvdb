@@ -10,7 +10,7 @@ namespace OpenVDB.Math
     [Serializable]
     // [StructLayout(LayoutKind.Sequential)]
     public struct Quat<T> : IEquatable<Quat<T>>
-        where T : struct, IEquatable<T>, IFormattable, ISignedNumber<T>, IFloatingPointIeee754<T>
+        where T : struct, IEquatable<T>, IFloatingPointIeee754<T>
     {
         // Stored as (x, y, z, w) where w is the scalar part
         public T X, Y, Z, W;
@@ -264,14 +264,9 @@ namespace OpenVDB.Math
             return (s0 * q1) + (s1 * q2);
         }
 
-
         public override string ToString()
         {
             return $"[{X}, {Y}, {Z}, {W}]";
         }
     }
-
-    // Common type aliases
-    public using Quatf = Quat<float>; // In C++ OpenVDB, Quats is float
-    public using Quatd = Quat<double>;
 }

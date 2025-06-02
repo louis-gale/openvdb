@@ -1,16 +1,14 @@
 // Copyright Contributors to the OpenVDB Project
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
-using System.Runtime.InteropServices; // For StructLayout if needed for interop
-using System.Numerics; // For ISignedNumber, IFloatingPointIeee754
+using System.Numerics;
 
 namespace OpenVDB.Math
 {
     [Serializable]
     // [StructLayout(LayoutKind.Sequential)] // Useful for interop
     public struct Vec2<T> : IEquatable<Vec2<T>>
-        where T : struct, IEquatable<T>, IFormattable, ISignedNumber<T>, IFloatingPointIeee754<T> // Common numeric constraints
+        where T : struct, IEquatable<T>, IFormattable, INumber<T>
     {
         public T X, Y;
 
@@ -178,14 +176,13 @@ namespace OpenVDB.Math
 
         public T Length()
         {
-            return T.Sqrt(LengthSqr());
+            return T.CreateChecked(System.Math.Sqrt(Double.CreateChecked(LengthSqr())));
         }
 
-        public void Normalize(T epsilon = default)
+        public void Normalize(double epsilon = 1.0e-8)
         {
-            if (epsilon == default) epsilon = T.Epsilon; // A very small number
             T len = Length();
-            if (len <= epsilon) // Or use IsApproxZero
+            if (Double.CreateChecked(len) <= epsilon) // Or use IsApproxZero
             {
                 // Optionally throw, or set to a default vector like (1,0)
                 // For now, matches C++ bool return by not modifying if too small
@@ -195,11 +192,10 @@ namespace OpenVDB.Math
             Y /= len;
         }
 
-        public Vec2<T> Normalized(T epsilon = default)
+        public Vec2<T> Normalized(double epsilon = 1.0e-8)
         {
-            if (epsilon == default) epsilon = T.Epsilon;
             T len = Length();
-            if (len <= epsilon)
+            if (Double.CreateChecked(len) <= epsilon)
             {
                 // Consider throwing an exception like in C++ OpenVDB
                 // throw new InvalidOperationException("Cannot normalize a zero-length vector.");
@@ -214,22 +210,20 @@ namespace OpenVDB.Math
             T l2 = LengthSqr();
             if (T.IsZero(l2) || T.IsSubnormal(l2)) // isApproxZero(l2) equivalent
                 return new Vec2<T>(T.One, T.Zero);
-            return this / T.Sqrt(l2);
+            return this / T.CreateChecked(System.Math.Sqrt(Double.CreateChecked(l2)));
         }
 
-        public T Component(Vec2<T> onto, T eps = default)
+        public T Component(Vec2<T> onto, double epsilon = 1.0e-8)
         {
-            if (eps == default) eps = T.Epsilon;
             T l = onto.Length();
-            if (l <= eps) return T.Zero;
+            if (Double.CreateChecked(l) <= epsilon) return T.Zero;
             return Dot(onto) / l;
         }
 
-        public Vec2<T> Projection(Vec2<T> onto, T eps = default)
+        public Vec2<T> Projection(Vec2<T> onto, double epsilon = 1.0e-8)
         {
-            if (eps == default) eps = T.Epsilon;
             T lSqr = onto.LengthSqr();
-            if (lSqr <= eps * eps) return Zero(); // Or use more robust check for small lSqr
+            if (Double.CreateChecked(lSqr) <= epsilon * epsilon) return Zero(); // Or use more robust check for small lSqr
             return onto * (Dot(onto) / lSqr);
         }
 
@@ -241,20 +235,20 @@ namespace OpenVDB.Math
         public T Sum() => X + Y;
         public T Product() => X * Y;
 
-        public Vec2<T> Exp() => new Vec2<T>(T.Exp(X), T.Exp(Y));
-        public Vec2<T> Log() => new Vec2<T>(T.Log(X), T.Log(Y));
-        public Vec2<T> Abs() => new Vec2<T>(T.Abs(X), T.Abs(Y));
+        public Vec2<T> Exp() => new(T.CreateChecked(System.Math.Exp(Double.CreateChecked(X))), T.CreateChecked(System.Math.Exp(Double.CreateChecked(Y))));
+        public Vec2<T> Log() => new(T.CreateChecked(System.Math.Log(Double.CreateChecked(X))), T.CreateChecked(System.Math.Log(Double.CreateChecked(Y))));
+        public Vec2<T> Abs() => new(T.Abs(X), T.Abs(Y));
 
 
-        public static Vec2<T> Zero() => new Vec2<T>(T.Zero, T.Zero);
-        public static Vec2<T> Ones() => new Vec2<T>(T.One, T.One);
+        public static Vec2<T> Zero() => new(T.Zero, T.Zero);
+        public static Vec2<T> Ones() => new(T.One, T.One);
 
         public override string ToString()
         {
             return $"[{X.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}, {Y.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}]";
         }
 
-        public void Write(System.IO.BinaryWriter writer)
+        public void Write(BinaryWriter writer)
         {
             if (typeof(T) == typeof(double)) { writer.Write((double)(object)X); writer.Write((double)(object)Y); }
             else if (typeof(T) == typeof(float)) { writer.Write((float)(object)X); writer.Write((float)(object)Y); }
@@ -263,7 +257,7 @@ namespace OpenVDB.Math
             else throw new NotSupportedException($"Vec2.Write for type {typeof(T)} not supported for metadata serialization.");
         }
 
-        public static Vec2<T> Read(System.IO.BinaryReader reader)
+        public static Vec2<T> Read(BinaryReader reader)
         {
             if (typeof(T) == typeof(double)) return new Vec2<T>((T)(object)reader.ReadDouble(), (T)(object)reader.ReadDouble());
             if (typeof(T) == typeof(float)) return new Vec2<T>((T)(object)reader.ReadSingle(), (T)(object)reader.ReadSingle());
@@ -281,12 +275,4 @@ namespace OpenVDB.Math
             throw new NotSupportedException($"Vec2.GetSizeInBytes for type {typeof(T)} not supported for metadata serialization.");
         }
     }
-
-    // Common type aliases
-    public using Vec2i = Vec2<int>;
-    public using Vec2f = Vec2<float>;
-    public using Vec2d = Vec2<double>;
-    // Note: Vec2s in OpenVDB C++ is often Vec2<float>.
-    // If System.Half is available and desired:
-    // public using Vec2h = Vec2<System.Half>;
 }

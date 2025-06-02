@@ -203,15 +203,15 @@ namespace OpenVDB.Math
         }
         public static bool operator !=(Transform left, Transform right) => !(left == right);
 
-        public void Write(BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata)
+        public void Write(BinaryWriter writer, Core.IO.StreamMetadata streamMetadata)
         {
-            OpenVDB.Core.IO.IoUtils.WriteString(writer, _map.TypeName);
+            Core.IO.IoUtils.WriteString(writer, _map.TypeName);
             _map.WriteData(writer, streamMetadata);
         }
 
-        public void Read(BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata)
+        public void Read(BinaryReader reader, Core.IO.StreamMetadata streamMetadata)
         {
-            string mapTypeName = OpenVDB.Core.IO.IoUtils.ReadString(reader);
+            string mapTypeName = Core.IO.IoUtils.ReadString(reader);
 
             // This is where a MapFactory (like C++ MapRegistry) would be used.
             // For now, create a known map type or throw.
@@ -221,15 +221,15 @@ namespace OpenVDB.Math
             // or default to AffineMap if typeName is "AffineMap" which is a common general case.
 
             IMap newMap = null;
-            if (mapTypeName == Maps.IdentityMap.StaticTypeName) newMap = new Maps.IdentityMap(); // Requires StaticTypeName in each map class
-            else if (mapTypeName == Maps.TranslationMap.StaticTypeName) newMap = new Maps.TranslationMap();
-            else if (mapTypeName == Maps.ScaleMap.StaticTypeName) newMap = new Maps.ScaleMap();
-            else if (mapTypeName == Maps.UniformScaleMap.StaticTypeName) newMap = new Maps.UniformScaleMap();
-            else if (mapTypeName == Maps.ScaleTranslateMap.StaticTypeName) newMap = new Maps.ScaleTranslateMap();
-            else if (mapTypeName == Maps.UniformScaleTranslateMap.StaticTypeName) newMap = new Maps.UniformScaleTranslateMap();
-            else if (mapTypeName == Maps.AffineMap.StaticTypeName) newMap = new Maps.AffineMap();
-            else if (mapTypeName == Maps.UnitaryMap.StaticTypeName) newMap = new Maps.UnitaryMap();
-            else if (mapTypeName == Maps.NonlinearFrustumMap.StaticTypeName) newMap = new Maps.NonlinearFrustumMap();
+            if (mapTypeName == IdentityMap.StaticTypeName) newMap = new IdentityMap(); // Requires StaticTypeName in each map class
+            else if (mapTypeName == nameof(TranslationMap)) newMap = new TranslationMap();
+            else if (mapTypeName == nameof(ScaleMap)) newMap = new ScaleMap();
+            else if (mapTypeName == nameof(UniformScaleMap)) newMap = new UniformScaleMap();
+            else if (mapTypeName == nameof(ScaleTranslateMap)) newMap = new ScaleTranslateMap();
+            else if (mapTypeName == nameof(UniformScaleTranslateMap)) newMap = new UniformScaleTranslateMap();
+            else if (mapTypeName == nameof(AffineMap)) newMap = new AffineMap();
+            else if (mapTypeName == nameof(UnitaryMap)) newMap = new UnitaryMap();
+            else if (mapTypeName == nameof(NonlinearFrustumMap)) newMap = new NonlinearFrustumMap();
             // else if (mapTypeName == typeof(Maps.CompoundMap<,>).Name) // More complex for generics
 
             if (newMap != null)

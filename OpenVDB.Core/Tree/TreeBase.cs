@@ -4,6 +4,7 @@
 using OpenVDB.Math; // For CoordBBox etc.
 using System;
 using System.IO;
+using OpenVDB.Core.IO;
 
 namespace OpenVDB.Core.Tree
 {
@@ -33,11 +34,11 @@ namespace OpenVDB.Core.Tree
         public abstract ITree Copy();
 
         // I/O methods
-        public abstract void ReadTopology(BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata);
-        public abstract void WriteTopology(BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata);
-        public abstract void ReadBuffers(BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata);
-        // public abstract void ReadBuffers(BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata, CoordBBox bbox);
-        public abstract void WriteBuffers(BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata);
+        public abstract void ReadTopology(BinaryReader reader, StreamMetadata streamMetadata);
+        public abstract void WriteTopology(BinaryWriter writer, StreamMetadata streamMetadata);
+        public abstract void ReadBuffers(BinaryReader reader, StreamMetadata streamMetadata);
+        // public abstract void ReadBuffers(BinaryReader reader, StreamMetadata streamMetadata, CoordBBox bbox);
+        public abstract void WriteBuffers(BinaryWriter writer, StreamMetadata streamMetadata);
         public abstract void ReadNonresidentBuffers();
 
         public virtual void Print(TextWriter writer, int verboseLevel)

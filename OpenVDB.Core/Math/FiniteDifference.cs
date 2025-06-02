@@ -3,7 +3,8 @@
 
 using System;
 using System.Numerics; // For IFloatingPointIeee754
-using OpenVDB.Core.Tree; // For ITreeValueAccessor
+using OpenVDB.Core.Tree;
+using OpenVDB.Math; // For ITreeValueAccessor
 
 namespace OpenVDB.Core.Math
 {
@@ -83,23 +84,23 @@ namespace OpenVDB.Core.Math
             switch (scheme)
             {
                 case DScheme.FD_1ST: // G(i+1) - G(i)
-                    return Get(accessor, ijk, 1, 0, 0) - Get(accessor, ijk, 0, 0, 0);
+                    return Get<TValue, TAccessor>(accessor, ijk, 1, 0, 0) - Get<TValue, TAccessor>(accessor, ijk, 0, 0, 0);
                 case DScheme.BD_1ST: // G(i) - G(i-1)
-                    return Get(accessor, ijk, 0, 0, 0) - Get(accessor, ijk, -1, 0, 0);
+                    return Get<TValue, TAccessor>(accessor, ijk, 0, 0, 0) - Get<TValue, TAccessor>(accessor, ijk, -1, 0, 0);
                 case DScheme.CD_2ND: // (G(i+1) - G(i-1))/2
-                    return (Get(accessor, ijk, 1, 0, 0) - Get(accessor, ijk, -1, 0, 0)) / TValue.CreateChecked(2.0);
+                    return (Get<TValue, TAccessor>(accessor, ijk, 1, 0, 0) - Get<TValue, TAccessor>(accessor, ijk, -1, 0, 0)) / TValue.CreateChecked(2.0);
                 case DScheme.CD_4TH: // (-G(i+2) + 8G(i+1) - 8G(i-1) + G(i-2))/12
-                    return (-Get(accessor, ijk, 2, 0, 0) + TValue.CreateChecked(8.0) * Get(accessor, ijk, 1, 0, 0)
-                            - TValue.CreateChecked(8.0) * Get(accessor, ijk, -1, 0, 0) + Get(accessor, ijk, -2, 0, 0))
+                    return (-Get<TValue, TAccessor>(accessor, ijk, 2, 0, 0) + TValue.CreateChecked(8.0) * Get<TValue, TAccessor>(accessor, ijk, 1, 0, 0)
+                            - TValue.CreateChecked(8.0) * Get<TValue, TAccessor>(accessor, ijk, -1, 0, 0) + Get<TValue, TAccessor>(accessor, ijk, -2, 0, 0))
                            / TValue.CreateChecked(12.0);
                 case DScheme.CD_6TH:
-                    return (Get(accessor, ijk, 3,0,0) - TValue.CreateChecked(9.0) * Get(accessor, ijk, 2,0,0)
-                           + TValue.CreateChecked(45.0) * Get(accessor, ijk, 1,0,0) - TValue.CreateChecked(45.0) * Get(accessor, ijk, -1,0,0)
-                           + TValue.CreateChecked(9.0) * Get(accessor, ijk, -2,0,0) - Get(accessor, ijk, -3,0,0))
+                    return (Get<TValue, TAccessor>(accessor, ijk, 3,0,0) - TValue.CreateChecked(9.0) * Get<TValue, TAccessor>(accessor, ijk, 2,0,0)
+                           + TValue.CreateChecked(45.0) * Get<TValue, TAccessor>(accessor, ijk, 1,0,0) - TValue.CreateChecked(45.0) * Get<TValue, TAccessor>(accessor, ijk, -1,0,0)
+                           + TValue.CreateChecked(9.0) * Get<TValue, TAccessor>(accessor, ijk, -2,0,0) - Get<TValue, TAccessor>(accessor, ijk, -3,0,0))
                            / TValue.CreateChecked(60.0);
                 case DScheme.CD_2NDT: // (G(i+2) - G(i-2))/4  (Central diff over 2*dx, so G(i+2dx)-G(i-2dx) / (4dx) )
                                       // Assuming dx=1, this is (G(i+2) - G(i-2))/4
-                    return (Get(accessor, ijk, 2,0,0) - Get(accessor, ijk, -2,0,0)) / TValue.CreateChecked(4.0);
+                    return (Get<TValue, TAccessor>(accessor, ijk, 2,0,0) - Get<TValue, TAccessor>(accessor, ijk, -2,0,0)) / TValue.CreateChecked(4.0);
 
                 // WENO5 and HJWENO5 are complex and require helper functions. Placeholder for now.
                 case DScheme.WENO5:
@@ -116,20 +117,20 @@ namespace OpenVDB.Core.Math
         {
             switch (scheme)
             {
-                case DScheme.FD_1ST: return Get(accessor, ijk, 0, 1, 0) - Get(accessor, ijk, 0, 0, 0);
-                case DScheme.BD_1ST: return Get(accessor, ijk, 0, 0, 0) - Get(accessor, ijk, 0, -1, 0);
-                case DScheme.CD_2ND: return (Get(accessor, ijk, 0, 1, 0) - Get(accessor, ijk, 0, -1, 0)) / TValue.CreateChecked(2.0);
+                case DScheme.FD_1ST: return Get<TValue, TAccessor>(accessor, ijk, 0, 1, 0) - Get<TValue, TAccessor>(accessor, ijk, 0, 0, 0);
+                case DScheme.BD_1ST: return Get<TValue, TAccessor>(accessor, ijk, 0, 0, 0) - Get<TValue, TAccessor>(accessor, ijk, 0, -1, 0);
+                case DScheme.CD_2ND: return (Get<TValue, TAccessor>(accessor, ijk, 0, 1, 0) - Get<TValue, TAccessor>(accessor, ijk, 0, -1, 0)) / TValue.CreateChecked(2.0);
                 case DScheme.CD_4TH:
-                    return (-Get(accessor, ijk, 0, 2, 0) + TValue.CreateChecked(8.0) * Get(accessor, ijk, 0, 1, 0)
-                            - TValue.CreateChecked(8.0) * Get(accessor, ijk, 0, -1, 0) + Get(accessor, ijk, 0, -2, 0))
+                    return (-Get<TValue, TAccessor>(accessor, ijk, 0, 2, 0) + TValue.CreateChecked(8.0) * Get<TValue, TAccessor>(accessor, ijk, 0, 1, 0)
+                            - TValue.CreateChecked(8.0) * Get<TValue, TAccessor>(accessor, ijk, 0, -1, 0) + Get<TValue, TAccessor>(accessor, ijk, 0, -2, 0))
                            / TValue.CreateChecked(12.0);
                 case DScheme.CD_6TH:
-                     return (Get(accessor, ijk, 0,3,0) - TValue.CreateChecked(9.0) * Get(accessor, ijk, 0,2,0)
-                           + TValue.CreateChecked(45.0) * Get(accessor, ijk, 0,1,0) - TValue.CreateChecked(45.0) * Get(accessor, ijk, 0,-1,0)
-                           + TValue.CreateChecked(9.0) * Get(accessor, ijk, 0,-2,0) - Get(accessor, ijk, 0,-3,0))
+                     return (Get<TValue, TAccessor>(accessor, ijk, 0,3,0) - TValue.CreateChecked(9.0) * Get<TValue, TAccessor>(accessor, ijk, 0,2,0)
+                           + TValue.CreateChecked(45.0) * Get<TValue, TAccessor>(accessor, ijk, 0,1,0) - TValue.CreateChecked(45.0) * Get<TValue, TAccessor>(accessor, ijk, 0,-1,0)
+                           + TValue.CreateChecked(9.0) * Get<TValue, TAccessor>(accessor, ijk, 0,-2,0) - Get<TValue, TAccessor>(accessor, ijk, 0,-3,0))
                            / TValue.CreateChecked(60.0);
                 case DScheme.CD_2NDT:
-                    return (Get(accessor, ijk, 0,2,0) - Get(accessor, ijk, 0,-2,0)) / TValue.CreateChecked(4.0);
+                    return (Get<TValue, TAccessor>(accessor, ijk, 0,2,0) - Get<TValue, TAccessor>(accessor, ijk, 0,-2,0)) / TValue.CreateChecked(4.0);
                 case DScheme.WENO5:
                 case DScheme.HJWENO5:
                     throw new NotImplementedException($"Scheme {scheme} not fully implemented for D1.InY.");
@@ -144,20 +145,20 @@ namespace OpenVDB.Core.Math
         {
              switch (scheme)
             {
-                case DScheme.FD_1ST: return Get(accessor, ijk, 0, 0, 1) - Get(accessor, ijk, 0, 0, 0);
-                case DScheme.BD_1ST: return Get(accessor, ijk, 0, 0, 0) - Get(accessor, ijk, 0, 0, -1);
-                case DScheme.CD_2ND: return (Get(accessor, ijk, 0, 0, 1) - Get(accessor, ijk, 0, 0, -1)) / TValue.CreateChecked(2.0);
+                case DScheme.FD_1ST: return Get<TValue, TAccessor>(accessor, ijk, 0, 0, 1) - Get<TValue, TAccessor>(accessor, ijk, 0, 0, 0);
+                case DScheme.BD_1ST: return Get<TValue, TAccessor>(accessor, ijk, 0, 0, 0) - Get<TValue, TAccessor>(accessor, ijk, 0, 0, -1);
+                case DScheme.CD_2ND: return (Get<TValue, TAccessor>(accessor, ijk, 0, 0, 1) - Get<TValue, TAccessor>(accessor, ijk, 0, 0, -1)) / TValue.CreateChecked(2.0);
                 case DScheme.CD_4TH:
-                    return (-Get(accessor, ijk, 0, 0, 2) + TValue.CreateChecked(8.0) * Get(accessor, ijk, 0, 0, 1)
-                            - TValue.CreateChecked(8.0) * Get(accessor, ijk, 0, 0, -1) + Get(accessor, ijk, 0, 0, -2))
+                    return (-Get<TValue, TAccessor>(accessor, ijk, 0, 0, 2) + TValue.CreateChecked(8.0) * Get<TValue, TAccessor>(accessor, ijk, 0, 0, 1)
+                            - TValue.CreateChecked(8.0) * Get<TValue, TAccessor>(accessor, ijk, 0, 0, -1) + Get<TValue, TAccessor>(accessor, ijk, 0, 0, -2))
                            / TValue.CreateChecked(12.0);
                 case DScheme.CD_6TH:
-                     return (Get(accessor, ijk, 0,0,3) - TValue.CreateChecked(9.0) * Get(accessor, ijk, 0,0,2)
-                           + TValue.CreateChecked(45.0) * Get(accessor, ijk, 0,0,1) - TValue.CreateChecked(45.0) * Get(accessor, ijk, 0,0,-1)
-                           + TValue.CreateChecked(9.0) * Get(accessor, ijk, 0,0,-2) - Get(accessor, ijk, 0,0,-3))
+                     return (Get<TValue, TAccessor>(accessor, ijk, 0,0,3) - TValue.CreateChecked(9.0) * Get<TValue, TAccessor>(accessor, ijk, 0,0,2)
+                           + TValue.CreateChecked(45.0) * Get<TValue, TAccessor>(accessor, ijk, 0,0,1) - TValue.CreateChecked(45.0) * Get<TValue, TAccessor>(accessor, ijk, 0,0,-1)
+                           + TValue.CreateChecked(9.0) * Get<TValue, TAccessor>(accessor, ijk, 0,0,-2) - Get<TValue, TAccessor>(accessor, ijk, 0,0,-3))
                            / TValue.CreateChecked(60.0);
                 case DScheme.CD_2NDT:
-                    return (Get(accessor, ijk, 0,0,2) - Get(accessor, ijk, 0,0,-2)) / TValue.CreateChecked(4.0);
+                    return (Get<TValue, TAccessor>(accessor, ijk, 0,0,2) - Get<TValue, TAccessor>(accessor, ijk, 0,0,-2)) / TValue.CreateChecked(4.0);
                 case DScheme.WENO5:
                 case DScheme.HJWENO5:
                     throw new NotImplementedException($"Scheme {scheme} not fully implemented for D1.InZ.");
@@ -404,9 +405,9 @@ namespace OpenVDB.Core.Math
             // b[1] = IS(v[-1],v[0], v[1]) -> IS(v_m1, v_0,  v_p1)  -- Error in C++ comment, should be v[-1]=v_m1, v[0]=v_0, v[1]=v_p1
             // b[2] = IS(v[-2],v[-1],v[0]) -> IS(v_0,  v_p1, v_p2)
             // where IS(a,b,c) = (13/12)(a-2b+c)^2 + (1/4)*(3a-4b+c)^2 for D+
-            beta0 = thirteen_div_twelve * Sqr(v_m2 - two*v_m1 + v_0) + one_fourth * Sqr(three*v_m2 - four*v_m1 + v_0);
-            beta1 = thirteen_div_twelve * Sqr(v_m1 - two*v_0 + v_p1) + one_fourth * Sqr(v_m1 - v_p1); // C++ uses (a-c)^2 for this stencil's beta
-            beta2 = thirteen_div_twelve * Sqr(v_0 - two*v_p1 + v_p2) + one_fourth * Sqr(v_0 - four*v_p1 + three*v_p2);
+            var beta0 = thirteen_div_twelve * Sqr(v_m2 - two*v_m1 + v_0) + one_fourth * Sqr(three*v_m2 - four*v_m1 + v_0);
+            var beta1 = thirteen_div_twelve * Sqr(v_m1 - two*v_0 + v_p1) + one_fourth * Sqr(v_m1 - v_p1); // C++ uses (a-c)^2 for this stencil's beta
+            var beta2 = thirteen_div_twelve * Sqr(v_0 - two*v_p1 + v_p2) + one_fourth * Sqr(v_0 - four*v_p1 + three*v_p2);
 
             // Optimal weights for D+ (forward bias): {0.1, 0.6, 0.3} for stencils d0, d1, d2 (C++: c_p)
             TValue alpha0 = TValue.CreateChecked(HJWENO5_OptWeights_DPlus[0]) / Sqr(beta0 + epsilon);

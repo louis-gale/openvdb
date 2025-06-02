@@ -6,8 +6,11 @@ using System.Numerics; // For IFloatingPointIeee754
 
 namespace OpenVDB.Math
 {
+    using RayF = Ray<float>;
+    using RayD = Ray<double>;
+
     [Serializable]
-    public struct Ray<T> where T : struct, IFloatingPointIeee754<T>
+    public struct Ray<T> where T : struct, IFloatingPointIeee754<T>, IMinMaxValue<T>
     {
         public struct TimeSpan : IEquatable<TimeSpan>
         {
@@ -252,7 +255,4 @@ namespace OpenVDB.Math
 
         public override string ToString() => $"Eye={Eye}, Dir={Dir}, Time=[{MinTime}, {MaxTime}]";
     }
-
-    public using RayF = Ray<float>;
-    public using RayD = Ray<double>;
 }

@@ -55,17 +55,17 @@ namespace OpenVDB.Math
 
         public static Coord Round<T>(Vec3<T> xyz) where T : struct, IFloatingPointIeee754<T>
         {
-            return new Coord((int)T.Round(xyz.X), (int)T.Round(xyz.Y), (int)T.Round(xyz.Z));
+            return new Coord(Int32.CreateChecked(T.Round(xyz.X)), Int32.CreateChecked(T.Round(xyz.Y)), Int32.CreateChecked(T.Round(xyz.Z)));
         }
 
         public static Coord Floor<T>(Vec3<T> xyz) where T : struct, IFloatingPointIeee754<T>
         {
-            return new Coord((int)T.Floor(xyz.X), (int)T.Floor(xyz.Y), (int)T.Floor(xyz.Z));
+            return new Coord(Int32.CreateChecked(T.Floor(xyz.X)), Int32.CreateChecked(T.Floor(xyz.Y)), Int32.CreateChecked(T.Floor(xyz.Z)));
         }
 
         public static Coord Ceil<T>(Vec3<T> xyz) where T : struct, IFloatingPointIeee754<T>
         {
-            return new Coord((int)T.Ceiling(xyz.X), (int)T.Ceiling(xyz.Y), (int)T.Ceiling(xyz.Z));
+            return new Coord(Int32.CreateChecked(T.Ceiling(xyz.X)), Int32.CreateChecked(T.Ceiling(xyz.Y)), Int32.CreateChecked(T.Ceiling(xyz.Z)));
         }
 
         public void Reset(int x, int y, int z)
@@ -94,12 +94,12 @@ namespace OpenVDB.Math
             Z += n;
         }
 
-        public Coord OffsetBy(int dx, int dy, int dz) const
+        public Coord OffsetBy(int dx, int dy, int dz)
         {
             return new Coord(X + dx, Y + dy, Z + dz);
         }
 
-        public Coord OffsetBy(int n) const
+        public Coord OffsetBy(int n)
         {
             return new Coord(X + n, Y + n, Z + n);
         }

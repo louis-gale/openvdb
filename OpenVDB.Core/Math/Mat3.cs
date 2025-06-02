@@ -1,8 +1,6 @@
 // Copyright Contributors to the OpenVDB Project
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
-using System.Runtime.InteropServices;
 using System.Numerics; // For IFloatingPointIeee754
 
 namespace OpenVDB.Math
@@ -10,7 +8,7 @@ namespace OpenVDB.Math
     [Serializable]
     // [StructLayout(LayoutKind.Sequential)] // Row-major order by default for C#
     public struct Mat3<T> : IEquatable<Mat3<T>>
-        where T : struct, IEquatable<T>, IFormattable, ISignedNumber<T>, IFloatingPointIeee754<T>
+        where T : struct, IEquatable<T>, IFormattable, IFloatingPointIeee754<T>
     {
         // Values are stored in row-major order:
         // M00, M01, M02
@@ -184,7 +182,10 @@ namespace OpenVDB.Math
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(M00, M01, M02, M10, M11, M12, M20, M21, M22);
+            var hash1 = HashCode.Combine(M00, M01, M02, M10, M11);
+            var hash2 = HashCode.Combine(M12, M20, M21, M22);
+            
+            return HashCode.Combine(hash1, hash2);
         }
 
         public static bool operator ==(Mat3<T> m1, Mat3<T> m2) => m1.Equals(m2);
@@ -311,8 +312,4 @@ namespace OpenVDB.Math
             return $"[{M00}, {M01}, {M02}\n {M10}, {M11}, {M12}\n {M20}, {M21}, {M22}]";
         }
     }
-
-    // Common type aliases
-    public using Mat3f = Mat3<float>; // In C++ OpenVDB, Mat3s is float
-    public using Mat3d = Mat3<double>;
 }

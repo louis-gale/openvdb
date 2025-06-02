@@ -3,11 +3,40 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using OpenVDB.Core.IO;
 using OpenVDB.Math; // For Vec, Mat types
 
 namespace OpenVDB.Core.Metadata
 {
+    // Common TypedMetadata aliases
+    using BoolMetadata = TypedMetadata<bool>;
+    using DoubleMetadata = TypedMetadata<double>;
+    using FloatMetadata = TypedMetadata<float>;
+    using Int32Metadata = TypedMetadata<int>;
+    using Int64Metadata = TypedMetadata<long>;
+    using StringMetadata = TypedMetadata<string>; // StringMetadata has special size/str in C++
+
+    using Vec2DMetadata = TypedMetadata<Vec2<double>>;
+    using Vec2IMetadata = TypedMetadata<Vec2<int>>;
+    using Vec2SMetadata = TypedMetadata<Vec2<float>>; // 's' typically means float in OpenVDB
+
+    using Vec3DMetadata = TypedMetadata<Vec3<double>>;
+    using Vec3IMetadata = TypedMetadata<Vec3<int>>;
+    using Vec3SMetadata = TypedMetadata<Vec3<float>>;
+
+    // Assuming Vec4 types exist and are needed for metadata
+    using Vec4DMetadata = TypedMetadata<Vec4<double>>;
+    using Vec4IMetadata = TypedMetadata<Vec4<int>>;
+    using Vec4SMetadata = TypedMetadata<Vec4<float>>;
+
+    // Assuming Mat types exist and are needed for metadata
+    using Mat3SMetadata = TypedMetadata<Mat3<float>>;
+    using Mat3DMetadata = TypedMetadata<Mat3<double>>;
+    using Mat4SMetadata = TypedMetadata<Mat4<float>>;
+    using Mat4DMetadata = TypedMetadata<Mat4<double>>;
+
     /// <summary>
     /// Base class for storing metadata information.
     /// </summary>
@@ -60,8 +89,8 @@ namespace OpenVDB.Core.Metadata
         public static bool operator !=(Metadata left, Metadata right) => !(left == right);
 
         // Abstract methods for I/O, to be implemented by derived classes
-        public abstract void ReadValue(System.IO.BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMeta, uint sizeFromFile);
-        public abstract void WriteValue(System.IO.BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMeta);
+        public abstract void ReadValue(System.IO.BinaryReader reader, StreamMetadata streamMeta, uint sizeFromFile);
+        public abstract void WriteValue(System.IO.BinaryWriter writer, StreamMetadata streamMeta);
 
         // C++ Metadata::size() is for on-disk size.
         // This is different from in-memory size and specific to serialization.
@@ -72,16 +101,16 @@ namespace OpenVDB.Core.Metadata
         {
             // This is a very basic factory. A real implementation would use reflection
             // or a registered dictionary of type constructors.
-            if (typeName == TypeName.GetName<string>()) return new StringMetadata();
-            if (typeName == TypeName.GetName<int>()) return new Int32Metadata();
-            if (typeName == TypeName.GetName<long>()) return new Int64Metadata();
-            if (typeName == TypeName.GetName<float>()) return new FloatMetadata();
-            if (typeName == TypeName.GetName<double>()) return new DoubleMetadata();
-            if (typeName == TypeName.GetName<bool>()) return new BoolMetadata();
-            if (typeName == TypeName.GetName<Vec3<double>>()) return new Vec3DMetadata();
-            if (typeName == TypeName.GetName<Vec3<float>>()) return new Vec3SMetadata();
-            if (typeName == TypeName.GetName<Vec3<int>>()) return new Vec3IMetadata();
-            if (typeName == TypeName.GetName<Mat4<double>>()) return new Mat4DMetadata();
+            if (typeName == nameof(String)) return new StringMetadata();
+            if (typeName == nameof(Int32)) return new Int32Metadata();
+            if (typeName == nameof(Int64)) return new Int64Metadata();
+            if (typeName == nameof(Single)) return new FloatMetadata();
+            if (typeName == nameof(Double)) return new DoubleMetadata();
+            if (typeName == nameof(Boolean)) return new BoolMetadata();
+            if (typeName == nameof(Vec3<double>)) return new Vec3DMetadata();
+            if (typeName == nameof(Vec3<float>)) return new Vec3SMetadata();
+            if (typeName == nameof(Vec3<int>)) return new Vec3IMetadata();
+            if (typeName == nameof(Mat4<double>)) return new Mat4DMetadata();
             // Add other common types...
             return new UnknownMetadata(typeName); // Fallback for unregistered types
         }
@@ -141,7 +170,7 @@ namespace OpenVDB.Core.Metadata
             set => _value = value;
         }
 
-        public override string TypeName => OpenVDB.TypeName.GetName<T>(); // Using global TypeName helper
+        public override string TypeName => nameof(T); // Using global TypeName helper
 
         public TypedMetadata()
         {
@@ -200,7 +229,7 @@ namespace OpenVDB.Core.Metadata
             // This is where type-specific serialization would happen.
             // Size is written by MetaMap before this call.
             if (typeof(T) == typeof(string))
-                OpenVDB.Core.IO.IoUtils.WriteStringBytes(writer, (string)(object)_value); // Write only bytes, length handled by MetaMap
+                IoUtils.WriteStringBytes(writer, (string)(object)_value); // Write only bytes, length handled by MetaMap
             else if (typeof(T) == typeof(bool)) writer.Write((bool)(object)_value);
             else if (typeof(T) == typeof(int)) writer.Write((int)(object)_value);
             else if (typeof(T) == typeof(long)) writer.Write((long)(object)_value);
@@ -219,7 +248,7 @@ namespace OpenVDB.Core.Metadata
         {
             // Size is read by MetaMap before this call.
             if (typeof(T) == typeof(string))
-                _value = (T)(object)OpenVDB.Core.IO.IoUtils.ReadStringBytes(reader, (int)sizeFromFile);
+                _value = (T)(object)IoUtils.ReadStringBytes(reader, (int)sizeFromFile);
             else if (typeof(T) == typeof(bool)) _value = (T)(object)reader.ReadBoolean();
             else if (typeof(T) == typeof(int)) _value = (T)(object)reader.ReadInt32();
             else if (typeof(T) == typeof(long)) _value = (T)(object)reader.ReadInt64();
@@ -243,39 +272,12 @@ namespace OpenVDB.Core.Metadata
             if (typeof(T) == typeof(long)) return sizeof(long);
             if (typeof(T) == typeof(float)) return sizeof(float);
             if (typeof(T) == typeof(double)) return sizeof(double);
-            if (typeof(T) == typeof(Vec3<double>)) return (uint)Vec3<double>.SizeInBytes;
-            if (typeof(T) == typeof(Vec3<float>)) return (uint)Vec3<float>.SizeInBytes;
-            if (typeof(T) == typeof(Vec3<int>)) return (uint)Vec3<int>.SizeInBytes;
-            if (typeof(T) == typeof(Mat4<double>)) return (uint)Mat4<double>.SizeInBytes;
+            if (typeof(T) == typeof(Vec3<double>)) return (uint)Unsafe.SizeOf<Vec3<double>>();
+            if (typeof(T) == typeof(Vec3<float>)) return (uint)Unsafe.SizeOf<Vec3<float>>();
+            if (typeof(T) == typeof(Vec3<int>)) return (uint)Unsafe.SizeOf<Vec3<int>>();
+            if (typeof(T) == typeof(Mat4<double>)) return (uint)Unsafe.SizeOf<Mat4<double>>();
             // ... other types
             throw new NotSupportedException($"GetSizeOnDisk for type {TypeName} not implemented.");
         }
     }
-
-    // Common TypedMetadata aliases
-    public using BoolMetadata = TypedMetadata<bool>;
-    public using DoubleMetadata = TypedMetadata<double>;
-    public using FloatMetadata = TypedMetadata<float>;
-    public using Int32Metadata = TypedMetadata<int>;
-    public using Int64Metadata = TypedMetadata<long>;
-    public using StringMetadata = TypedMetadata<string>; // StringMetadata has special size/str in C++
-
-    public using Vec2DMetadata = TypedMetadata<Vec2<double>>;
-    public using Vec2IMetadata = TypedMetadata<Vec2<int>>;
-    public using Vec2SMetadata = TypedMetadata<Vec2<float>>; // 's' typically means float in OpenVDB
-
-    public using Vec3DMetadata = TypedMetadata<Vec3<double>>;
-    public using Vec3IMetadata = TypedMetadata<Vec3<int>>;
-    public using Vec3SMetadata = TypedMetadata<Vec3<float>>;
-
-    // Assuming Vec4 types exist and are needed for metadata
-    public using Vec4DMetadata = TypedMetadata<Vec4<double>>;
-    public using Vec4IMetadata = TypedMetadata<Vec4<int>>;
-    public using Vec4SMetadata = TypedMetadata<Vec4<float>>;
-
-    // Assuming Mat types exist and are needed for metadata
-    public using Mat3SMetadata = TypedMetadata<Mat3<float>>;
-    public using Mat3DMetadata = TypedMetadata<Mat3<double>>;
-    public using Mat4SMetadata = TypedMetadata<Mat4<float>>;
-    public using Mat4DMetadata = TypedMetadata<Mat4<double>>;
 }

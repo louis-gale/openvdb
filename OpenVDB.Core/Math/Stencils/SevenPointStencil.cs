@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using OpenVDB.Core.Tree;
+using OpenVDB.Math;
 
 namespace OpenVDB.Core.Math.Stencils
 {

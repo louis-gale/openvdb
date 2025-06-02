@@ -1,7 +1,8 @@
 // Copyright Contributors to the OpenVDB Project
 // SPDX-License-Identifier: Apache-2.0
 
-using OpenVDB.Core.Tree; // For ITreeValueAccessor
+using OpenVDB.Core.Tree;
+using OpenVDB.Math; // For ITreeValueAccessor
 
 namespace OpenVDB.Core.Math.Stencils
 {

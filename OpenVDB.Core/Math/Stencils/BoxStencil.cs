@@ -4,6 +4,7 @@
 using OpenVDB.Core.Tree;
 using System;
 using System.Collections.Generic;
+using OpenVDB.Math;
 
 namespace OpenVDB.Core.Math.Stencils
 {

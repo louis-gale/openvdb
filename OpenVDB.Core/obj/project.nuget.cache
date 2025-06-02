@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mFAxG1dC57I=",
+  "dgSpecHash": "SLrcB+mo304=",
   "success": true,
-  "projectFilePath": "/app/OpenVDB.Core/OpenVDB.Core.csproj",
+  "projectFilePath": "D:\\Code\\openvdb\\OpenVDB.Core\\OpenVDB.Core.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

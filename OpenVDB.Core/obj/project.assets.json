@@ -8,24 +8,26 @@
     "net8.0": []
   },
   "packageFolders": {
-    "/home/swebot/.nuget/packages/": {}
+    "C:\\Users\\louis\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/app/OpenVDB.Core/OpenVDB.Core.csproj",
+      "projectUniqueName": "D:\\Code\\openvdb\\OpenVDB.Core\\OpenVDB.Core.csproj",
       "projectName": "OpenVDB.Core",
-      "projectPath": "/app/OpenVDB.Core/OpenVDB.Core.csproj",
-      "packagesPath": "/home/swebot/.nuget/packages/",
-      "outputPath": "/app/OpenVDB.Core/obj/",
+      "projectPath": "D:\\Code\\openvdb\\OpenVDB.Core\\OpenVDB.Core.csproj",
+      "packagesPath": "C:\\Users\\louis\\.nuget\\packages\\",
+      "outputPath": "D:\\Code\\openvdb\\OpenVDB.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/swebot/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\louis\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -64,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/home/jules/.dotnet/sdk/8.0.410/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

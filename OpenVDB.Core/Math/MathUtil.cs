@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
+using System.Numerics;
 
 namespace OpenVDB.Math
 {
-    public static class MathUtil
+    public static partial class MathUtil
     {
         public const double DefaultEpsilonD = 1.0e-7;
         public const float DefaultEpsilonF = 1.0e-7f;
@@ -30,14 +31,6 @@ namespace OpenVDB.Math
             double maxVal = System.Math.Max(System.Math.Abs(a), System.Math.Abs(b));
             return System.Math.Abs(a - b) <= maxVal * relTol;
         }
-
-        public static bool IsRelOrApproxEqual(float a, float b, float epsilon = DefaultEpsilonF, float relTol = DefaultEpsilonF)
-        {
-            if (System.Math.Abs(a - b) <= epsilon) return true;
-            float maxVal = System.Math.Max(System.Math.Abs(a), System.Math.Abs(b));
-            return System.Math.Abs(a - b) <= maxVal * relTol;
-        }
-
 
         public static bool IsApproxZero(double a, double epsilon = DefaultEpsilonD)
         {
@@ -94,7 +87,7 @@ namespace OpenVDB.Math
             bool positiveSign,
             Vec3<TValue> downwindGrad, // grad_minus
             Vec3<TValue> upwindGrad)   // grad_plus
-            where TValue : struct, System.Numerics.IFloatingPointIeee754<TValue>
+            where TValue : struct, IFloatingPointIeee754<TValue>
         {
             TValue sum = TValue.Zero;
             TValue zero = TValue.Zero;

@@ -4,6 +4,7 @@
 using System;
 using System.Numerics;
 using OpenVDB.Core.Tree;
+using OpenVDB.Math;
 
 namespace OpenVDB.Core.Math.Operators
 {
@@ -89,9 +90,9 @@ namespace OpenVDB.Core.Math.Operators
                 // HJWENO5 in D1.cs expects direct velocity, not just a bias vector to pick FD/BD version of HJWENO5.
                 // This operator in C++ passes the bias vector component as velocity.
                 return new Vec3<TValue>(
-                    D1.HjWeno5InX(accessor, ijk, TBiasValue.ToDouble(biasVector.X)), // Assuming biasVector component is velocity
-                    D1.HjWeno5InY(accessor, ijk, TBiasValue.ToDouble(biasVector.Y)),
-                    D1.HjWeno5InZ(accessor, ijk, TBiasValue.ToDouble(biasVector.Z))
+                    D1.HjWeno5InX(accessor, ijk, Double.CreateChecked(biasVector.X)), // Assuming biasVector component is velocity
+                    D1.HjWeno5InY(accessor, ijk, Double.CreateChecked(biasVector.Y)),
+                    D1.HjWeno5InZ(accessor, ijk, Double.CreateChecked(biasVector.Z))
                 );
             }
             if (scheme == BiasedGradientScheme.WENO5_BIAS) // Standard WENO5 is centrally biased

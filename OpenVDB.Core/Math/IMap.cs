@@ -1,6 +1,9 @@
 // Copyright Contributors to the OpenVDB Project
 // SPDX-License-Identifier: Apache-2.0
 
+using OpenVDB.Math;
+using OpenVDB.Math.Maps;
+
 namespace OpenVDB.Math
 {
     public interface IMap
@@ -26,6 +29,7 @@ namespace OpenVDB.Math
 
         // VoxelSize at a specific point (for non-linear maps)
         Vec3<double> GetVoxelSize(Vec3<double> domainPos);
+
         // Determinant at a specific point (for non-linear maps)
         double GetDeterminant(Vec3<double> domainPos);
 
@@ -73,36 +77,6 @@ namespace OpenVDB.Math
         public virtual Vec3<double> ApplyJT(Vec3<double> sourceVector) => ApplyJT(sourceVector, Vec3<double>.Zero);
         public virtual Vec3<double> ApplyIJT(Vec3<double> sourceVector) => ApplyIJT(sourceVector, Vec3<double>.Zero);
 
-
-        public virtual double Determinant => GetDeterminant(Vec3<double>.Zero); // Default to origin for linear maps
-        public virtual Vec3<double> VoxelSize => GetVoxelSize(Vec3<double>.Zero); // Default to origin
-
-        public abstract Vec3<double> GetVoxelSize(Vec3<double> domainPos);
-        public abstract double GetDeterminant(Vec3<double> domainPos);
-
-        public abstract IMap Clone();
-        public abstract AffineMap ToAffineMap();
-        public abstract IMap InverseMap();
-
-        // Default composition logic: convert current map to Affine, compose, then return new AffineMap.
-        // Specific map types can override for more optimized compositions (e.g., ScaleMap.PreTranslate -> ScaleTranslateMap).
-        public virtual IMap PreRotate(double radians, Axis axis) => ToAffineMap().PreRotate(radians, axis);
-        public virtual IMap PreTranslate(Vec3<double> t) => ToAffineMap().PreTranslate(t);
-        public virtual IMap PreScale(Vec3<double> s) => ToAffineMap().PreScale(s);
-        public virtual IMap PreShear(double shear, Axis axis0, Axis axis1) => ToAffineMap().PreShear(shear, axis0, axis1);
-
-        public virtual IMap PostRotate(double radians, Axis axis) => ToAffineMap().PostRotate(radians, axis);
-        public virtual IMap PostTranslate(Vec3<double> t) => ToAffineMap().PostTranslate(t);
-        public virtual IMap PostScale(Vec3<double> s) => ToAffineMap().PostScale(s);
-        public virtual IMap PostShear(double shear, Axis axis0, Axis axis1) => ToAffineMap().PostShear(shear, axis0, axis1);
-
-        public abstract void WriteData(System.IO.BinaryWriter writer, OpenVDB.Core.IO.StreamMetadata streamMetadata);
-        public abstract void ReadData(System.IO.BinaryReader reader, OpenVDB.Core.IO.StreamMetadata streamMetadata);
-    }
-}
-            var mat3 = ToAffineMap().InverseMap().ToAffineMap().Matrix.GetMat3().Transposed();
-            return mat3 * sourceVector;
-        }
 
         public virtual double Determinant => GetDeterminant(Vec3<double>.Zero); // Default to origin for linear maps
         public virtual Vec3<double> VoxelSize => GetVoxelSize(Vec3<double>.Zero); // Default to origin

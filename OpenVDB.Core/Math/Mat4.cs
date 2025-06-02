@@ -1,8 +1,6 @@
 // Copyright Contributors to the OpenVDB Project
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
-using System.Runtime.InteropServices;
 using System.Numerics; // For IFloatingPointIeee754
 
 namespace OpenVDB.Math
@@ -10,7 +8,7 @@ namespace OpenVDB.Math
     [Serializable]
     // [StructLayout(LayoutKind.Sequential)] // Row-major order
     public struct Mat4<T> : IEquatable<Mat4<T>>
-        where T : struct, IEquatable<T>, IFormattable, ISignedNumber<T>, IFloatingPointIeee754<T>
+        where T : struct, IEquatable<T>, IFormattable, IFloatingPointIeee754<T>
     {
         // Row-major order: M<row><col>
         public T M00, M01, M02, M03;
@@ -168,7 +166,13 @@ namespace OpenVDB.Math
                    M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
         public override bool Equals(object obj) => obj is Mat4<T> other && Equals(other);
-        public override int GetHashCode() => HashCode.Combine(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
+        public override int GetHashCode()
+        {
+            var hash1 = HashCode.Combine(M00, M01, M02, M03, M10, M11, M12, M13);
+            var hash2 = HashCode.Combine(M20, M21, M22, M23, M30, M31, M32, M33);
+            
+            return HashCode.Combine(hash1, hash2);
+        }
 
         public static bool operator ==(Mat4<T> m1, Mat4<T> m2) => m1.Equals(m2);
         public static bool operator !=(Mat4<T> m1, Mat4<T> m2) => !m1.Equals(m2);
@@ -373,8 +377,4 @@ namespace OpenVDB.Math
                    $" {M30}, {M31}, {M32}, {M33}]";
         }
     }
-
-    // Common type aliases
-    public using Mat4f = Mat4<float>; // In C++ OpenVDB, Mat4s is float
-    public using Mat4d = Mat4<double>;
 }

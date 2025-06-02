@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
-using OpenVDB.Core.IO; // For StreamMetadata, if IMap had Read/WriteData
+using OpenVDB.Core.IO;
+using OpenVDB.Math;
+using OpenVDB.Math.Maps; // For StreamMetadata, if IMap had Read/WriteData
 
 namespace OpenVDB.Core.Math.Maps
 {

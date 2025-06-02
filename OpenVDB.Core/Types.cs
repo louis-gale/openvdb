@@ -1,9 +1,6 @@
 // Copyright Contributors to the OpenVDB Project
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
-using System.Collections.Generic;
-// Bring in the new math types
 using OpenVDB.Math;
 
 namespace OpenVDB
@@ -11,57 +8,59 @@ namespace OpenVDB
     // Basic type aliases from Types.h
     // C# uses built-in types for most of these.
     // Specific-width integer types are directly available in C#.
-    using Index32 = System.UInt32;
-    using Index64 = System.UInt64;
-    using Index = System.UInt32; // Default Index type
-    using Int16 = System.Int16;
-    using Int32 = System.Int32;
-    using Int64 = System.Int64;
+    using Index32 = uint;
+    using Index64 = ulong;
+    using Index = uint; // Default Index type
+    using Int16 = short;
+    using Int32 = int;
+    using Int64 = long;
     // using Int = System.Int32; // Default Int type - 'Int' might be ambiguous, prefer Int32
-    using Byte = System.Byte;
-    using Real = System.Double; // double precision float
+    using Byte = byte;
+    using Real = double; // double precision float
 
     // System.Half is available in .NET 5+
-    using Half = System.Half;
+    using Half = Half;
 
     // Concrete vector and matrix types using the new math structs
-    public using Vec2R = OpenVDB.Math.Vec2<double>; // Real is double
-    public using Vec2I = OpenVDB.Math.Vec2<uint>;   // Index32 is uint
-    public using Vec2f = OpenVDB.Math.Vec2<float>;
-    public using Vec2H = OpenVDB.Math.Vec2<Half>;
-    public using Vec2i = OpenVDB.Math.Vec2<int>;
-    public using Vec2s = OpenVDB.Math.Vec2<float>; // C++ Vec2s often alias to Vec2f
-    public using Vec2d = OpenVDB.Math.Vec2<double>;
+    using Vec2R = Vec2<double>; // Real is double
+    using Vec2I = Vec2<uint>;   // Index32 is uint
+    using Vec2f = Vec2<float>;
+    using Vec2H = Vec2<Half>;
+    using Vec2i = Vec2<int>;
+    using Vec2s = Vec2<float>; // C++ Vec2s often alias to Vec2f
+    using Vec2d = Vec2<double>;
 
-    public using Vec3R = OpenVDB.Math.Vec3<double>; // Real is double
-    public using Vec3I = OpenVDB.Math.Vec3<uint>;   // Index32 is uint
-    public using Vec3f = OpenVDB.Math.Vec3<float>;
-    public using Vec3H = OpenVDB.Math.Vec3<Half>;
-    public using Vec3U8 = OpenVDB.Math.Vec3<byte>;
-    public using Vec3U16 = OpenVDB.Math.Vec3<ushort>;
-    public using Vec3i = OpenVDB.Math.Vec3<int>;
-    public using Vec3s = OpenVDB.Math.Vec3<float>; // C++ Vec3s often alias to Vec3f
-    public using Vec3d = OpenVDB.Math.Vec3<double>;
+    using Vec3R = Vec3<double>; // Real is double
+    using Vec3I = Vec3<uint>;   // Index32 is uint
+    using Vec3f = Vec3<float>;
+    using Vec3H = Vec3<Half>;
+    using Vec3U8 = Vec3<byte>;
+    using Vec3U16 = Vec3<ushort>;
+    using Vec3i = Vec3<int>;
+    using Vec3s = Vec3<float>; // C++ Vec3s often alias to Vec3f
+    using Vec3d = Vec3<double>;
 
-    public using Vec4R = OpenVDB.Math.Vec4<double>; // Real is double
-    public using Vec4I = OpenVDB.Math.Vec4<uint>;   // Index32 is uint
-    public using Vec4f = OpenVDB.Math.Vec4<float>;
-    public using Vec4H = OpenVDB.Math.Vec4<Half>;
-    public using Vec4i = OpenVDB.Math.Vec4<int>;
-    public using Vec4s = OpenVDB.Math.Vec4<float>; // C++ Vec4s often alias to Vec4f
-    public using Vec4d = OpenVDB.Math.Vec4<double>;
+    using Vec4R = Vec4<double>; // Real is double
+    using Vec4I = Vec4<uint>;   // Index32 is uint
+    using Vec4f = Vec4<float>;
+    using Vec4H = Vec4<Half>;
+    using Vec4i = Vec4<int>;
+    using Vec4s = Vec4<float>; // C++ Vec4s often alias to Vec4f
+    using Vec4d = Vec4<double>;
 
-    public using Mat3R = OpenVDB.Math.Mat3<double>; // Real is double
-    public using Mat3s = OpenVDB.Math.Mat3<float>;
-    public using Mat3d = OpenVDB.Math.Mat3<double>;
+    using Mat3R = Mat3<double>; // Real is double
+    using Mat3s = Mat3<float>;
+    using Mat3f = Mat3<float>;
+    using Mat3d = Mat3<double>;
 
-    public using Mat4R = OpenVDB.Math.Mat4<double>; // Real is double
-    public using Mat4s = OpenVDB.Math.Mat4<float>;
-    public using Mat4d = OpenVDB.Math.Mat4<double>;
+    using Mat4R = Mat4<double>; // Real is double
+    using Mat4s = Mat4<float>;
+    using Mat4d = Mat4<double>;
 
-    public using QuatR = OpenVDB.Math.Quat<double>; // Real is double
-    public using Quats = OpenVDB.Math.Quat<float>;
-    public using Quatd = OpenVDB.Math.Quat<double>;
+    using Quatf = Quat<float>;
+    using QuatR = Quat<double>; // Real is double
+    using Quats = Quat<float>;
+    using Quatd = Quat<double>;
 
     // Coord is now defined in OpenVDB.Math.Coord.cs
     // Using alias for convenience if needed locally, or fully qualify.
@@ -70,10 +69,15 @@ namespace OpenVDB
     // BBox related type aliases
     // CoordBBox uses BBox<Coord, int>
     // BBoxD uses BBox<Vec3<double>, double>
-    public using CoordBBox = OpenVDB.Math.BBox<OpenVDB.Math.Coord, int>;
-    public using BBoxD = OpenVDB.Math.BBox<OpenVDB.Math.Vec3<double>, double>;
+    using CoordBBox = BBox<Coord, int>;
+    using BBoxD = BBox<Vec3<double>, double>;
     // It seems the original BBoxD in Types.cs was a placeholder and didn't fully map to a generic BBox<Vec3d>.
     // The new BBoxD alias above correctly maps to BBox<Vec3<double>, double>.
+
+    using PointIndex32 = PointIndex<uint, PointIndexKind>; // uint is Index32
+    using PointIndex64 = PointIndex<ulong, PointIndexKind>; // ulong is Index64
+    using PointDataIndex32 = PointIndex<uint, PointDataIndexKind>;
+    using PointDataIndex64 = PointIndex<ulong, PointDataIndexKind>;
 
     /// <summary>
     /// Dummy type for a voxel with a binary mask value, e.g., the active state.
@@ -101,11 +105,6 @@ namespace OpenVDB
     public enum PointIndexKind { Kind0 }
     public enum PointDataIndexKind { Kind1 }
 
-    public using PointIndex32 = PointIndex<uint, PointIndexKind>; // uint is Index32
-    public using PointIndex64 = PointIndex<ulong, PointIndexKind>; // ulong is Index64
-    public using PointDataIndex32 = PointIndex<uint, PointDataIndexKind>;
-    public using PointDataIndex64 = PointIndex<ulong, PointDataIndexKind>;
-
 
     /// <summary>
     /// Grid classification types.
@@ -117,10 +116,14 @@ namespace OpenVDB
         FogVolume,
         Staggered
     }
+    
     public static class GridClassConstants { public const int NumGridClasses = (int)GridClass.Staggered + 1; }
 
 
-    public const Real LevelSetHalfWidth = 3.0;
+    public static class LevelSetConstants
+    {
+        public const Real HalfWidth = 3.0;
+    }
 
     /// <summary>
     /// The type of a vector determines how transforms are applied to it.
@@ -133,6 +136,7 @@ namespace OpenVDB
         ContravariantRelative,
         ContravariantAbsolute
     }
+    
     public static class VecTypeConstants { public const int NumVecTypes = (int)VecType.ContravariantAbsolute + 1; }
 
 
@@ -200,7 +204,7 @@ namespace OpenVDB
             }
             if (type.IsGenericType)
             {
-                string genericArgs = string.Join(", ", Array.ConvertAll(type.GetGenericArguments(), GetName));
+                string genericArgs = String.Join(", ", Array.ConvertAll(type.GetGenericArguments(), GetName));
                 var typeName = type.Name;
                 var backtick = typeName.IndexOf('`');
                 if (backtick > 0) typeName = typeName.Substring(0, backtick);

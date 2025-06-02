@@ -244,7 +244,7 @@ template<typename Vec3T>
 inline Vec3d
 BBox<Vec3T>::getCenter() const
 {
-    return (Vec3d(mMin.asPointer()) + Vec3d(mMax.asPointer())) * 0.5;
+    return (Vec3d(mMin.as1er()) + Vec3d(mMax.asPointer())) * 0.5;
 }
 
 

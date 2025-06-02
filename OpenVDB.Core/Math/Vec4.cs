@@ -1,8 +1,6 @@
 // Copyright Contributors to the OpenVDB Project
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
-using System.Runtime.InteropServices;
 using System.Numerics;
 
 namespace OpenVDB.Math
@@ -10,7 +8,7 @@ namespace OpenVDB.Math
     [Serializable]
     // [StructLayout(LayoutKind.Sequential)]
     public struct Vec4<T> : IEquatable<Vec4<T>>
-        where T : struct, IEquatable<T>, IFormattable, ISignedNumber<T>, IFloatingPointIeee754<T>
+        where T : struct, IEquatable<T>, INumber<T>
     {
         public T X, Y, Z, W;
 
@@ -72,7 +70,7 @@ namespace OpenVDB.Math
 
         public T[] AsArray() => new[] { X, Y, Z, W };
 
-        public Vec3<T> GetVec3() => new Vec3<T>(X, Y, Z);
+        public Vec3<T> GetVec3() => new(X, Y, Z);
 
         public void Init(T x = default, T y = default, T z = default, T w = default)
         {
@@ -115,18 +113,17 @@ namespace OpenVDB.Math
             return !(v1 == v2);
         }
 
-        public bool IsApproxEqual(Vec4<T> other, T epsilon)
+        public bool IsApproxEqual(Vec4<T> other, double epsilon)
         {
-            return T.Abs(X - other.X) <= epsilon &&
-                   T.Abs(Y - other.Y) <= epsilon &&
-                   T.Abs(Z - other.Z) <= epsilon &&
-                   T.Abs(W - other.W) <= epsilon;
+            return Double.CreateChecked(T.Abs(X - other.X)) <= epsilon &&
+                   Double.CreateChecked(T.Abs(Y - other.Y)) <= epsilon &&
+                   Double.CreateChecked(T.Abs(Z - other.Z)) <= epsilon &&
+                   Double.CreateChecked(T.Abs(W - other.W)) <= epsilon;
         }
 
         // C++ version uses isApproxEqual for eq method
-        public bool Eq(Vec4<T> other, T epsilon = default)
+        public bool Eq(Vec4<T> other, double epsilon = 1.0e-8)
         {
-            if (epsilon == default) epsilon = T.Epsilon;
             return IsApproxEqual(other, epsilon);
         }
 
@@ -207,14 +204,13 @@ namespace OpenVDB.Math
 
         public T Length()
         {
-            return T.Sqrt(LengthSqr());
+            return T.CreateChecked(System.Math.Sqrt(Double.CreateChecked(LengthSqr())));
         }
 
-        public bool Normalize(T epsilon = default)
+        public bool Normalize(double epsilon = 1.0e-8)
         {
-            if (epsilon == default) epsilon = T.Epsilon;
             T len = Length();
-            if (len <= epsilon)
+            if (Double.CreateChecked(len) <= epsilon)
             {
                 return false;
             }
@@ -225,11 +221,10 @@ namespace OpenVDB.Math
             return true;
         }
 
-        public Vec4<T> Normalized(T epsilon = default)
+        public Vec4<T> Normalized(double epsilon = 1.0e-8)
         {
-            if (epsilon == default) epsilon = T.Epsilon;
             T len = Length();
-            if (len <= epsilon)
+            if (Double.CreateChecked(len) <= epsilon)
             {
                  // C++ OpenVDB throws ArithmeticError here.
                  throw new InvalidOperationException("Cannot normalize a zero-length vector.");
@@ -242,19 +237,19 @@ namespace OpenVDB.Math
             T l2 = LengthSqr();
             if (T.IsZero(l2) || T.IsSubnormal(l2))
                 return new Vec4<T>(T.One, T.Zero, T.Zero, T.Zero); // (1,0,0,0) for Vec4
-            return this / T.Sqrt(l2);
+            return this / T.CreateChecked(System.Math.Sqrt(Double.CreateChecked(l2)));
         }
 
         public T Sum() => X + Y + Z + W;
         public T Product() => X * Y * Z * W;
 
-        public Vec4<T> Exp() => new Vec4<T>(T.Exp(X), T.Exp(Y), T.Exp(Z), T.Exp(W));
-        public Vec4<T> Log() => new Vec4<T>(T.Log(X), T.Log(Y), T.Log(Z), T.Log(W));
-        public Vec4<T> Abs() => new Vec4<T>(T.Abs(X), T.Abs(Y), T.Abs(Z), T.Abs(W));
+        public Vec4<T> Exp() => new(T.CreateChecked(System.Math.Exp(Double.CreateChecked(X))), T.CreateChecked(System.Math.Exp(Double.CreateChecked(Y))), T.CreateChecked(System.Math.Exp(Double.CreateChecked(Z))), T.CreateChecked(System.Math.Exp(Double.CreateChecked(W))));
+        public Vec4<T> Log() => new(T.CreateChecked(System.Math.Log(Double.CreateChecked(X))), T.CreateChecked(System.Math.Log(Double.CreateChecked(Y))), T.CreateChecked(System.Math.Log(Double.CreateChecked(Z))), T.CreateChecked(System.Math.Log(Double.CreateChecked(W))));
+        public Vec4<T> Abs() => new(T.Abs(X), T.Abs(Y), T.Abs(Z), T.Abs(W));
 
-        public static Vec4<T> Zero() => new Vec4<T>(T.Zero, T.Zero, T.Zero, T.Zero);
-        public static Vec4<T> Ones() => new Vec4<T>(T.One, T.One, T.One, T.One);
-        public static Vec4<T> Origin() => new Vec4<T>(T.Zero, T.Zero, T.Zero, T.One); // Typically for points in homogeneous coords
+        public static Vec4<T> Zero() => new(T.Zero, T.Zero, T.Zero, T.Zero);
+        public static Vec4<T> Ones() => new(T.One, T.One, T.One, T.One);
+        public static Vec4<T> Origin() => new(T.Zero, T.Zero, T.Zero, T.One); // Typically for points in homogeneous coords
 
 
         public override string ToString()
@@ -262,11 +257,4 @@ namespace OpenVDB.Math
             return $"[{X.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}, {Y.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}, {Z.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}, {W.ToString(null, System.Globalization.CultureInfo.InvariantCulture)}]";
         }
     }
-
-    // Common type aliases
-    public using Vec4i = Vec4<int>;
-    public using Vec4f = Vec4<float>; // In C++ OpenVDB, Vec4s is float
-    public using Vec4d = Vec4<double>;
-    // If System.Half is available and desired:
-    // public using Vec4h = Vec4<System.Half>;
 }

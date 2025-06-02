@@ -5,6 +5,8 @@ using System;
 using System.Numerics;
 using OpenVDB.Core.Math.Maps;
 using OpenVDB.Core.Tree;
+using OpenVDB.Math;
+using OpenVDB.Math.Maps;
 
 namespace OpenVDB.Core.Math.Operators
 {
